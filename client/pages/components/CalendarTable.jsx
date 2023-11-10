@@ -8,6 +8,7 @@ import { useMediaQuery } from "@mui/material";
 import CustomTextInCalendar from "./CustomTextInCalendar";
 import { addDays } from "date-fns";
 import Swal from "sweetalert2";
+import { getExamPeriod } from "@/data/dataUserAndAdmin";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -26,9 +27,8 @@ const CalendarTable = ({
   const [isEnable, setIsEnable] = useState(false);
 
   const checkExamPeriodEnable = async () => {
-    await Axios.get("/api/examPeriod").then((data) => {
-      
-      setIsEnable(data.data[0].isEnable);
+    await getExamPeriod((data) => {
+      setIsEnable(data[0].isEnable);
     });
   };
   useEffect(() => {
@@ -304,7 +304,9 @@ const CalendarTable = ({
             localizer={localizer}
             date={new Date(year, month - 1, date)}
             events={userData}
-            onSelectEvent={isAdmin ? (slotInfo) => handleClickSlot(slotInfo) : undefined}
+            onSelectEvent={
+              isAdmin ? (slotInfo) => handleClickSlot(slotInfo) : undefined
+            }
             startAccessor="start"
             endAccessor="end"
             resourceIdAccessor="resourceId"
@@ -318,7 +320,9 @@ const CalendarTable = ({
             view={views}
             components={{
               toolbar: CustomToolbar(),
-              event: (props) => <CustomTextInCalendar data={props.event.data} />,
+              event: (props) => (
+                <CustomTextInCalendar data={props.event.data} />
+              ),
             }}
           />
         </div>
@@ -329,7 +333,9 @@ const CalendarTable = ({
             localizer={localizer}
             date={new Date(year, month - 1, date)}
             events={userData}
-            onSelectEvent={isAdmin ? (slotInfo) => handleClickSlot(slotInfo) : undefined}
+            onSelectEvent={
+              isAdmin ? (slotInfo) => handleClickSlot(slotInfo) : undefined
+            }
             startAccessor="start"
             endAccessor="end"
             resourceIdAccessor="resourceId"
@@ -345,7 +351,9 @@ const CalendarTable = ({
             max={new Date(2018, 0, 29, 16, 0, 0)}
             components={{
               toolbar: CustomToolbar(),
-              event: (props) => <CustomTextInCalendar data={props.event.data} />,
+              event: (props) => (
+                <CustomTextInCalendar data={props.event.data} />
+              ),
             }}
           />
         </div>

@@ -37,6 +37,18 @@ const getAllCustomer = async (callback) => {
     console.log(error);
   }
 };
+
+// ========== Get all customer to show in datachart ==========
+const getExamPeriod = async (callback) => {
+  try {
+    await Axios.get("/api/examPeriod").then((res) => {
+      const data = res.data;
+      callback(data);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 // ==========================================================
 
-export { getData, getAllCustomer };
+export { getData, getAllCustomer, getExamPeriod };

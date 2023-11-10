@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import AdminSetting from "./AdminSetting";
-import { getData } from "../../data/dataUserAndAdmin";
+import { getData, getExamPeriod } from "../../data/dataUserAndAdmin";
 import { getTime } from "../../data/localTimezone";
 import { addDays } from "date-fns";
 import Login from "./Login";
@@ -36,15 +36,15 @@ const AdminTable = (admin) => {
 
   // ========== Get exam period from database ==========
   async function getExamDay() {
-    await Axios.get("/api/examPeriod").then((res) => {
-      if (res.data[0].isEnable == true) {
-        setStartBooking(new Date(res.data[0].examStart));
-        setEndBooking(new Date(res.data[0].examEnd));
+    await getExamPeriod((data) => {
+      if (data[0].isEnable == true) {
+        setStartBooking(new Date(data[0].examStart));
+        setEndBooking(new Date(data[0].examEnd));
       } else {
         setStartBooking(getTime());
         setEndBooking(addDays(getTime(), 2));
       }
-    });
+    })
   }
   // ===================================================
 

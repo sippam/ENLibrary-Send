@@ -13,7 +13,7 @@ import {
   numberInRoomConferece,
   numberInRoomMeeting,
 } from "../../data/dataRoom";
-import { getData } from "../../data/dataUserAndAdmin";
+import { getData, getExamPeriod } from "../../data/dataUserAndAdmin";
 import { getTime } from "../../data/localTimezone";
 import Switch from "@mui/material/Switch";
 import differenceInHours from "date-fns/differenceInHours";
@@ -318,36 +318,37 @@ const Booking = ({ sendDataBook }) => {
 
   // ========== Get data exam period in data base and set new day booking ==========
   async function getExamAdmin() {
-    const data = await Axios.get("/api/examPeriod").then((res) => res.data);
-    const start = new Date(data[0].examStart);
-    const end = new Date(data[0].examEnd);
-    const boolean = data[0].isEnable;
-    setAdminBTN(boolean);
-    if (boolean == true) {
-      setStartBookingDay(new Date(start));
-      setEndBookingDay(new Date(end));
-      setMinTime(new Date("1/1/1111 12:00 AM"));
-      setMaxTime(new Date("1/1/1111 11:00 PM"));
-      if (
-        new Date(addDays(getTime(), 1).setHours(0, 0, 0)) ===
-        new Date(addDays(end, 1).setHours(0, 0, 0))
-      ) {
+    await getExamPeriod((data) => {
+      const start = new Date(data[0].examStart);
+      const end = new Date(data[0].examEnd);
+      const boolean = data[0].isEnable;
+      setAdminBTN(boolean);
+      if (boolean == true) {
+        setStartBookingDay(new Date(start));
+        setEndBookingDay(new Date(end));
+        setMinTime(new Date("1/1/1111 12:00 AM"));
+        setMaxTime(new Date("1/1/1111 11:00 PM"));
+        if (
+          new Date(addDays(getTime(), 1).setHours(0, 0, 0)) ===
+          new Date(addDays(end, 1).setHours(0, 0, 0))
+        ) {
+          setStartBookingDay(getTime());
+          setEndBookingDay(addDays(getTime(), 2));
+          setMinTime(new Date("1/1/1111 10:00 AM"));
+          setMaxTime(new Date("1/1/1111 4:00 PM"));
+        }
+      } else {
+        /* 
+      If today is last day in exam period
+          day will allow booking between 3 days
+          time will allow booking between 10.00 - 16.00
+      */
         setStartBookingDay(getTime());
         setEndBookingDay(addDays(getTime(), 2));
         setMinTime(new Date("1/1/1111 10:00 AM"));
         setMaxTime(new Date("1/1/1111 4:00 PM"));
       }
-    } else {
-      /* 
-      If today is last day in exam period
-          day will allow booking between 3 days
-          time will allow booking between 10.00 - 16.00
-      */
-      setStartBookingDay(getTime());
-      setEndBookingDay(addDays(getTime(), 2));
-      setMinTime(new Date("1/1/1111 10:00 AM"));
-      setMaxTime(new Date("1/1/1111 4:00 PM"));
-    }
+    });
   }
   // ==========================================================================
 

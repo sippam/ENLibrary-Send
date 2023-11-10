@@ -7,6 +7,7 @@ import Axios from "axios";
 import CalendarTable from "./CalendarTable";
 import YMDSetting from "./YMDSetting";
 import ConOrMeeting from "./ConOrMeeting";
+import { getExamPeriod } from "../../data/dataUserAndAdmin";
 
 const UserTable = (triggerbook) => {
   // ========== Get user data in database ==========
@@ -36,16 +37,16 @@ const UserTable = (triggerbook) => {
 
   // =========== Get exam period from database =============
   async function getExamDay() {
-    await Axios.get("/api/examPeriod").then((res) => {
-      if (res.data[0].isEnable == true) {
-        console.log(new Date(res.data[0].examStart));
-        setStartBooking(new Date(res.data[0].examStart));
-        setEndBooking(new Date(res.data[0].examEnd));
+    await getExamPeriod((data) => {
+      if (data[0].isEnable == true) {
+        console.log(new Date(data[0].examStart));
+        setStartBooking(new Date(data[0].examStart));
+        setEndBooking(new Date(data[0].examEnd));
       } else {
         setStartBooking(getTime());
         setEndBooking(addDays(getTime(), 2));
       }
-    });
+    })
   }
 
   useEffect(() => {

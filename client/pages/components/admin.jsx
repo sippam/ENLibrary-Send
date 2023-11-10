@@ -10,10 +10,6 @@ const admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   // ========== Check Admin ==========
-  // console.log(adminList.email.includes(Buffer.from(
-  //   JSON.parse(localStorage.getItem("dataForm")).email,
-  //   "base64"
-  // ).toString("utf-8")));
   async function allowAdmin() {
     if (adminList.email.includes(Buffer.from(
       JSON.parse(localStorage.getItem("dataForm")).email,

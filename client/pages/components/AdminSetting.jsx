@@ -6,6 +6,7 @@ import { getTime } from "../../data/localTimezone";
 import { addDays } from "date-fns";
 import Axios from "axios";
 import Login from "./Login";
+import { getExamPeriod } from "@/data/dataUserAndAdmin";
 
 const AdminSetting = (admin) => {
   const isAdmin = admin.admin;
@@ -30,32 +31,44 @@ const AdminSetting = (admin) => {
 
   // ========== Get exam period from database ==========
   async function getData() {
-    await Axios.get("/api/examPeriod").then((res) => {
-      // if exam period btn is true will set day value in database
-      if (res.data[0].isEnable == true) {
-        setStartDate(new Date(res.data[0].examStart));
-        setEndDate(new Date(res.data[0].examEnd));
-        setToggleSwitch(res.data[0].isEnable);
+    await getExamPeriod((data) => {
+      if (data[0].isEnable == true) {
+        setStartDate(new Date(data[0].examStart));
+        setEndDate(new Date(data[0].examEnd));
+        setToggleSwitch(data[0].isEnable);
         // if exam period btn is false will set day booking 2 days
       } else {
         setStartDate(getTime());
         setEndDate(addDays(getTime(), 2));
         setToggleSwitch(false);
       }
-    });
+    })
+    // await Axios.get("/api/examPeriod").then((res) => {
+    //   // if exam period btn is true will set day value in database
+    //   if (res.data[0].isEnable == true) {
+    //     setStartDate(new Date(res.data[0].examStart));
+    //     setEndDate(new Date(res.data[0].examEnd));
+    //     setToggleSwitch(res.data[0].isEnable);
+    //     // if exam period btn is false will set day booking 2 days
+    //   } else {
+    //     setStartDate(getTime());
+    //     setEndDate(addDays(getTime(), 2));
+    //     setToggleSwitch(false);
+    //   }
+    // });
   }
   // ==================================================
 
   // ========== Save exam period to database ==========
   async function saveData(BTN) {
-    await Axios.get("/api/examPeriod").then(async (res) => {
-      const id = res.data[0]._id;
+    await getExamPeriod((data) => {
+      const id = data[0]._id;
       const start = startDate;
       const end = endDate;
       if (BTN == true) {
         // if not have exam period data in database it will create new one
-        if (res.data.length === 0) {
-          await Axios.post("/api/examPeriod", {
+        if (data.length === 0) {
+          Axios.post("/api/examPeriod", {
             examStart: start,
             examEnd: end,
             isEnable: BTN,
@@ -66,7 +79,8 @@ const AdminSetting = (admin) => {
       } else {
         putData(id, BTN, startDate, endDate);
       }
-    });
+    
+    })
   }
   // =================================================
 
