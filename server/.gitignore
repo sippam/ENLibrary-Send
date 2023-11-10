@@ -1,6 +1,9 @@
 # dependencies
+/node_modules
 /.pnp
 .pnp.js
+.yarn.lock
+
 
 # debug
 npm-debug.log*
