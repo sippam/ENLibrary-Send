@@ -1,0 +1,221 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,800&display=swap');
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Open Sans', sans-serif;
+  cursor: default;
+}
+
+@layer base {
+  body {
+    @apply bg-[white] text-[#202630] tracking-wide;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  body::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  body::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold
+  }
+
+  h1 {
+    @apply text-4xl sm:text-5xl md:text-6xl font-[Raleway]
+  }
+
+  h2 {
+    @apply text-3xl sm:text-4xl
+  }
+
+  li {
+    @apply cursor-pointer
+  }
+
+  /* button {
+    @apply shadow-xl shadow-gray-400 rounded-xl uppercase bg-gradient-to-r from-[#FF0000] to-[#263238] text-white
+  }
+  button {
+    @apply shadow-xl shadow-gray-400 rounded-xl uppercase bg-gradient-to-r from-[#0a4122] to-[#25a556] text-white
+  } */
+  .circlehover a {
+    @apply rounded-full hover:shadow-xl hover:shadow-gray-400 hover:scale-110 transform transition duration-300 ease-in-out
+  }
+
+
+
+  .btn-grad {
+    background-image: linear-gradient(to right, #1D4350 0%, #B30000 51%, #1D4350 100%);
+    margin: 10px;
+    padding: 15px 45px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    box-shadow: 0 0 20px #706363;
+    border-radius: 10px;
+    display: block;
+
+  }
+
+  .btn-grad:hover {
+    background-position: right center;
+    /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
+  }
+
+
+  ul li div {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    padding-left: 0;
+
+    left: -60px;
+    display: none;
+    background: white;
+  }
+
+  ul li:hover>div,
+  ul li div:hover {
+    visibility: visible;
+    opacity: 1;
+    display: block;
+    min-width: 120px;
+    text-align: left;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 20px;
+    padding-right: 5px;
+    box-shadow: 0px 3px 10px -1px #ccc;
+    font-size: 0.8rem;
+    /* margin-top: 1px; */
+  }
+
+  ul li div li a:hover {
+    padding-left: 15px;
+    border-left: 2px solid #B30000;
+    transition: all 0.3s ease;
+  }
+
+  ul li div li a {
+    transition: all 0.5s ease;
+  }
+
+}
+
+
+ul li ul {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  padding-left: 0;
+
+  left: -10px;
+  display: none;
+  background: white;
+}
+
+ul li:hover>ul,
+ul li ul:hover {
+  visibility: visible;
+  opacity: 1;
+  display: block;
+  min-width: 220px;
+  text-align: left;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 20px;
+  padding-right: 5px;
+  box-shadow: 0px 3px 10px -1px #ccc;
+  font-size: 0.8rem;
+  /* margin-top: 1px; */
+}
+
+ul li ul li a:hover {
+  padding-left: 15px;
+  border-left: 2px solid #B30000;
+  transition: all 0.3s ease;
+}
+
+ul li ul li a {
+  transition: all 0.5s ease;
+}
+
+.rbc-today {
+  background-color: #eaf6ff7e !important;
+}
+.rbc-header { /* Con 1 2 3 , Meeting 1 2 3 4  Header** */
+  /* background: #79b8e4; */
+ 
+  color: #1D4350 ;
+  padding: 4px !important;
+  /* font-size: 19px !important; */
+  overflow: hidden !important;
+  -webkit-box-flex: 1 !important;
+      -ms-flex: 1 0 0% !important;
+          flex: 1 0 0% !important;
+  font-size: 100% !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  padding: 0 3px !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  font-weight: bold !important;
+  min-height: 0 !important;
+}
+
+
+.rbc-event { /*Reserve Name box in site*/
+  padding: 2px !important;
+  border-radius: 0px !important;
+  border: solid black 0px!important;
+  border-collapse: collapse !important;
+  color: rgb(0, 0, 0) !important;
+  background-color: #6b686457 !important;
+}
+
+.rbc-label {
+  padding: 0 100 !important;
+}
+
+.rbc-event-label { /*just show the period or not its None mean its dont show the event label peried*/
+  display: none !important;
+}
+
+.rbc-events-container { /* dont change its about how the box ill be*/
+  width: 100% !important;
+}
+
+.rbc-timeslot-group {
+  min-height: 65px !important;
+  min-width: 0px !important;
+}
+
+.rbc-event:hover { /*hover insite text*/
+  background-color: #1D4350 !important;
+  color: white !important;
+}
+
+
+
+
+/* .rbc-timeslot-group {
+  min-height: 120px !important;
+} */

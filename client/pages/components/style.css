@@ -1,0 +1,187 @@
+.table-style {
+  border: 1px solid black;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.table-style-deletetop {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+/* table {
+  position: absolute;
+  border-collapse: collapse;
+  border-radius: 10px;
+   display: block; 
+  display: table;
+  overflow-x: auto;
+  white-space: nowrap;
+} */
+
+.mytable {
+  position: absolute;
+  border-collapse: collapse;
+  border-radius: 10px;
+  /* display: block; */
+  display: table;
+  overflow-x: auto;
+  /* overflow: scroll; */
+  white-space: nowrap;
+}
+
+.tableAdmin {
+  left: 5%;
+}
+
+.tableRequest {
+  left: 5%;
+  width: 90%;
+  margin: auto;
+}
+
+.nestedHead {
+  position: absolute;
+  width: 4.7%;
+  left: 5%;
+}
+
+.nested {
+  position: absolute;
+  margin-left: 1.5%;
+  width: 10%;
+}
+
+.nested2 {
+  position: absolute;
+  width: 20%;
+  margin-left: 2.5%;
+}
+
+.nested3 {
+  position: absolute;
+  width: 30%;
+  margin-left: 0%;
+}
+
+/* Delete button style */
+.delete-btn {
+  background: none;
+  border-radius: 1rem;
+  padding: 0 0.5rem 0 0.5rem;
+  margin: 0.2rem 0 0.2rem 0;
+  background-color: red;
+}
+
+.containerAdmin {
+  /* display: flex; */
+  width: 90%;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.card {
+  margin: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  width: auto;
+}
+
+.card-header img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10px;
+  /* min-height: 250px; */
+} 
+
+.description {
+  position: absolute;
+  visibility: hidden;
+}
+
+.header {
+  position: relative;
+}
+
+.header:hover {
+  color: red;
+}
+
+.header:hover .description {
+  background-color: #fff;
+  padding: 1rem;
+  line-height: 1.7rem;
+  border: 1px solid black;
+  border-radius: 1rem;
+  position: absolute;
+  width: 22rem;
+  /* margin-left: -10rem; */
+  top: 2.5rem;
+  left: 50%;
+  color: black;
+  visibility: visible;
+  text-align: left;
+  z-index: 1;
+}
+
+.header2 {
+  position: relative;
+}
+
+.hide-info {
+  display: none;
+}
+
+/* Styles for the "on" state */
+.custom-switch .ant-switch-checked {
+  background-color: green; /* Set your desired background color for the "on" state */
+}
+
+/* Styles for the "off" state */
+.custom-switch .ant-switch {
+  background-color: red; /* Set your desired background color for the "off" state */
+}
+
+.rbc-allday-cell {
+  display: none;
+}
+
+div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm {
+  border: 0;
+  border-radius: 0.25em;
+  /* background: initial; */
+  /* background: linear-gradient(to right, #0a4122, #25a556) !important; */
+  background-color: #38FF84 !important;
+  color: #000 !important;
+  font-size: 1em;
+}
+div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm:focus {
+  box-shadow: 0 0 0 3px rgb(5, 228, 90) !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .mytable {
+    position: absolute;
+    border-collapse: collapse;
+    border-radius: 10px;
+    display: block;
+    /* display: table; */
+    padding: 0px 5px 0px 5px;
+    overflow-x: auto;
+    /* white-space: nowrap; */
+  }
+  
+}
