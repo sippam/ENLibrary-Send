@@ -19,22 +19,16 @@ const YMDSetting = ({ startBooking, periodBooking, onDateChange }) => {
       [
         addDays(startBooking, i).getMonth() + 1,
         addDays(startBooking, i).getDate(),
-        // addDays(startBooking, i).getFullYear(),
-        // addDays(startBooking, i).getMonth() + 1,
+
         addDays(startBooking, i).getFullYear(),
-        // addDays(startBooking, i).getDate(),
       ].join("-")
     );
   }
 
   const [day, setDay] = useState(
     [
-      // startBooking.getFullYear(),
       startBooking.getMonth() + 1,
-
       startBooking.getDate(),
-      // startBooking.getMonth() + 1,
-      // startBooking.getDate(),
       startBooking.getFullYear(),
     ].join("-")
   );

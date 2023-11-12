@@ -31,7 +31,6 @@ const request = (triggerbook) => {
     id,
     date,
     email,
-    // roomName,
     roomType,
     roomNumber,
     timeFrom,
@@ -62,14 +61,12 @@ const request = (triggerbook) => {
             <table className="mytable w-full text-gray-500 justify-center items-center text-center dark:text-[white]">
               <thead className="text-sm uppercase text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-[white] shadow-md">
                 <tr>
-                  {/* <div className="overflow-x-scroll"> */}
                   <th className="px-2 py-5">Date</th>
                   <th className="px-2 py-5">Name</th>
                   <th className="px-2 py-5">Type</th>
                   <th className="px-2 py-5">Number</th>
                   <th className="px-2 py-5">Period</th>
                   <th className="px-2 py-5">Delete</th>
-                  {/* </div> */}
                 </tr>
               </thead>
               <tbody>
@@ -84,7 +81,6 @@ const request = (triggerbook) => {
                           className="bg-white border dark:bg-gray-800 dark:border-gray-700"
                           key={key}
                         >
-                          {/* <div className="overflow-x-scroll"> */}
                           <th className="px-6 py-4">{val.date}</th>
                           <th className="px-6 py-4">{val.roomName}</th>
                           <th className="px-6 py-4">{val.roomType}</th>
@@ -100,7 +96,6 @@ const request = (triggerbook) => {
                                   val._id,
                                   val.date,
                                   val.email,
-                                  // val.roomName,
                                   val.roomType,
                                   val.roomNumber,
                                   val.timeFrom,
@@ -111,7 +106,6 @@ const request = (triggerbook) => {
                               Cancel
                             </button>
                           </th>
-                          {/* </div> */}
                         </tr>
                       );
                     }

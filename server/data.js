@@ -121,7 +121,9 @@ async function loop() {
     deleteResults.push(deleteData);
   }
 
-  setTimeout(loop, 60 * 1000);
+  pool.end();
+
+  setTimeout(loop, 15 * 60 * 1000);
 }
 
 loop();

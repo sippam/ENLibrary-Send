@@ -184,7 +184,7 @@ const Login = () => {
                     </p>
                     <div>
                       <div className=" flex items-center justify-between">
-                        {renderThemeChanger()}
+                        {/* {renderThemeChanger()} */}
                         <Link href="https://libsso.kku.ac.th/enlib.php">
                           <button
                             // onClick={() => signIn()}
