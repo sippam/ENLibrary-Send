@@ -20,6 +20,7 @@ const CalendarTable = ({
   dataShow,
   isAdmin,
 }) => {
+  console.log("dataShow", dataShow);
   const isSmallScreen = useMediaQuery("(min-width: 640px)");
   const isMediumScreen = useMediaQuery("(min-width: 768px)");
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
@@ -40,7 +41,7 @@ const CalendarTable = ({
   }
 
   const userData = isConference
-    ? dataShow &&
+    ? dataShow.length != 0 ?
       dataShow
         .flatMap((data) => {
           if (data.roomType === "Conference") {
@@ -130,13 +131,12 @@ const CalendarTable = ({
                   surname: Buffer.from(data.surname, "base64").toString(),
                   cn: Buffer.from(data.cn, "base64").toString(),
                 },
-              },
+              }
             ];
           }
-          return null; // Return null for non-Conference data
-        })
-        .filter(Boolean)
-    : dataShow &&
+        }) : []
+        // .filter(Boolean)
+    : dataShow.length != 0 ?
       dataShow
         .flatMap((data) => {
           if (data.roomType === "Meeting") {
@@ -229,9 +229,8 @@ const CalendarTable = ({
               },
             ];
           }
-          return null; // Return null for non-Conference data
-        })
-        .filter(Boolean);
+        }) : []
+        
   const resourceMap = isConference
     ? [
         { resourceId: 1, resourceTitle: "Conference 1" },
