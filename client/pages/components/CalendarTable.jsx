@@ -20,12 +20,11 @@ const CalendarTable = ({
   dataShow,
   isAdmin,
 }) => {
-  console.log("dataShow", dataShow);
   const isSmallScreen = useMediaQuery("(min-width: 640px)");
   const isMediumScreen = useMediaQuery("(min-width: 768px)");
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
-  const [isEnable, setIsEnable] = useState(false);
+  const [isEnable, setIsEnable] = useState(false); // Check exam period enable by admin
 
   const checkExamPeriodEnable = async () => {
     await getExamPeriod((data) => {

@@ -18,50 +18,41 @@ import { getTime } from "../../data/localTimezone";
 import Switch from "@mui/material/Switch";
 import differenceInHours from "date-fns/differenceInHours";
 import isEqual from "date-fns/isEqual";
-// import { useSession } from "@supabase/auth-helpers-react";
 
 const Booking = ({ sendDataBook }) => {
   const label = { inputProps: { "aria-label": "Switch demo" } };
-  // const [name, setName] = useState("");
+
   const [email, setEmail] = useState("");
   const [session, setSession] = useState(null);
-  // set state of room name
-  const [roomName, setRoomName] = useState("");
-  // set state of type room name, default state is default because will use it in value
-  const [roomType, setRoomType] = useState("default");
-  // set state of room name, default state is default because will use it in value
-  const [roomNumber, setRoomNumber] = useState("default");
-  // set state of timeFrom null to not show anything in select and use lectTime to show
-  const [timeFrom, setTimeFrom] = useState(null);
+  const [roomName, setRoomName] = useState(""); // set state of room name
+  const [roomType, setRoomType] = useState("default"); // set state of type room name, default state is default because will use it in value
+  const [roomNumber, setRoomNumber] = useState("default"); // set state of room name, default state is default because will use it in value
+  const [timeFrom, setTimeFrom] = useState(null); // set state of timeFrom null to not show anything in select and use lectTime to show
   const [getTimeFrom, setGetTimeFrom] = useState(null);
-  // same above
+
   const [timeTo, setTimeTo] = useState(null);
   const [getTimeTo, setGetTimeTo] = useState(null);
-  // set default number of room to select in form
-  const [numberRoom, setNumberRoom] = useState(numberInRoomConferece);
-  // Let user select type of room and will select number of name
-  const [selectRoom, setSelectRoom] = useState(false);
-  // Check that user select room or not
-  const [inputRoom, setInputRoom] = useState(false);
-  // Check time hours between 1-3 hours
-  const checkTime = getTimeTo - getTimeFrom;
-  // Check all value that filled
-  const [checkValid, setCheckValid] = useState(false);
-  // If useer select room of number then user can select date and time to booking
-  const [canSelectDateTime, setCanSelectDateTime] = useState(false);
+
+  const [numberRoom, setNumberRoom] = useState(numberInRoomConferece); // set default number of room to select in form
+  const [selectRoom, setSelectRoom] = useState(false); // Let user select type of room and will select number of name
+  const [inputRoom, setInputRoom] = useState(false); // Check that user select room or not
+  const checkTime = getTimeTo - getTimeFrom; // Check time hours between 1-3 hours
+  const [checkValid, setCheckValid] = useState(false); // Check all value that filled
+  const [canSelectDateTime, setCanSelectDateTime] = useState(false); // If useer select room of number then user can select date and time to booking
 
   // Collect day from user submit form
   const [day, setDay] = useState(null);
   const [getDay, setGetDay] = useState(null);
   const [getMonth, setGetMonth] = useState(null);
   const [getYear, setGetYear] = useState(null);
-  // Check that user already select day
-  const [checkSelectDay, setCheckSelectDay] = useState(false);
-  // Collect dd/mm/yyyy from user submit form
-  const [collectday, setCollectDay] = useState(getTime());
 
+  const [checkSelectDay, setCheckSelectDay] = useState(false); // Check that user already select day
+  const [collectday, setCollectDay] = useState(getTime()); // Collect dd/mm/yyyy from user submit form
+
+  // Set start day and end of booking
   const [startBookingDay, setStartBookingDay] = useState(getTime());
   const [endBookingDay, setEndBookingDay] = useState(addDays(getTime(), 2));
+
   // Set min max time
   const [minTime, setMinTime] = useState(new Date("1/1/1111 10:00 AM"));
   const [maxTime, setMaxTime] = useState(new Date("1/1/1111 4:00 PM"));
@@ -70,26 +61,23 @@ const Booking = ({ sendDataBook }) => {
     endBookingDay.getTime() - startBookingDay.getTime() > 0
       ? (endBookingDay.getTime() - startBookingDay.getTime()) / calOneDay
       : (startBookingDay.getTime() - endBookingDay.getTime()) / calOneDay;
+
   const today = getTime();
   const inLibrary = false; // Track user booking in library or not
   const [adminBTN, setAdminBTN] = useState(false); // Admin allow exam period
-
   const [clickButton, setClickButton] = useState(false); // User click booking between 2 days
 
   // When exam period user want to booking 11:00 pm to 01:00 am
-  // const [test, setTest] = useState(null);
   const [dayTwo, setDayTwo] = useState(null);
   const [between2days, setBetween2days] = useState(false);
+
+  const [minTimeInThisDate, setMinTimeInThisDate] = useState(minTime);
 
   const hladleDayTwo = (event) => {
     setDayTwo(event);
     setCheckSelectDay(true);
     setBetween2days(true);
   };
-
-  // const funcsetTest1 = (event) => {
-  //   setTest(event);
-  // };
 
   const [userSwitchBookTwoDay, setUserSwitchBookTwoDay] = useState(false);
   const handleToggle = (event) => {
@@ -142,6 +130,22 @@ const Booking = ({ sendDataBook }) => {
     setGetDay(valueDay.getDate());
     setGetMonth(valueDay.getMonth() + 1);
     setGetYear(valueDay.getFullYear());
+    setGetTimeTo(null);
+    setTimeFrom(null);
+    setGetTimeTo(null);
+    setTimeTo(null);
+    setCheckValid(false);
+    
+    setMinTimeInThisDate(
+      isEqual(
+        new Date(valueDay.getFullYear(), valueDay.getMonth(), valueDay.getDate()),
+        new Date(today.getFullYear(), today.getMonth(), today.getDate())
+      )
+        ? new Date(
+          `1/1/1111 ${today.getHours() >= 12 ? `${today.getHours()-12}:00 PM` : `${today.getHours()}:00 AM`}`
+          )
+        : minTime
+    );
   };
 
   // Collect data user select timeFrom
@@ -160,7 +164,6 @@ const Booking = ({ sendDataBook }) => {
   const saveData = (event) => {
     event.preventDefault();
     sendEmail();
-    // createCalendarEvent();
     setClickButton(true);
     sendDataBook(true);
     setCollectDay(getTime());
@@ -268,7 +271,7 @@ const Booking = ({ sendDataBook }) => {
       timeTo: getTimeTo,
       between2days: between2days,
       inLibrary: inLibrary,
-    }).then(() => {
+    }).then(async () => {
       toast.success("📖 Successfully!", {
         position: "bottom-right",
         autoClose: 6000,
@@ -300,18 +303,18 @@ const Booking = ({ sendDataBook }) => {
           inLibrary: inLibrary,
         },
       ]);
-    });
-    await Axios.post("/api/addAllCustomer", {
-      date: collectday,
-      title: title,
-      firstname: firstname,
-      surname: surname,
-      email: email,
-      cn: JSON.parse(localStorage.getItem("dataForm")).cn,
-      roomType: roomType,
-      roomNumber: roomNumber,
-      timeFrom: getTimeFrom,
-      timeTo: getTimeTo,
+      await Axios.post("/api/addAllCustomer", {
+        date: collectday,
+        title: title,
+        firstname: firstname,
+        surname: surname,
+        email: email,
+        cn: JSON.parse(localStorage.getItem("dataForm")).cn,
+        roomType: roomType,
+        roomNumber: roomNumber,
+        timeFrom: getTimeFrom,
+        timeTo: getTimeTo,
+      });
     });
   };
   // ==================================================================================
@@ -743,7 +746,7 @@ const Booking = ({ sendDataBook }) => {
                                 autoComplete="off"
                                 selected={dayTwo}
                                 onChange={hladleDayTwo}
-                                minDate={startBookingDay}
+                                minDate={addDays(startBookingDay,1)}
                                 maxDate={addDays(startBookingDay, period)}
                                 filterDate={weekend}
                                 disabled={!canSelectDateTime}
@@ -811,7 +814,7 @@ const Booking = ({ sendDataBook }) => {
                         onChange={changeTimeFrom}
                         showTimeSelect
                         showTimeSelectOnly
-                        minTime={minTime}
+                        minTime={minTimeInThisDate}
                         maxTime={maxTime}
                         timeIntervals={60}
                         timeCaption="Time"

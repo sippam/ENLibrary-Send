@@ -1,18 +1,5 @@
 import Axios from "axios";
 
-// ========== Get admin data in database ==========
-// const getAdmin = async (callback) => {
-//   try {
-//     await Axios.get("/api/getAdmin").then((res) => {
-//       const data = res.data;
-//       callback(data);
-//     });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-// =================================================
-
 // ========== Get data to show in datachart ==========
 const getData = async (callback) => {
   try {
@@ -39,14 +26,23 @@ const getAllCustomer = async (callback) => {
 };
 
 // ========== Get all customer to show in datachart ==========
+// const getExamPeriod = async (callback) => {
+//   try {
+//     await Axios.get("/api/examPeriod").then((res) => {
+//       const data = res.data;
+//       callback(data);
+//     });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 const getExamPeriod = async (callback) => {
   try {
-    await Axios.get("/api/examPeriod").then((res) => {
-      const data = res.data;
-      callback(data);
-    });
+    const response = await Axios.get("/api/examPeriod");
+    const data = response.data;
+    callback(data);
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching exam period:", error);
   }
 };
 // ==========================================================

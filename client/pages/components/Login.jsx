@@ -15,10 +15,11 @@ import Request from "./request";
 import UserTable from "./UserTable";
 import { getData } from "../../data/dataUserAndAdmin";
 import { getTime } from "../../data/localTimezone";
+import Announce from "./Announce";
 
 const Login = () => {
-  const [mounted, setMounted] = useState(false);
-  const { systemTheme, theme, setTheme } = useTheme();
+  // const [mounted, setMounted] = useState(false);
+  // const { systemTheme, theme, setTheme } = useTheme();
   const [session, setSession] = useState(null);
 
   useEffect(() => {
@@ -28,32 +29,32 @@ const Login = () => {
     }
   }, []);
 
-  useEffect(() => {
-    setMounted(true);
-  }),
-    [];
+  // useEffect(() => {
+  //   setMounted(true);
+  // }),
+  //   [];
 
-  const renderThemeChanger = () => {
-    if (!mounted) return null;
-    const currentTheme = theme === "system" ? systemTheme : theme;
-    if (currentTheme == "dark") {
-      return (
-        <BsSun
-          className="w-7 h-7 dark:text-[white]"
-          role="button"
-          onClick={() => setTheme("light")}
-        />
-      );
-    } else {
-      return (
-        <BsFillMoonFill
-          className="w-7 h-7"
-          role="button"
-          onClick={() => setTheme("dark")}
-        />
-      );
-    }
-  };
+  // const renderThemeChanger = () => {
+  //   if (!mounted) return null;
+  //   const currentTheme = theme === "system" ? systemTheme : theme;
+  //   if (currentTheme == "dark") {
+  //     return (
+  //       <BsSun
+  //         className="w-7 h-7 dark:text-[white]"
+  //         role="button"
+  //         onClick={() => setTheme("light")}
+  //       />
+  //     );
+  //   } else {
+  //     return (
+  //       <BsFillMoonFill
+  //         className="w-7 h-7"
+  //         role="button"
+  //         onClick={() => setTheme("dark")}
+  //       />
+  //     );
+  //   }
+  // };
 
   // ========== Get user position ==========
   const [latitude, setLatitude] = useState(0);
@@ -153,6 +154,7 @@ const Login = () => {
         <>
           <Navbar />
           <Main />
+          <Announce />
           <UserTable triggerbook={sendTriggerBooking} />
           <Booking sendDataBook={ActiveTriggerBook} />
           <Request triggerbook={sendTriggerBooking} />

@@ -122,7 +122,7 @@
 
 .header:hover .description {
   background-color: #fff;
-  padding: 1rem;
+  padding: 1rem ;
   line-height: 1.7rem;
   border: 1px solid black;
   border-radius: 1rem;
@@ -135,6 +135,16 @@
   visibility: visible;
   text-align: left;
   z-index: 1;
+}
+
+.rbc-header {
+  border-bottom: 1px solid #fff !important;
+}
+
+.rbc-time-header-content > .rbc-row.rbc-row-resource {
+  border-bottom: 1px solid #fff !important;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
 }
 
 .header2 {

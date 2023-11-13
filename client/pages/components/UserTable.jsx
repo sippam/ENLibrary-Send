@@ -38,7 +38,6 @@ const UserTable = (triggerbook) => {
   async function getExamDay() {
     await getExamPeriod((data) => {
       if (data[0].isEnable == true) {
-        console.log(new Date(data[0].examStart));
         setStartBooking(new Date(data[0].examStart));
         setEndBooking(new Date(data[0].examEnd));
       } else {

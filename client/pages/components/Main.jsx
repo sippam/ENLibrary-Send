@@ -5,7 +5,7 @@ import Link from "next/link";
 const Main = () => {
   return (
     <div id="/" className="dark:bg-[#282a36] ">
-      <div className="w-full h-screen text-center  ">
+      <div className="w-full h-[90%] sm:h-screen text-center  ">
         <div className="max-w-[100%] w-full h-full mx-auto  p-2 flex flex-row justify-center items-center ">
           <div className="mt-36 flex flex-col sm:flex-row">
             <div className="m-2 flex justify-center items-center flex-col">

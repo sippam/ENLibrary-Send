@@ -57,7 +57,7 @@ async function loop() {
             0
           ).toLocaleString("en-US", { timeZone: timezone })
         )
-      ) > 30 &&
+      ) > 15 &&
       data.inLibrary === 0
   );
 
