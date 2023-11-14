@@ -76,6 +76,7 @@ const CalendarTable = ({
                     firstname: Buffer.from(data.firstname, "base64").toString(),
                     surname: Buffer.from(data.surname, "base64").toString(),
                     cn: Buffer.from(data.cn, "base64").toString(),
+                    status: data.inLibrary,
                   },
                 },
                 {
@@ -101,6 +102,7 @@ const CalendarTable = ({
                     firstname: Buffer.from(data.firstname, "base64").toString(),
                     surname: Buffer.from(data.surname, "base64").toString(),
                     cn: Buffer.from(data.cn, "base64").toString(),
+                    status: data.inLibrary,
                   },
                 },
               ];
@@ -129,6 +131,7 @@ const CalendarTable = ({
                   firstname: Buffer.from(data.firstname, "base64").toString(),
                   surname: Buffer.from(data.surname, "base64").toString(),
                   cn: Buffer.from(data.cn, "base64").toString(),
+                  status: data.inLibrary,
                 },
               }
             ];
@@ -171,6 +174,7 @@ const CalendarTable = ({
                     firstname: Buffer.from(data.firstname, "base64").toString(),
                     surname: Buffer.from(data.surname, "base64").toString(),
                     cn: Buffer.from(data.cn, "base64").toString(),
+                    status: data.inLibrary,
                   },
                 },
                 {
@@ -196,6 +200,7 @@ const CalendarTable = ({
                     firstname: Buffer.from(data.firstname, "base64").toString(),
                     surname: Buffer.from(data.surname, "base64").toString(),
                     cn: Buffer.from(data.cn, "base64").toString(),
+                    status: data.inLibrary,
                   },
                 },
               ];
@@ -224,6 +229,7 @@ const CalendarTable = ({
                   firstname: Buffer.from(data.firstname, "base64").toString(),
                   surname: Buffer.from(data.surname, "base64").toString(),
                   cn: Buffer.from(data.cn, "base64").toString(),
+                  status: data.inLibrary,
                 },
               },
             ];

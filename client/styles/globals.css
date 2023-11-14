@@ -213,6 +213,24 @@ ul li ul li a {
   color: white !important;
 }
 
+@keyframes move-marquee {
+  0%, 100% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-move-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: move-marquee 15s linear infinite; /* Adjust duration as needed */
+}
+
+
+
+
 
 
 

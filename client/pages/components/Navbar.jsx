@@ -29,10 +29,14 @@ const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   async function allowAdmin() {
-    if (adminList.email.includes(Buffer.from(
-      JSON.parse(localStorage.getItem("dataForm")).email,
-      "base64"
-    ).toString("utf-8"))) {
+    if (
+      adminList.email.includes(
+        Buffer.from(
+          JSON.parse(localStorage.getItem("dataForm")).email,
+          "base64"
+        ).toString("utf-8")
+      )
+    ) {
       setIsAdmin(true);
     }
   }
@@ -195,12 +199,12 @@ const Navbar = () => {
                 </li>
               </ul>
 
-              <Link href="/#map">
+              {/* <Link href="/#map">
                 <li className="ml-12 font-semibold text-md tracking-widest uppercase  hover:scale-100 ease-in duration-200 hover:text-[#f9a826] dark:text-[#fcfcfc]">
                   {" "}
                   Map{" "}
                 </li>
-              </Link>
+              </Link> */}
 
               <div className=""></div>
             </ul>
@@ -360,14 +364,14 @@ const Navbar = () => {
                     Booking list
                   </li>
                 </Link>
-                <Link href="/#map">
+                {/* <Link href="/#map">
                   <li
                     onClick={() => setNav(false)}
                     className="text-md py-4 hover:text-[#f9a826] dark:text-[#efefef] "
                   >
                     Map
                   </li>
-                </Link>
+                </Link> */}
                 <li
                   onClick={() => {
                     setNav(false);

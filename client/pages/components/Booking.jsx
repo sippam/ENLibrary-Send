@@ -135,17 +135,169 @@ const Booking = ({ sendDataBook }) => {
     setGetTimeTo(null);
     setTimeTo(null);
     setCheckValid(false);
-    
-    setMinTimeInThisDate(
-      isEqual(
-        new Date(valueDay.getFullYear(), valueDay.getMonth(), valueDay.getDate()),
-        new Date(today.getFullYear(), today.getMonth(), today.getDate())
-      )
-        ? new Date(
-          `1/1/1111 ${today.getHours() >= 12 ? `${today.getHours()-12}:00 PM` : `${today.getHours()}:00 AM`}`
-          )
-        : minTime
-    );
+    console.log(adminBTN);
+    console.log("today.getHours()", getTime());
+    if (adminBTN) {
+      if (
+        isEqual(
+          new Date(
+            valueDay.getFullYear(),
+            valueDay.getMonth(),
+            valueDay.getDate()
+          ),
+          new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        )
+      ) {
+        if (getTime().getHours() == 0) {
+          setMinTimeInThisDate(new Date(`1/1/1111 12:00 AM`));
+        } else if (getTime().getHours() >= 1 && getTime().getHours() <= 11) {
+          console.log(
+            "sdfgdsf",
+            Math.abs(
+              differenceInHours(
+                today,
+                new Date(
+                  today.getFullYear(),
+                  today.getMonth(),
+                  today.getDate(),
+                  1,
+                  0,
+                  0
+                )
+              )
+            )
+          );
+          console.log(
+            "dsf",
+            new Date(
+              today.getFullYear(),
+              today.getMonth(),
+              today.getDate(),
+              1,
+              0,
+              0
+            )
+          );
+          setMinTimeInThisDate(
+            new Date(
+              `1/1/1111 ${Math.abs(
+                differenceInHours(
+                  today,
+                  new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    today.getDate(),
+                    1,
+                    0,
+                    0
+                  )
+                )
+              ) + 1}:00 AM`
+            )
+          );
+        } else if (getTime().getHours() == 12) {
+          console.log(2);
+
+          setMinTimeInThisDate(new Date(`1/1/1111 12:00 PM`));
+        } else if (getTime().getHours() >= 13 && getTime().getHours() <= 23) {
+          console.log(3);
+
+          setMinTimeInThisDate(
+            new Date(
+              `1/1/1111 ${
+                10 -
+                differenceInHours(
+                  new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    today.getDate(),
+                    23,
+                    0,
+                    0
+                  ),
+                  today
+                )
+              }:00 PM`
+            )
+          );
+        }
+      } else {
+        setMinTimeInThisDate(new Date("1/1/1111 12:00 AM"));
+      }
+    } else {
+      if (
+        isEqual(
+          new Date(
+            valueDay.getFullYear(),
+            valueDay.getMonth(),
+            valueDay.getDate()
+          ),
+          new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        )
+      ) {
+        if (getTime().getHours() >= 10 && getTime().getHours() <= 11) {
+          console.log(1);
+          setMinTimeInThisDate(
+            new Date(
+              `1/1/1111 ${
+                differenceInHours(
+                  today,
+                  new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    today.getDate(),
+                    10,
+                    0,
+                    0
+                  )
+                ) + 10
+              }:00 AM`
+            )
+          );
+        } else if (getTime().getHours() == 12) {
+          console.log(2);
+
+          setMinTimeInThisDate(new Date(`1/1/1111 12:00 PM`));
+        } else if (getTime().getHours() >= 13 && getTime().getHours() <= 16) {
+          console.log(3);
+
+          setMinTimeInThisDate(
+            new Date(
+              `1/1/1111 ${
+                4 -
+                differenceInHours(
+                  new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    today.getDate(),
+                    16,
+                    0,
+                    0
+                  ),
+                  today
+                )
+              }:00 PM`
+            )
+          );
+        }
+      } else {
+        console.log(4);
+
+        setMinTimeInThisDate(minTime);
+      }
+    }
+    // setMinTimeInThisDate(
+    //   isEqual(
+    //     new Date(valueDay.getFullYear(), valueDay.getMonth(), valueDay.getDate()),
+    //     new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    //   )
+    //     ? if (today.getHours() >= 10 && today.getHours() <= 11) {
+    //       new Date(
+    //         `1/1/1111 ${today.getHours() >= 12 ? `${today.getHours()-12}:00 PM` : `${today.getHours()}:00 AM`}`
+    //         )
+    //     }
+    //     : minTime
+    // );
   };
 
   // Collect data user select timeFrom
@@ -746,7 +898,7 @@ const Booking = ({ sendDataBook }) => {
                                 autoComplete="off"
                                 selected={dayTwo}
                                 onChange={hladleDayTwo}
-                                minDate={addDays(startBookingDay,1)}
+                                minDate={addDays(startBookingDay, 1)}
                                 maxDate={addDays(startBookingDay, period)}
                                 filterDate={weekend}
                                 disabled={!canSelectDateTime}

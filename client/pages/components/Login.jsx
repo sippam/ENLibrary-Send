@@ -22,13 +22,6 @@ const Login = () => {
   // const { systemTheme, theme, setTheme } = useTheme();
   const [session, setSession] = useState(null);
 
-  useEffect(() => {
-    const storedData = localStorage.getItem("dataForm");
-    if (storedData) {
-      setSession(JSON.parse(storedData));
-    }
-  }, []);
-
   // useEffect(() => {
   //   setMounted(true);
   // }),
@@ -72,28 +65,37 @@ const Login = () => {
   const today = getTime().getDate();
   const thisHour = getTime().getHours();
   // Minute unit
-  const setUserTimeOutRoomNotInLibrary = 30;
+  const setUserTimeOutRoomNotInLibrary = 15;
 
   const [user, setUser] = useState([]);
 
   // ========== Get user data in database ==========
-  const getUserData = async () => {
+  const getUserData = async (storedData) => {
+    console.log("storedData", storedData);
     await getData((data) => {
       let users = data.filter(
         (data) =>
           Number(data.day) === today &&
           data.timeFrom === thisHour &&
-          data.email === session.email
+          Buffer.from(data.email, "base64").toString("utf-8") ===
+            Buffer.from(storedData.email, "base64").toString("utf-8")
       );
+      console.log("k", users);
       setUser(users);
     });
   };
 
+
   useEffect(() => {
-    if (session) {
-      getUserData();
+    const storedData = localStorage.getItem("dataForm");
+    if (storedData) {
+      setSession(JSON.parse(storedData));
+      getUserData(JSON.parse(storedData));
     }
   }, []);
+
+  const [xx, setXx] = useState(0);
+  const [yy, setYy] = useState(0);
 
   function checkLocationLibrary(data, x, y) {
     if (data.length > 0) {
@@ -114,6 +116,8 @@ const Login = () => {
         102.82285520076572 <= y <= 102.82387015776939 &&
         startHours <= getTime() <= endHours
       ) {
+        setXx(x);
+        setYy(y);
         updateStutsInLibrary(data[0]._id, true);
       }
     }
@@ -154,11 +158,12 @@ const Login = () => {
         <>
           <Navbar />
           <Main />
+          {`xx ${xx} yy ${yy}`}
           <Announce />
           <UserTable triggerbook={sendTriggerBooking} />
           <Booking sendDataBook={ActiveTriggerBook} />
           <Request triggerbook={sendTriggerBooking} />
-          <Mapping />
+          {/* <Mapping /> */}
           <Footer />
         </>
       ) : (

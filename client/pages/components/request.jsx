@@ -51,7 +51,7 @@ const request = (triggerbook) => {
   // ====================================
 
   return (
-    <div id="list" className="lg:pt-[100px] sm:pt-[0px] dark:bg-[#282a36]">
+    <div id="list" className="pt-[0px] sm:pt-[0px] py-72  dark:bg-[#282a36]">
       <div className="w-full lg:h-[90px]  text-center">
         <div className="max-w-[100%] w-[95%] h-full mx-auto p-2 justify-center items-center">
           <h2 className="md-auto tracking-wide py-6 text-center dark:text-[white]">
@@ -66,6 +66,7 @@ const request = (triggerbook) => {
                   <th className="px-2 py-5">Type</th>
                   <th className="px-2 py-5">Number</th>
                   <th className="px-2 py-5">Period</th>
+                  <th className="px-2 py-5">Status</th>
                   <th className="px-2 py-5">Delete</th>
                 </tr>
               </thead>
@@ -88,6 +89,7 @@ const request = (triggerbook) => {
                           <th className="px-6 py-4">
                             {val.timeFrom}:00 - {val.timeTo}:00
                           </th>
+                          <th className="px-6 py-4">{val.inLibrary ? "Check" : "Uncheck"}</th>
                           <th className="px-6 py-4">
                             <button
                               className="px-2 py-1 rounded-full uppercase cursor-pointer hover:scale-[95%] ease-in duration-100 text-base tracking-widest font-semibold text-white shadow-gray-400 dark:shadow-[black] shadow-xl bg-gradient-to-r from-[#FF0000] to-[#263238]"

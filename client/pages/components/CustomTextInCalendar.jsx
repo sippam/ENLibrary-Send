@@ -8,6 +8,8 @@ const CustomTextInCalendar = ({ data }) => {
     return <div>Error: Data not available.</div>;
   }
 
+  const statusText = data && data.status == 1 ? "Check" : "Uncheck";
+
   return (
     <div className="flex flex-col leading-relaxed">
       <div className="text-sm ml-1">
@@ -29,6 +31,16 @@ const CustomTextInCalendar = ({ data }) => {
         ) : (
           <>
             <br /> {data.timeFrom}:00 - {data.timeTo}:00
+          </>
+        )}
+      </div>
+      <div className="text-sm ml-1">
+        <span className="font-bold">Status : </span>
+        {isMediumScreen ? (
+          statusText
+        ) : (
+          <>
+            <br /> {statusText}
           </>
         )}
       </div>
