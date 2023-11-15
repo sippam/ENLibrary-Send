@@ -135,8 +135,6 @@ const Booking = ({ sendDataBook }) => {
     setGetTimeTo(null);
     setTimeTo(null);
     setCheckValid(false);
-    console.log(adminBTN);
-    console.log("today.getHours()", getTime());
     if (adminBTN) {
       if (
         isEqual(
@@ -151,33 +149,6 @@ const Booking = ({ sendDataBook }) => {
         if (getTime().getHours() == 0) {
           setMinTimeInThisDate(new Date(`1/1/1111 12:00 AM`));
         } else if (getTime().getHours() >= 1 && getTime().getHours() <= 11) {
-          console.log(
-            "sdfgdsf",
-            Math.abs(
-              differenceInHours(
-                today,
-                new Date(
-                  today.getFullYear(),
-                  today.getMonth(),
-                  today.getDate(),
-                  1,
-                  0,
-                  0
-                )
-              )
-            )
-          );
-          console.log(
-            "dsf",
-            new Date(
-              today.getFullYear(),
-              today.getMonth(),
-              today.getDate(),
-              1,
-              0,
-              0
-            )
-          );
           setMinTimeInThisDate(
             new Date(
               `1/1/1111 ${Math.abs(
@@ -192,20 +163,15 @@ const Booking = ({ sendDataBook }) => {
                     0
                   )
                 )
-              ) + 1}:00 AM`
+              )}:00 AM`
             )
           );
         } else if (getTime().getHours() == 12) {
-          console.log(2);
-
           setMinTimeInThisDate(new Date(`1/1/1111 12:00 PM`));
         } else if (getTime().getHours() >= 13 && getTime().getHours() <= 23) {
-          console.log(3);
-
           setMinTimeInThisDate(
             new Date(
               `1/1/1111 ${
-                10 -
                 differenceInHours(
                   new Date(
                     today.getFullYear(),
@@ -216,7 +182,7 @@ const Booking = ({ sendDataBook }) => {
                     0
                   ),
                   today
-                )
+                ) - 12
               }:00 PM`
             )
           );
@@ -236,7 +202,6 @@ const Booking = ({ sendDataBook }) => {
         )
       ) {
         if (getTime().getHours() >= 10 && getTime().getHours() <= 11) {
-          console.log(1);
           setMinTimeInThisDate(
             new Date(
               `1/1/1111 ${
@@ -255,12 +220,8 @@ const Booking = ({ sendDataBook }) => {
             )
           );
         } else if (getTime().getHours() == 12) {
-          console.log(2);
-
           setMinTimeInThisDate(new Date(`1/1/1111 12:00 PM`));
         } else if (getTime().getHours() >= 13 && getTime().getHours() <= 16) {
-          console.log(3);
-
           setMinTimeInThisDate(
             new Date(
               `1/1/1111 ${
@@ -279,10 +240,10 @@ const Booking = ({ sendDataBook }) => {
               }:00 PM`
             )
           );
+        } else {
+          setMinTimeInThisDate(new Date(`1/1/1111 4:00 PM`));
         }
       } else {
-        console.log(4);
-
         setMinTimeInThisDate(minTime);
       }
     }

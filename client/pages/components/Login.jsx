@@ -49,6 +49,8 @@ const Login = () => {
   //   }
   // };
 
+  const [xx, setXx] = useState(0);
+  const [yy, setYy] = useState(0);
   // ========== Get user position ==========
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
@@ -57,6 +59,8 @@ const Login = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       setLatitude(position.coords.latitude);
       setLongitude(position.coords.longitude);
+      setXx(position.coords.latitude);
+      setYy(position.coords.longitude);
     });
   };
   // =======================================
@@ -65,13 +69,12 @@ const Login = () => {
   const today = getTime().getDate();
   const thisHour = getTime().getHours();
   // Minute unit
-  const setUserTimeOutRoomNotInLibrary = 15;
+  const setUserTimeOutRoomNotInLibrary = 30;
 
   const [user, setUser] = useState([]);
 
   // ========== Get user data in database ==========
   const getUserData = async (storedData) => {
-    console.log("storedData", storedData);
     await getData((data) => {
       let users = data.filter(
         (data) =>
@@ -80,22 +83,9 @@ const Login = () => {
           Buffer.from(data.email, "base64").toString("utf-8") ===
             Buffer.from(storedData.email, "base64").toString("utf-8")
       );
-      console.log("k", users);
       setUser(users);
     });
   };
-
-
-  useEffect(() => {
-    const storedData = localStorage.getItem("dataForm");
-    if (storedData) {
-      setSession(JSON.parse(storedData));
-      getUserData(JSON.parse(storedData));
-    }
-  }, []);
-
-  const [xx, setXx] = useState(0);
-  const [yy, setYy] = useState(0);
 
   function checkLocationLibrary(data, x, y) {
     if (data.length > 0) {
@@ -112,12 +102,12 @@ const Login = () => {
       );
       if (
         data &&
-        16.472419882673314 <= x <= 16.47391226944115 &&
-        102.82285520076572 <= y <= 102.82387015776939 &&
+        x >= 16.472419882673314 &&
+        x <= 16.47391226944115 &&
+        y >= 102.82285520076572 &&
+        y <= 102.82387015776939 &&
         startHours <= getTime() <= endHours
       ) {
-        setXx(x);
-        setYy(y);
         updateStutsInLibrary(data[0]._id, true);
       }
     }
@@ -152,13 +142,20 @@ const Login = () => {
   };
   // ===============================================================================================
 
+  useEffect(() => {
+    const storedData = localStorage.getItem("dataForm");
+    if (storedData) {
+      setSession(JSON.parse(storedData));
+      getUserData(JSON.parse(storedData));
+    }
+  }, [sendTriggerBooking]);
+
   return (
     <>
       {session ? (
         <>
-          <Navbar />
+          <Navbar lat={latitude} lng={longitude} showLatLng={true}/>
           <Main />
-          {`xx ${xx} yy ${yy}`}
           <Announce />
           <UserTable triggerbook={sendTriggerBooking} />
           <Booking sendDataBook={ActiveTriggerBook} />

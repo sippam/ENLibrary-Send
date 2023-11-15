@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { getTime } from "../../data/localTimezone";
-import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -15,14 +13,24 @@ const YMDSetting = ({ startBooking, periodBooking, onDateChange }) => {
   // ========== Show date in dropdown ==========
   const showPeriodDay = [];
   for (let i = 0; i <= periodBooking; i++) {
-    showPeriodDay.push(
-      [
-        addDays(startBooking, i).getMonth() + 1,
-        addDays(startBooking, i).getDate(),
-
+    if (
+      new Date(
         addDays(startBooking, i).getFullYear(),
-      ].join("-")
-    );
+        addDays(startBooking, i).getMonth(),
+        addDays(startBooking, i).getDate(),
+        23,
+        59,
+        59
+      ) >= new Date()
+    ) {
+      showPeriodDay.push(
+        [
+          addDays(startBooking, i).getMonth() + 1,
+          addDays(startBooking, i).getDate(),
+          addDays(startBooking, i).getFullYear(),
+        ].join("-")
+      );
+    }
   }
 
   const [day, setDay] = useState(
@@ -38,7 +46,7 @@ const YMDSetting = ({ startBooking, periodBooking, onDateChange }) => {
     onDateChange(
       Number(event.target.value.split("-")[2]), // Year
       Number(event.target.value.split("-")[0]), // Month
-      Number(event.target.value.split("-")[1]), // Date
+      Number(event.target.value.split("-")[1]) // Date
     );
   };
   // ===========================================

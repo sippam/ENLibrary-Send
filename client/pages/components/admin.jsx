@@ -26,7 +26,7 @@ const admin = () => {
   if (isAdmin) {
     return (
       <div id="admin" className="w-full lg:h-screen dark:bg-[#282a36]">
-        <Navbar />
+        <Navbar showLatLng={false}/>
         <div id="book" className="max-w-[90%] m-auto px-2 py-40 w-full">
           <div className="">
             <DataChart admin={isAdmin} />

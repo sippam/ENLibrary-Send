@@ -1,6 +1,4 @@
 const express = require("express");
-const user = require("./models/customer");
-const allcustomer = require("./models/allcustomer");
 const differenceInMinutes = require("date-fns/differenceInMinutes");
 const mysql = require("mysql2/promise");
 require('dotenv').config();

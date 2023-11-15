@@ -28,10 +28,11 @@ const Announce = () => {
     <div className="capitalize flex flex-col items-center mt-16 sm:-mt-20 overflow-hidden">
       <ul className="flex flex-col justify-start">
         {text.map((item, index) => (
-          <a className="list-disc list-inside" key={index}>
-            <span className="text-red-500 font-sans text-xs sm:text-base md:text-lg animate-move-marquee">
+          <a className="list-disc list-inside flex flex-col" key={index}>
+            <p className="text-red-500 font-sans text-sm sm:text-base md:text-lg">
               {item}
-            </span>
+            </p>
+            <p className="text-red-500 font-sans text-sm sm:text-base md:text-lg">Must stay on this page when you near library for check-in</p>
           </a>
         ))}
       </ul>

@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import adminList from "../../data/adminList.json";
 
-const Navbar = () => {
+const Navbar = ({ lat, lng, showLatLng }) => {
   const router = useRouter();
   const [nav, setNav] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -115,6 +115,14 @@ const Navbar = () => {
     window.addEventListener("scroll", handleShadow);
   }, []);
 
+  const textInLibrary =
+    lat >= 16.472419882673314 &&
+    lat <= 16.47391226944115 &&
+    lng >= 102.82285520076572 &&
+    lng <= 102.82387015776939
+      ? "In Library"
+      : "Out of Library";
+
   if (dataForm != null) {
     return (
       <div
@@ -168,6 +176,21 @@ const Navbar = () => {
                     );
                   }
                 })} */}
+              {showLatLng && (
+                <ul className="ml-12 font-semibold text-md tracking-widest hover:scale-100 ease-in duration-200">
+                  <li className="flex items-center hover:scale-100 ease-in duration-200 dark:text-[#fcfcfc]">
+                    <span className="uppercase">Your location</span> <IoMdArrowDropdown />
+                    <ul className="dropdown mt-24">
+                      <li>
+                        <p>lat : {lat}</p>
+                        <p>lng : {lng}</p>
+                        <p>{textInLibrary}</p>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              )}
+
               {isAdmin && (
                 <Link href="../components/admin" as="/admin">
                   <li className="ml-12 font-semibold text-md tracking-widest uppercase hover:border-b hover:scale-105 ease-in duration-200 hover:text-[#f9a826] dark:text-[#fcfcfc]">
@@ -308,37 +331,6 @@ const Navbar = () => {
             </div>
             <div>
               <ul className="uppercase">
-                {/* {adminList != undefined &&
-                  adminList.map((item, key) => {
-                    if (item.name == dataForm.email) {
-                      return (
-                        <Link href="../components/admin" key={key} as="/admin">
-                          <li className="text-md py-4 hover:text-[#f9a826] dark:text-[#efefef] font-semibold">
-                            {" "}
-                            Admin{" "}
-                          </li>
-                        </Link>
-                      );
-                    }
-                  })} */}
-                {/* Admin button */}
-                {/* {adminList != undefined &&
-                  adminList.map((item, key) => {
-                    if (
-                      item.name ==
-                      Buffer.from(dataForm.email, "base64").toString("utf-8")
-                    ) {
-                      return (
-                        <Link href="../components/admin" key={key} as="/admin">
-                          <li className="text-md py-4 hover:text-[#f9a826] dark:text-[#efefef]">
-                            {" "}
-                            Admin{" "}
-                          </li>
-                        </Link>
-                      );
-                    }
-                  })} */}
-
                 {isAdmin && (
                   <Link href="../components/admin" as="/admin">
                     <li className="text-md py-4 hover:text-[#f9a826] dark:text-[#efefef]">
@@ -364,14 +356,16 @@ const Navbar = () => {
                     Booking list
                   </li>
                 </Link>
-                {/* <Link href="/#map">
-                  <li
-                    onClick={() => setNav(false)}
-                    className="text-md py-4 hover:text-[#f9a826] dark:text-[#efefef] "
-                  >
-                    Map
+                {showLatLng && (
+                  <li className="text-md py-4 hover:text-[#efefef] dark:text-[#efefef]">
+                    Your location
+                    <li>
+                      <p>lat : {lat}</p>
+                      <p>lng : {lng}</p>
+                      <p>{textInLibrary}</p>
+                    </li>
                   </li>
-                </Link> */}
+                )}
                 <li
                   onClick={() => {
                     setNav(false);
@@ -383,10 +377,11 @@ const Navbar = () => {
                 </li>
               </ul>
             </div>
-            <div className="pt-10 my-1">
-              <p className="uppercase tracking-widest text-[black] dark:text-[#efefef]">
+
+            <div className="pt-2 my-1">
+              {/* <p className="uppercase tracking-widest text-[black] dark:text-[#efefef]">
                 Our Contacts
-              </p>
+              </p> */}
               <div className="flex items-center justify-between my-3 w-full sm:w-[100%] dark:text-white">
                 <a href="https://www.facebook.com/kkuenglib" target="_blank">
                   {" "}
@@ -424,6 +419,7 @@ const Navbar = () => {
                 </a>
               </div>
             </div>
+            
           </div>
         </div>
       </div>
