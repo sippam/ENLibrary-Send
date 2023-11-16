@@ -21,6 +21,8 @@ const Announce = () => {
   const text = [
     "For engineering students only  " +
       `|   Booking between ${!examPeriod ? "10:00 AM to 4:00 PM" : "24/7 "}`,
+      "Please stay on the website for the automatically check in for arrival",
+      "Check in much not be longer than 15 minutes or reservation will be cancelled"
     // "|  Each time of booking must not exceed 3 hours",
   ];
 
@@ -28,12 +30,12 @@ const Announce = () => {
     <div className="capitalize flex flex-col items-center mt-16 sm:-mt-20 overflow-hidden">
       <ul className="flex flex-col justify-start">
         {text.map((item, index) => (
-          <a className="list-disc list-inside flex flex-col" key={index}>
-            <p className="text-red-500 font-sans text-sm sm:text-base md:text-lg">
+          // <a className="list-disc list-inside flex flex-col" key={index}>
+            <p key={index} className="text-red-500 font-sans text-sm sm:text-base md:text-lg">
               {item}
             </p>
-            <p className="text-red-500 font-sans text-sm sm:text-base md:text-lg">Must stay on this page when you near library for check-in</p>
-          </a>
+            // <p className="text-red-500 font-sans text-sm sm:text-base md:text-lg">Must stay on this page when you near library for check-in</p>
+          // </a>
         ))}
       </ul>
     </div>
