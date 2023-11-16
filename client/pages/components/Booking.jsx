@@ -247,18 +247,6 @@ const Booking = ({ sendDataBook }) => {
         setMinTimeInThisDate(minTime);
       }
     }
-    // setMinTimeInThisDate(
-    //   isEqual(
-    //     new Date(valueDay.getFullYear(), valueDay.getMonth(), valueDay.getDate()),
-    //     new Date(today.getFullYear(), today.getMonth(), today.getDate())
-    //   )
-    //     ? if (today.getHours() >= 10 && today.getHours() <= 11) {
-    //       new Date(
-    //         `1/1/1111 ${today.getHours() >= 12 ? `${today.getHours()-12}:00 PM` : `${today.getHours()}:00 AM`}`
-    //         )
-    //     }
-    //     : minTime
-    // );
   };
 
   // Collect data user select timeFrom
@@ -621,54 +609,6 @@ const Booking = ({ sendDataBook }) => {
 
   // =================================
 
-  //? ========== Google calendars ==========
-  //? const eventName = "EN-Library Booking";
-  //? const description = `Reservation name: ${roomName}\nRoom type and number : ${roomType}, ${roomNumber}\nTime: ${collectday}, ${getTimeFrom}:00 - ${getTimeTo}:00`;
-
-  //? async function createCalendarEvent() {
-  //?   const event = {
-  //?     summary: eventName,
-  //?     description: description,
-  //?     start: {
-  //?       dateTime: new Date(
-  //?         day.getFullYear(),
-  //?         day.getMonth(),
-  //?         day.getDate(),
-  //?         getTimeFrom,
-  //?         0,
-  //?         0
-  //?       ),
-  //?       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  //?     },
-  //?     end: {
-  //?       dateTime: new Date(
-  //?         day.getFullYear(),
-  //?         day.getMonth(),
-  //?         day.getDate(),
-  //?         getTimeTo,
-  //?         0,
-  //?         0
-  //?       ),
-  //?       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  //?     },
-  //?   };
-  //?  try {
-  //?     const response = await Axios.post(
-  //?       "https://www.googleapis.com/calendar/v3/calendars/primary/events/",
-  //?       event,
-  //?       {
-  //?         headers: {
-  //?           Authorization: "Bearer " + localStorage.getItem("providerToken"),
-  //?         },
-  //?       }
-  //?     );
-  //?     return response.data;
-  //?   } catch (error) {
-  //?     // Handle error
-  //?     console.error(error);
-  //?   }
-  //? }
-  //? =================================
   // ========== Toastify noti when user had been booking or someone already booking that room ==========
   const [showHaveBooking, setShowHaveBooking] = useState({
     someone: true,
@@ -730,10 +670,8 @@ const Booking = ({ sendDataBook }) => {
           {/* left */}
 
           <div className="col-span-3 lg:col-span-2 w-full mx-auto h-full shadow-lg shadow-gray-400 dark:shadow-[black] dark:bg-[#202020] bg-[#F2F2F2] rounded-xl p4">
-            {/* <div className="text-center"><h2>let&apos;s book!</h2></div> */}
             <form onSubmit={saveData}>
               <div className="grid md:grid-cols-1 gap-4 w-full py-3">
-                {/* <input value={name} name="name" type="hidden" /> */}
                 <div className="px-3 py-2 ">
                   <label
                     htmlFor="reservationName"
@@ -944,11 +882,9 @@ const Booking = ({ sendDataBook }) => {
                       </span>
                     </div>
                     <div className="relative ">
-                      {/* <div className="block"> */}
                       <label className="block mx-1 mb-2 text-base font-medium text-gray-900 dark:text-white w-max">
                         Time End{" "}
                       </label>
-                      {/* </div> */}
 
                       <DatePicker
                         name="Time_End"
@@ -997,12 +933,7 @@ const Booking = ({ sendDataBook }) => {
                       ) > 3)) && (
                     <div className=" mx-1 block mb-2 text-red-400 -mt-3 text-sm">
                       Max 3 Hours
-                    </div>
-
-                    // ) : (
-                    // <div className=" mx-1 block mb-2 text-red-400 -mt-3 text-sm">
-                    //   Please select time properly
-                    // </div>
+                    </div>          
                   )}
                   {((userSwitchBookTwoDay == false &&
                     checkTime < 1 &&
@@ -1048,12 +979,6 @@ const Booking = ({ sendDataBook }) => {
                     style={{ inset: "10px" }}
                     alt="/"
                   ></Image>
-                  {/* <Image
-                    src="/assets/libranameroomV2.png"
-                    width={2212}
-                    height={1215}
-                    alt="/"
-                  ></Image> */}
                 </div>
               </div>
             </div>

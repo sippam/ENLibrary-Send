@@ -20,9 +20,10 @@ const CalendarTable = ({
   dataShow,
   isAdmin,
 }) => {
-  const isSmallScreen = useMediaQuery("(min-width: 640px)");
+
   const isMediumScreen = useMediaQuery("(min-width: 768px)");
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
+  const isExtraLargeScreen = useMediaQuery("(min-width: 1280px)");
 
   const [isEnable, setIsEnable] = useState(false); // Check exam period enable by admin
 
@@ -40,108 +41,9 @@ const CalendarTable = ({
   }
 
   const userData = isConference
-    ? dataShow.length != 0 ?
-      dataShow
-        .flatMap((data) => {
+    ? dataShow.length != 0
+      ? dataShow.flatMap((data) => {
           if (data.roomType === "Conference") {
-            if (data.between2days) {
-              // When between2days is true, return an array with two events
-              return [
-                {
-                  id: data._id,
-                  start: new Date(
-                    data.year,
-                    data.month - 1,
-                    data.day,
-                    data.timeFrom
-                  ),
-                  end: new Date(
-                    data.year,
-                    data.month - 1,
-                    data.day,
-                    23,
-                    59,
-                    59
-                  ),
-                  resourceId: data.roomNumber,
-                  data: {
-                    date: data.date,
-                    roomType: data.roomType,
-                    roomNumber: data.roomNumber,
-                    roomName: data.roomName,
-                    timeFrom: data.timeFrom,
-                    timeTo: data.timeTo,
-                    email: data.email,
-                    title: Buffer.from(data.title, "base64").toString(),
-                    firstname: Buffer.from(data.firstname, "base64").toString(),
-                    surname: Buffer.from(data.surname, "base64").toString(),
-                    cn: Buffer.from(data.cn, "base64").toString(),
-                    status: data.inLibrary,
-                  },
-                },
-                {
-                  id: data._id,
-                  start: addDays(
-                    new Date(data.year, data.month - 1, data.day, 0),
-                    1
-                  ),
-                  end: addDays(
-                    new Date(data.year, data.month - 1, data.day, data.timeTo),
-                    1
-                  ),
-                  resourceId: data.roomNumber,
-                  data: {
-                    date: data.date,
-                    roomType: data.roomType,
-                    roomNumber: data.roomNumber,
-                    roomName: data.roomName,
-                    timeFrom: data.timeFrom,
-                    timeTo: data.timeTo,
-                    email: data.email,
-                    title: Buffer.from(data.title, "base64").toString(),
-                    firstname: Buffer.from(data.firstname, "base64").toString(),
-                    surname: Buffer.from(data.surname, "base64").toString(),
-                    cn: Buffer.from(data.cn, "base64").toString(),
-                    status: data.inLibrary,
-                  },
-                },
-              ];
-            }
-            // When between2days is false, return a single event
-            return [
-              {
-                id: data._id,
-                start: new Date(
-                  data.year,
-                  data.month - 1,
-                  data.day,
-                  data.timeFrom
-                ),
-                end: new Date(data.year, data.month - 1, data.day, data.timeTo),
-                resourceId: data.roomNumber,
-                data: {
-                  date: data.date,
-                  roomType: data.roomType,
-                  roomNumber: data.roomNumber,
-                  roomName: data.roomName,
-                  timeFrom: data.timeFrom,
-                  timeTo: data.timeTo,
-                  email: data.email,
-                  title: Buffer.from(data.title, "base64").toString(),
-                  firstname: Buffer.from(data.firstname, "base64").toString(),
-                  surname: Buffer.from(data.surname, "base64").toString(),
-                  cn: Buffer.from(data.cn, "base64").toString(),
-                  status: data.inLibrary,
-                },
-              }
-            ];
-          }
-        }) : []
-        // .filter(Boolean)
-    : dataShow.length != 0 ?
-      dataShow
-        .flatMap((data) => {
-          if (data.roomType === "Meeting") {
             if (data.between2days) {
               // When between2days is true, return an array with two events
               return [
@@ -234,8 +136,100 @@ const CalendarTable = ({
               },
             ];
           }
-        }) : []
-        
+        })
+      : []
+    : // .filter(Boolean)
+    dataShow.length != 0
+    ? dataShow.flatMap((data) => {
+        if (data.roomType === "Meeting") {
+          if (data.between2days) {
+            // When between2days is true, return an array with two events
+            return [
+              {
+                id: data._id,
+                start: new Date(
+                  data.year,
+                  data.month - 1,
+                  data.day,
+                  data.timeFrom
+                ),
+                end: new Date(data.year, data.month - 1, data.day, 23, 59, 59),
+                resourceId: data.roomNumber,
+                data: {
+                  date: data.date,
+                  roomType: data.roomType,
+                  roomNumber: data.roomNumber,
+                  roomName: data.roomName,
+                  timeFrom: data.timeFrom,
+                  timeTo: data.timeTo,
+                  email: data.email,
+                  title: Buffer.from(data.title, "base64").toString(),
+                  firstname: Buffer.from(data.firstname, "base64").toString(),
+                  surname: Buffer.from(data.surname, "base64").toString(),
+                  cn: Buffer.from(data.cn, "base64").toString(),
+                  status: data.inLibrary,
+                },
+              },
+              {
+                id: data._id,
+                start: addDays(
+                  new Date(data.year, data.month - 1, data.day, 0),
+                  1
+                ),
+                end: addDays(
+                  new Date(data.year, data.month - 1, data.day, data.timeTo),
+                  1
+                ),
+                resourceId: data.roomNumber,
+                data: {
+                  date: data.date,
+                  roomType: data.roomType,
+                  roomNumber: data.roomNumber,
+                  roomName: data.roomName,
+                  timeFrom: data.timeFrom,
+                  timeTo: data.timeTo,
+                  email: data.email,
+                  title: Buffer.from(data.title, "base64").toString(),
+                  firstname: Buffer.from(data.firstname, "base64").toString(),
+                  surname: Buffer.from(data.surname, "base64").toString(),
+                  cn: Buffer.from(data.cn, "base64").toString(),
+                  status: data.inLibrary,
+                },
+              },
+            ];
+          }
+          // When between2days is false, return a single event
+          return [
+            {
+              id: data._id,
+              start: new Date(
+                data.year,
+                data.month - 1,
+                data.day,
+                data.timeFrom
+              ),
+              end: new Date(data.year, data.month - 1, data.day, data.timeTo),
+              resourceId: data.roomNumber,
+              data: {
+                date: data.date,
+                roomType: data.roomType,
+                roomNumber: data.roomNumber,
+                roomName: data.roomName,
+                timeFrom: data.timeFrom,
+                timeTo: data.timeTo,
+                email: data.email,
+                title: Buffer.from(data.title, "base64").toString(),
+                firstname: Buffer.from(data.firstname, "base64").toString(),
+                surname: Buffer.from(data.surname, "base64").toString(),
+                cn: Buffer.from(data.cn, "base64").toString(),
+                status: data.inLibrary,
+              },
+            },
+          ];
+        }
+      })
+    : [];
+
   const resourceMap = isConference
     ? [
         { resourceId: 1, resourceTitle: "Conference 1" },
@@ -319,7 +313,13 @@ const CalendarTable = ({
             step={30}
             style={{
               height: 500,
-              width: isLargeScreen ? 1024 : isMediumScreen ? 700 : 340,
+              width: isExtraLargeScreen
+                ? 1200
+                : isLargeScreen
+                ? 900
+                : isMediumScreen
+                ? 700
+                : 340,
             }}
             view={views}
             components={{
@@ -348,7 +348,13 @@ const CalendarTable = ({
             step={30}
             style={{
               height: 500,
-              width: isLargeScreen ? 1024 : isMediumScreen ? 700 : 340,
+              width: isExtraLargeScreen
+                ? 1200
+                : isLargeScreen
+                ? 900
+                : isMediumScreen
+                ? 700
+                : 340,
             }}
             view={views}
             min={new Date(2018, 0, 29, 10, 0, 0)}

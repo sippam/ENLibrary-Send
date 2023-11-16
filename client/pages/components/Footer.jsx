@@ -4,7 +4,7 @@ import React from "react";
 const Footer = () => {
   return (
     <footer className="bg-white shadow dark:bg-[#282a36]">
-      <div className="w-full container mx-auto p-4 md:px-6 md:py-8">
+      <div className="w-full container mx-auto p-4 md:px-6 md:py-8 xl:pt-32">
         <div className="sm:flex sm:items-center sm:justify-between ">
           <a
             href="https://library.kku.ac.th/elementor-158/enlib/?fbclid=IwAR2HMQPWD0C0jplTRgHFC8LF6SWonvr-i1minfSyj6y-gy4JZ8m1uC6AmzY"

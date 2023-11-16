@@ -51,7 +51,7 @@ const request = (triggerbook) => {
   // ====================================
 
   return (
-    <div id="list" className="pt-[0px] sm:pt-[0px] py-72  dark:bg-[#282a36]">
+    <div id="list" className="pt-[0px] sm:pt-[0px] py-72 lg:py-52 xl:py-20 dark:bg-[#282a36]">
       <div className="w-full lg:h-[90px]  text-center">
         <div className="max-w-[100%] w-[95%] h-full mx-auto p-2 justify-center items-center">
           <h2 className="md-auto tracking-wide py-6 text-center dark:text-[white]">

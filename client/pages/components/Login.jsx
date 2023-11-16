@@ -4,11 +4,8 @@ import Navbar from "./Navbar";
 import Link from "next/link";
 import Axios from "axios";
 import { FcGoogle } from "react-icons/fc";
-import { useTheme } from "next-themes";
-import { BsFillMoonFill, BsSun } from "react-icons/bs";
 import { React, useState, useEffect } from "react";
 import Main from "./Main";
-import Mapping from "./Mapping";
 import Booking from "./Booking";
 import Footer from "./Footer";
 import Request from "./request";
@@ -18,39 +15,9 @@ import { getTime } from "../../data/localTimezone";
 import Announce from "./Announce";
 
 const Login = () => {
-  // const [mounted, setMounted] = useState(false);
-  // const { systemTheme, theme, setTheme } = useTheme();
+
   const [session, setSession] = useState(null);
 
-  // useEffect(() => {
-  //   setMounted(true);
-  // }),
-  //   [];
-
-  // const renderThemeChanger = () => {
-  //   if (!mounted) return null;
-  //   const currentTheme = theme === "system" ? systemTheme : theme;
-  //   if (currentTheme == "dark") {
-  //     return (
-  //       <BsSun
-  //         className="w-7 h-7 dark:text-[white]"
-  //         role="button"
-  //         onClick={() => setTheme("light")}
-  //       />
-  //     );
-  //   } else {
-  //     return (
-  //       <BsFillMoonFill
-  //         className="w-7 h-7"
-  //         role="button"
-  //         onClick={() => setTheme("dark")}
-  //       />
-  //     );
-  //   }
-  // };
-
-  const [xx, setXx] = useState(0);
-  const [yy, setYy] = useState(0);
   // ========== Get user position ==========
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
@@ -59,8 +26,6 @@ const Login = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       setLatitude(position.coords.latitude);
       setLongitude(position.coords.longitude);
-      setXx(position.coords.latitude);
-      setYy(position.coords.longitude);
     });
   };
   // =======================================
@@ -69,7 +34,7 @@ const Login = () => {
   const today = getTime().getDate();
   const thisHour = getTime().getHours();
   // Minute unit
-  const setUserTimeOutRoomNotInLibrary = 30;
+  const setUserTimeOutRoomNotInLibrary = 15;
 
   const [user, setUser] = useState([]);
 
@@ -160,7 +125,6 @@ const Login = () => {
           <UserTable triggerbook={sendTriggerBooking} />
           <Booking sendDataBook={ActiveTriggerBook} />
           <Request triggerbook={sendTriggerBooking} />
-          {/* <Mapping /> */}
           <Footer />
         </>
       ) : (

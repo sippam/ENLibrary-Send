@@ -3,13 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaFacebook } from "react-icons/fa";
-import { BsFillTelephoneFill, BsFillMoonFill, BsSun } from "react-icons/bs";
-import { TbLogout } from "react-icons/tb";
+import { BsFillTelephoneFill } from "react-icons/bs";
+
 import { TbLocationFilled } from "react-icons/tb";
 import { PiUserCircleThin } from "react-icons/pi";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { useEffect } from "react";
-import { useTheme } from "next-themes";
+
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import adminList from "../../data/adminList.json";
@@ -19,10 +19,7 @@ const Navbar = ({ lat, lng, showLatLng }) => {
   const [nav, setNav] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [shadow, setShadow] = useState(false);
-  const [navBg, setNavBg] = useState("#ecf0f3");
-  const [navColor, setNavColor] = useState("#2c2b2b");
-  const { systemTheme, theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+
 
   // ========== Get admin data in database ==========
   const [dataForm, setDataForm] = useState(null);
@@ -62,38 +59,7 @@ const Navbar = ({ lat, lng, showLatLng }) => {
     router.reload();
   };
   // ==============================
-  {
-    /* =======> dark mode set-up  <======== */
-  }
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
-  const renderThemeChanger = () => {
-    if (!mounted) return null;
-    const currentTheme = theme === "system" ? systemTheme : theme;
-    if (currentTheme == "dark") {
-      return (
-        <BsSun
-          className="w-7 h-7 dark:text-[white]"
-          role="button"
-          onClick={() => setTheme("light")}
-        />
-      );
-    } else {
-      return (
-        <BsFillMoonFill
-          className="w-7 h-7"
-          role="button"
-          onClick={() => setTheme("dark")}
-        />
-      );
-    }
-  };
-
-  {
-    /* ====================================== */
-  }
   const handleNav = () => {
     setNav(!nav);
   };
@@ -160,22 +126,6 @@ const Navbar = ({ lat, lng, showLatLng }) => {
           <div className="ml-auto">
             <ul className="hidden md:flex p-10">
               {/* //////////////////////// */}
-              {/* {adminList != undefined &&
-                adminList.map((item, key) => {
-                  if (
-                    item.name ==
-                    Buffer.from(dataForm.email, "base64").toString("utf-8")
-                  ) {
-                    return (
-                      <Link href="../components/admin" key={key} as="/admin">
-                        <li className="ml-12 font-semibold text-md tracking-widest uppercase hover:border-b hover:scale-105 ease-in duration-200 hover:text-[#f9a826] dark:text-[#fcfcfc]">
-                          {" "}
-                          Admin{" "}
-                        </li>
-                      </Link>
-                    );
-                  }
-                })} */}
               {showLatLng && (
                 <ul className="ml-12 font-semibold text-md tracking-widest hover:scale-100 ease-in duration-200">
                   <li className="flex items-center hover:scale-100 ease-in duration-200 dark:text-[#fcfcfc]">
@@ -221,14 +171,6 @@ const Navbar = ({ lat, lng, showLatLng }) => {
                   </ul>
                 </li>
               </ul>
-
-              {/* <Link href="/#map">
-                <li className="ml-12 font-semibold text-md tracking-widest uppercase  hover:scale-100 ease-in duration-200 hover:text-[#f9a826] dark:text-[#fcfcfc]">
-                  {" "}
-                  Map{" "}
-                </li>
-              </Link> */}
-
               <div className=""></div>
             </ul>
             <div onClick={handleNav} className="md:hidden p-6">
@@ -236,7 +178,6 @@ const Navbar = ({ lat, lng, showLatLng }) => {
             </div>
           </div>
           {/*============ DARKMODE BUTTON ADDED HERE!! ============= */}
-          {/* <div className="hidden md:flex pr-7">{renderThemeChanger()}</div> */}
           {/*============ DARKMODE ADDED HERE!! ============= */}
 
           {/*============ ICON AND LOGOUT !! ============= */}
@@ -256,13 +197,6 @@ const Navbar = ({ lat, lng, showLatLng }) => {
                     "base64"
                   ).toString("utf-8")}
                 </a>
-                {/* <a className="font-sans text-sm mt-4">
-                  {" "}
-                  {Buffer.from(
-                    JSON.parse(localStorage.getItem("dataForm")).name,
-                    "base64"
-                  ).toString("utf-8")}
-                </a> */}
                 <li className="font-semibold mt-2 dropdown p-1 rounded-full  uppercase tracking-widest">
                   <a href="#" onClick={logout}>
                     Logout
@@ -298,7 +232,6 @@ const Navbar = ({ lat, lng, showLatLng }) => {
                   height={120}
                   alt="/"
                 />
-                {/* <div className="">{renderThemeChanger()}</div> */}
                 <div
                   onClick={handleNav}
                   className="rounded-full shadow-lg shadow-gray-300 p-2 cursor-pointer bg-[#efefef]"
@@ -379,9 +312,6 @@ const Navbar = ({ lat, lng, showLatLng }) => {
             </div>
 
             <div className="pt-2 my-1">
-              {/* <p className="uppercase tracking-widest text-[black] dark:text-[#efefef]">
-                Our Contacts
-              </p> */}
               <div className="flex items-center justify-between my-3 w-full sm:w-[100%] dark:text-white">
                 <a href="https://www.facebook.com/kkuenglib" target="_blank">
                   {" "}

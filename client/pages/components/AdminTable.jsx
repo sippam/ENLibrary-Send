@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import AdminSetting from "./AdminSetting";
 import { getData, getExamPeriod } from "../../data/dataUserAndAdmin";

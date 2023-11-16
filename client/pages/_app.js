@@ -1,13 +1,18 @@
 import "@/styles/globals.css";
 import "./components/style.css";
-import { ThemeProvider } from "next-themes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Head from "next/head";
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component }) {
   return (
-    // <ThemeProvider enableSystem={true} attribute="class">
     <>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        ></meta>
+      </Head>
       <Component />
       <ToastContainer
         position="bottom-right"
@@ -23,6 +28,5 @@ export default function App({ Component, pageProps }) {
         theme="light"
       />
     </>
-    // </ThemeProvider>
   );
 }

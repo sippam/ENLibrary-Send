@@ -17,26 +17,26 @@ const Announce = () => {
 
     getDataExam();
   }, []);
-
   const text = [
-    "For engineering students only  " +
-      `|   Booking between ${!examPeriod ? "10:00 AM to 4:00 PM" : "24/7 "}`,
-      "Please stay on the website for the automatically check in for arrival",
-      "Check in much not be longer than 15 minutes or reservation will be cancelled"
-    // "|  Each time of booking must not exceed 3 hours",
+    "Engineering students only",
+    `Booking ${!examPeriod ? "10:00 AM to 4:00 PM" : "24/7 "}`,
+    "Auto check-in on site",
+    "Check-in within 15 minutes, late will be cancelled",
   ];
 
   return (
-    <div className="capitalize flex flex-col items-center mt-16 sm:-mt-20 overflow-hidden">
-      <ul className="flex flex-col justify-start">
-        {text.map((item, index) => (
-          // <a className="list-disc list-inside flex flex-col" key={index}>
-            <p key={index} className="text-red-500 font-sans text-sm sm:text-base md:text-lg">
+    <div className="flex flex-col items-center mt-16 sm:-mt-20 lg:mt-5 overflow-hidden">
+      <ul className="flex flex-col justify-center items-center">
+        {/* <div className="flex flex-col justify-start"> */}
+          {text.map((item, index) => (
+            <p
+              key={index}
+              className="text-blue-800 font-semibold font-sans text-sm sm:text-base md:text-lg"
+            >
               {item}
             </p>
-            // <p className="text-red-500 font-sans text-sm sm:text-base md:text-lg">Must stay on this page when you near library for check-in</p>
-          // </a>
-        ))}
+          ))}
+        {/* </div> */}
       </ul>
     </div>
   );
