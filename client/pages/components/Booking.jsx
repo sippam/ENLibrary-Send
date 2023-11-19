@@ -618,7 +618,7 @@ const Booking = ({ sendDataBook }) => {
     showHaveBooking.someone
   ) {
     setShowHaveBooking({ you: true });
-    toast.error("❌ มีผู้ใช้อื่นได้จองห้องนี้เวลานี้ไปแล้ว", {
+    toast.error("❌ Sorry, this room was already booked", {
       position: "bottom-right",
       autoClose: 10000,
       hideProgressBar: false,
@@ -631,7 +631,7 @@ const Booking = ({ sendDataBook }) => {
     setShowHaveBooking({ someone: false });
   } else if (canBookingAgain.length !== 0 && showHaveBooking.you) {
     setShowHaveBooking({ someone: true });
-    toast.error("❌ คุณได้ทำการจองไปแล้ว", {
+    toast.error("❌ You already booked", {
       position: "bottom-right",
       autoClose: 10000,
       hideProgressBar: false,
