@@ -59,7 +59,7 @@ const YMDSetting = ({ startBooking, periodBooking, onDateChange }) => {
               id="demo-simple-select-label"
               className="dark:text-white"
             >
-              M/D/Y
+              MM/DD/YYYY
             </InputLabel>
           </Tooltip>
 

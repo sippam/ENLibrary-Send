@@ -43,9 +43,9 @@ export default async function addAllCustumer(req, res) {
         <td>
         <h1 style="font-size: 32px; font-weight: bold; text-align: center;">Hi ${name},</h1>
         <h2 style="font-size: 26px; font-weight: bold; text-align: center;">This is an email to confirm your successful booking.</h2>
-        <p style="font-size: 16px; line-height: 24px; margin: 16px 0;"><strong>Reservation name: </strong>${roomName}</p>
+        <p style="font-size: 16px; line-height: 24px; margin: 16px 0;"><strong>Reservation name : </strong>${roomName}</p>
         <p style="font-size: 16px; line-height: 24px; margin: 16px 0; margin-top: -5px;"><strong>Room type and number : </strong>${roomType}, ${roomNumber}</p>
-        <p style="font-size: 16px; line-height: 24px; margin: 16px 0; margin-top: -5px;"><strong>Time: </strong>${date}, ${getTimeFrom} - ${getTimeTo}</p>
+        <p style="font-size: 16px; line-height: 24px; margin: 16px 0; margin-top: -5px;"><strong>Time : </strong>${date}, ${getTimeFrom} - ${getTimeTo}</p>
         </td>
         </tr>
         </tbody>

@@ -63,6 +63,7 @@ const Booking = ({ sendDataBook }) => {
       : (startBookingDay.getTime() - endBookingDay.getTime()) / calOneDay;
 
   const today = getTime();
+  const tomorrow = addDays(getTime(), 1);
   const inLibrary = false; // Track user booking in library or not
   const [adminBTN, setAdminBTN] = useState(false); // Admin allow exam period
   const [clickButton, setClickButton] = useState(false); // User click booking between 2 days
@@ -135,6 +136,7 @@ const Booking = ({ sendDataBook }) => {
     setGetTimeTo(null);
     setTimeTo(null);
     setCheckValid(false);
+
     if (adminBTN) {
       if (
         isEqual(
@@ -151,18 +153,16 @@ const Booking = ({ sendDataBook }) => {
         } else if (getTime().getHours() >= 1 && getTime().getHours() <= 11) {
           setMinTimeInThisDate(
             new Date(
-              `1/1/1111 ${Math.abs(
-                differenceInHours(
-                  today,
-                  new Date(
-                    today.getFullYear(),
-                    today.getMonth(),
-                    today.getDate(),
-                    1,
-                    0,
-                    0
-                  )
-                )
+              `1/1/1111 ${differenceInHours(
+                new Date(
+                  valueDay.getFullYear(),
+                  valueDay.getMonth(),
+                  valueDay.getDate(),
+                  getTime().getHours(),
+                  0,
+                  0
+                ),
+                today
               )}:00 AM`
             )
           );
@@ -174,10 +174,10 @@ const Booking = ({ sendDataBook }) => {
               `1/1/1111 ${
                 differenceInHours(
                   new Date(
-                    today.getFullYear(),
-                    today.getMonth(),
-                    today.getDate(),
-                    23,
+                    valueDay.getFullYear(),
+                    valueDay.getMonth(),
+                    valueDay.getDate(),
+                    getTime().getHours(),
                     0,
                     0
                   ),
@@ -204,19 +204,17 @@ const Booking = ({ sendDataBook }) => {
         if (getTime().getHours() >= 10 && getTime().getHours() <= 11) {
           setMinTimeInThisDate(
             new Date(
-              `1/1/1111 ${
-                differenceInHours(
-                  today,
-                  new Date(
-                    today.getFullYear(),
-                    today.getMonth(),
-                    today.getDate(),
-                    10,
-                    0,
-                    0
-                  )
-                ) + 10
-              }:00 AM`
+              `1/1/1111 ${differenceInHours(
+                new Date(
+                  valueDay.getFullYear(),
+                  valueDay.getMonth(),
+                  valueDay.getDate(),
+                  getTime().getHours(),
+                  0,
+                  0
+                ),
+                today
+              )}:00 AM`
             )
           );
         } else if (getTime().getHours() == 12) {
@@ -225,18 +223,17 @@ const Booking = ({ sendDataBook }) => {
           setMinTimeInThisDate(
             new Date(
               `1/1/1111 ${
-                4 -
                 differenceInHours(
                   new Date(
-                    today.getFullYear(),
-                    today.getMonth(),
-                    today.getDate(),
-                    16,
+                    valueDay.getFullYear(),
+                    valueDay.getMonth(),
+                    valueDay.getDate(),
+                    getTime().getHours(),
                     0,
                     0
                   ),
                   today
-                )
+                ) - 12
               }:00 PM`
             )
           );
@@ -728,7 +725,7 @@ const Booking = ({ sendDataBook }) => {
                       htmlFor="roomType"
                       className="mx-1 block mb-2 text-base font-medium text-gray-900 dark:text-white"
                     >
-                      Number Of Room
+                      Number Of Rooms
                     </label>
                     <select
                       name="Number_Of_Room"
@@ -753,7 +750,7 @@ const Booking = ({ sendDataBook }) => {
                   {/*====================== DATE ========================== */}
                   <div className="text-lg uppercase dark:text-white">
                     <label className="mx-1 block mb-2 text-base font-medium text-gray-900 dark:text-white">
-                      Date &#40;M/D/Y&#41;
+                      Date &#40;MM/DD/YYYY&#41;
                     </label>
 
                     <div className="max-w-lg ">
@@ -797,7 +794,7 @@ const Booking = ({ sendDataBook }) => {
                                 autoComplete="off"
                                 selected={dayTwo}
                                 onChange={hladleDayTwo}
-                                minDate={addDays(startBookingDay, 1)}
+                                minDate={tomorrow}
                                 maxDate={addDays(startBookingDay, period)}
                                 filterDate={weekend}
                                 disabled={!canSelectDateTime}
@@ -933,7 +930,7 @@ const Booking = ({ sendDataBook }) => {
                       ) > 3)) && (
                     <div className=" mx-1 block mb-2 text-red-400 -mt-3 text-sm">
                       Max 3 Hours
-                    </div>          
+                    </div>
                   )}
                   {((userSwitchBookTwoDay == false &&
                     checkTime < 1 &&

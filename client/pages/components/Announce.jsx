@@ -20,6 +20,7 @@ const Announce = () => {
   const text = [
     "Engineering students only",
     `Booking ${!examPeriod ? "10:00 AM to 4:00 PM" : "24/7 "}`,
+    "You can booking only once a time",
     "Auto check-in on site",
     "Check-in within 15 minutes, late will be cancelled",
   ];
