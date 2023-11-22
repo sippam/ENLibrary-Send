@@ -30,17 +30,6 @@ const sso = () => {
       const position = searchParams.get("position");
       const cn = searchParams.get("cn");
 
-      // const decodedEmail = Buffer.from(email, "base64").toString("utf-8");
-      // const decodedTitle = Buffer.from(title, "base64").toString("utf-8");
-      // const decodedName = Buffer.from(name, "base64").toString("utf-8");
-      // const decodedSurname = Buffer.from(surname, "base64").toString("utf-8");
-      // const decodedType = Buffer.from(type, "base64").toString("utf-8");
-      // const decodedAddress = Buffer.from(address, "base64").toString("utf-8");
-      // const decodedFaculty = Buffer.from(faculty, "base64").toString("utf-8");
-      // const decodedPosition = Buffer.from(position, "base64").toString("utf-8");
-      // const decodedCn = Buffer.from(cn, "base64").toString("utf-8");
-
-      // console.log(decodedEmail);
       const dataForm = {
         email: email,
         title: title,

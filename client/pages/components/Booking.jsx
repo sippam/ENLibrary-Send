@@ -649,12 +649,12 @@ const Booking = ({ sendDataBook }) => {
   }
   // ====================================================================================================
 
-  const checkEN =
-    session &&
-    Buffer.from(session.faculty, "base64").toString("utf-8") ==
-      "คณะวิศวกรรมศาสตร์"
-      ? false
-      : true;
+  // const checkEN =
+  //   session &&
+  //   Buffer.from(session.faculty, "base64").toString("utf-8") ==
+  //     "คณะวิศวกรรมศาสตร์"
+  //     ? false
+  //     : true;
 
   return (
     <div className="w-full h-full lg:h-screen dark:bg-[#282a36] uppercase">
@@ -690,7 +690,7 @@ const Booking = ({ sendDataBook }) => {
                     placeholder="Your Reservation's Name (Max length 15)"
                     onChange={setNameOfRoom}
                     value={roomName}
-                    disabled={checkEN}
+                    // disabled={checkEN}
                   />
                   {roomName && roomName.trim().length > 15 && (
                     <div className=" mx-1 block mb-2 text-red-400 -mt-3 text-sm">
