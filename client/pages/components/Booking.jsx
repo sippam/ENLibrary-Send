@@ -138,6 +138,7 @@ const Booking = ({ sendDataBook }) => {
     setCheckValid(false);
 
     if (adminBTN) {
+      // When admin toggle exam period the form of to day is been YYYY/MM/DD 0,0,0
       if (
         isEqual(
           new Date(
@@ -190,6 +191,7 @@ const Booking = ({ sendDataBook }) => {
       } else {
         setMinTimeInThisDate(new Date("1/1/1111 12:00 AM"));
       }
+      // Normal day form of to day is YYYY/MM/DD today.Hours, today.Minutes, today.Seconds
     } else {
       if (
         isEqual(
@@ -201,19 +203,21 @@ const Booking = ({ sendDataBook }) => {
           new Date(today.getFullYear(), today.getMonth(), today.getDate())
         )
       ) {
-        if (getTime().getHours() >= 10 && getTime().getHours() <= 11) {
+        if (getTime().getHours() >= 0 && getTime().getHours() <= 9) {
+          setMinTimeInThisDate(new Date("1/1/1111 10:00 AM"));
+        } else if (getTime().getHours() >= 10 && getTime().getHours() <= 11) {
           setMinTimeInThisDate(
             new Date(
               `1/1/1111 ${differenceInHours(
+                today,
                 new Date(
                   valueDay.getFullYear(),
                   valueDay.getMonth(),
                   valueDay.getDate(),
-                  getTime().getHours(),
+                  0,
                   0,
                   0
-                ),
-                today
+                )
               )}:00 AM`
             )
           );
@@ -224,15 +228,15 @@ const Booking = ({ sendDataBook }) => {
             new Date(
               `1/1/1111 ${
                 differenceInHours(
+                  today,
                   new Date(
                     valueDay.getFullYear(),
                     valueDay.getMonth(),
                     valueDay.getDate(),
-                    getTime().getHours(),
+                    0,
                     0,
                     0
-                  ),
-                  today
+                  )
                 ) - 12
               }:00 PM`
             )
