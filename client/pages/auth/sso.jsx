@@ -29,7 +29,7 @@ const sso = () => {
       const faculty = searchParams.get("faculty");
       const position = searchParams.get("position");
       const cn = searchParams.get("cn");
-
+      
       const dataForm = {
         email: email,
         title: title,

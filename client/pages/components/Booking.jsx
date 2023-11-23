@@ -6,7 +6,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import uuid from "react-uuid";
 import Axios from "axios";
 import { addDays } from "date-fns";
-// import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
 import {
   typeRoom,
