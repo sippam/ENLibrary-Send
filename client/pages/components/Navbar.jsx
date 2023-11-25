@@ -20,7 +20,6 @@ const Navbar = ({ lat, lng, showLatLng }) => {
   const [isCopied, setIsCopied] = useState(false);
   const [shadow, setShadow] = useState(false);
 
-
   // ========== Get admin data in database ==========
   const [dataForm, setDataForm] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -127,9 +126,10 @@ const Navbar = ({ lat, lng, showLatLng }) => {
             <ul className="hidden md:flex p-10">
               {/* //////////////////////// */}
               {showLatLng && (
-                <ul className="ml-12 font-semibold text-md tracking-widest hover:scale-100 ease-in duration-200">
+                <ul className="pl-12 pr-6 font-semibold text-md tracking-widest hover:scale-100 ease-in duration-200">
                   <li className="flex items-center hover:scale-100 ease-in duration-200 dark:text-[#fcfcfc]">
-                    <span className="uppercase">Your location</span> <IoMdArrowDropdown />
+                    <span className="uppercase">Your location</span>{" "}
+                    <IoMdArrowDropdown />
                     <ul className="dropdown mt-24">
                       <li>
                         <p>lat : {lat}</p>
@@ -143,7 +143,7 @@ const Navbar = ({ lat, lng, showLatLng }) => {
 
               {isAdmin && (
                 <Link href="../components/admin" as="/admin">
-                  <li className="ml-12 font-semibold text-md tracking-widest uppercase hover:border-b hover:scale-105 ease-in duration-200 hover:text-[#f9a826] dark:text-[#fcfcfc]">
+                  <li className="pl-6 pr-6 font-semibold text-md tracking-widest uppercase hover:scale-100 ease-in duration-200 hover:text-[#f9a826] dark:text-[#fcfcfc]">
                     {" "}
                     Admin{" "}
                   </li>
@@ -151,13 +151,13 @@ const Navbar = ({ lat, lng, showLatLng }) => {
               )}
               {/* //////////////////////// */}
               <Link href="/">
-                <li className="ml-12 font-semibold text-md tracking-widest uppercase  hover:scale-100 ease-in duration-200 hover:text-[#f9a826] dark:text-[#fcfcfc]">
+                <li className="pl-6 pr-6 font-semibold text-md tracking-widest uppercase  hover:scale-100 ease-in duration-200 hover:text-[#f9a826] dark:text-[#fcfcfc]">
                   {" "}
                   HOME{" "}
                 </li>
               </Link>
 
-              <ul className="ml-12 font-semibold text-md tracking-widest hover:scale-100 ease-in duration-200">
+              <ul className="pl-6 pr-6 font-semibold text-md tracking-widest hover:scale-100 ease-in duration-200">
                 <li>
                   <Link legacyBehavior href="/#book">
                     <a className="hover:text-[#f9a826] flex items-center hover:scale-100 ease-in duration-200 dark:text-[#fcfcfc]">
@@ -349,7 +349,6 @@ const Navbar = ({ lat, lng, showLatLng }) => {
                 </a>
               </div>
             </div>
-            
           </div>
         </div>
       </div>

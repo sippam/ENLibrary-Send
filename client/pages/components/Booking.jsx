@@ -38,7 +38,7 @@ const Booking = ({ sendDataBook }) => {
   const checkTime = getTimeTo - getTimeFrom; // Check time hours between 1-3 hours
   const [checkValid, setCheckValid] = useState(false); // Check all value that filled
   const [canSelectDateTime, setCanSelectDateTime] = useState(false); // If useer select room of number then user can select date and time to booking
-
+  const [canSelectDateTimeBetweenDay, setCanSelectDateTimeBetweenDay] = useState(false); // If user select room of number then user can select date and time to booking between 2 days
   // Collect day from user submit form
   const [day, setDay] = useState(null);
   const [getDay, setGetDay] = useState(null);
@@ -62,7 +62,6 @@ const Booking = ({ sendDataBook }) => {
       : (startBookingDay.getTime() - endBookingDay.getTime()) / calOneDay;
 
   const today = getTime();
-  const tomorrow = addDays(getTime(), 1);
   const inLibrary = false; // Track user booking in library or not
   const [adminBTN, setAdminBTN] = useState(false); // Admin allow exam period
   const [clickButton, setClickButton] = useState(false); // User click booking between 2 days
@@ -82,6 +81,7 @@ const Booking = ({ sendDataBook }) => {
   const [userSwitchBookTwoDay, setUserSwitchBookTwoDay] = useState(false);
   const handleToggle = (event) => {
     setUserSwitchBookTwoDay(event.target.checked);
+    setDayTwo(null);
   };
 
   // ========== Set weekend can't booking and set exam period that can booking ==========
@@ -120,6 +120,7 @@ const Booking = ({ sendDataBook }) => {
 
   // Collect data user select day
   const selectDay = (valueDay) => {
+    setCanSelectDateTimeBetweenDay(true)
     setCheckSelectDay(true);
     setCollectDay(
       `${valueDay.getFullYear()}/${
@@ -797,10 +798,10 @@ const Booking = ({ sendDataBook }) => {
                                 autoComplete="off"
                                 selected={dayTwo}
                                 onChange={hladleDayTwo}
-                                minDate={tomorrow}
+                                minDate={addDays(day, 1)}
                                 maxDate={addDays(startBookingDay, period)}
                                 filterDate={weekend}
-                                disabled={!canSelectDateTime}
+                                disabled={!canSelectDateTimeBetweenDay}
                                 datepicker
                               />
                               <div className="flex -mt-3 md:mt-0">
@@ -896,7 +897,7 @@ const Booking = ({ sendDataBook }) => {
                         onChange={changeTimeTo}
                         showTimeSelect
                         showTimeSelectOnly
-                        minTime={minTime}
+                        minTime={minTimeInThisDate}
                         maxTime={maxTime}
                         timeIntervals={60}
                         timeCaption="Time"
