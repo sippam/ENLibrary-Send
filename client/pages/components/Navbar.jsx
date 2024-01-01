@@ -12,7 +12,8 @@ import { useEffect } from "react";
 
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import adminList from "../../data/adminList.json";
+import { getRole, getUserData } from "@/data/dataUserAndAdmin";
+import Cookies from "js-cookie";
 
 const Navbar = ({ lat, lng, showLatLng }) => {
   const router = useRouter();
@@ -24,27 +25,27 @@ const Navbar = ({ lat, lng, showLatLng }) => {
   const [dataForm, setDataForm] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  async function allowAdmin() {
-    if (
-      adminList.email.includes(
-        Buffer.from(
-          JSON.parse(localStorage.getItem("dataForm")).email,
-          "base64"
-        ).toString("utf-8")
-      )
-    ) {
-      setIsAdmin(true);
-    }
+  async function allowAdmin(token) {
+    const boolean = await getRole(token);
+    setIsAdmin(boolean);
+  }
+
+  async function getData(token) {
+    const userData = await getUserData(token);
+    setDataForm(userData);
   }
 
   useEffect(() => {
-    setDataForm(JSON.parse(localStorage.getItem("dataForm")));
-    allowAdmin();
+    const token = Cookies.get("token");
+    if (token) {
+      allowAdmin(token);
+      getData(token);
+    }
   }, []);
   // =================================================
 
   const logout = async () => {
-    localStorage.removeItem("dataForm");
+    Cookies.remove("token");
     toast.success("Successfully Logout!", {
       position: "bottom-right",
       autoClose: 6000,
@@ -192,10 +193,7 @@ const Navbar = ({ lat, lng, showLatLng }) => {
               <div className="w-36">
                 <a className="font-bold text-sm ">
                   {" "}
-                  {Buffer.from(
-                    JSON.parse(localStorage.getItem("dataForm")).cn,
-                    "base64"
-                  ).toString("utf-8")}
+                  {Buffer.from(dataForm.cn, "base64").toString("utf-8")}
                 </a>
                 <li className="font-semibold mt-2 dropdown p-1 rounded-full  uppercase tracking-widest">
                   <a href="#" onClick={logout}>
@@ -241,23 +239,14 @@ const Navbar = ({ lat, lng, showLatLng }) => {
               </div>
               <div className="mt-6 border-b border-gray-300 my-1 dark:text-[#efefef]">
                 <a className="text-lg my-1 ">
-                  {Buffer.from(
-                    JSON.parse(localStorage.getItem("dataForm")).name,
-                    "base64"
-                  ).toString("utf-8")}
+                  {Buffer.from(dataForm.name, "base64").toString("utf-8")}
                 </a>
                 <a className="text-lg my-1 ml-1">
-                  {Buffer.from(
-                    JSON.parse(localStorage.getItem("dataForm")).surname,
-                    "base64"
-                  ).toString("utf-8")}
+                  {Buffer.from(dataForm.surname, "base64").toString("utf-8")}
                 </a>
                 <p className="w-[85%] md:w-[90%] py-4 uppercase text-lg">
                   <a className="text-lg my-1 ">
-                    {Buffer.from(
-                      JSON.parse(localStorage.getItem("dataForm")).cn,
-                      "base64"
-                    ).toString("utf-8")}
+                    {Buffer.from(dataForm.cn, "base64").toString("utf-8")}
                   </a>
                 </p>
               </div>

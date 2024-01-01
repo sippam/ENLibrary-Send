@@ -8,7 +8,7 @@ import { useMediaQuery } from "@mui/material";
 import CustomTextInCalendar from "./CustomTextInCalendar";
 import { addDays } from "date-fns";
 import Swal from "sweetalert2";
-import { getExamPeriod } from "@/data/dataUserAndAdmin";
+import { getExamPeriod, deleteUserRoom } from "@/data/dataUserAndAdmin";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -17,10 +17,9 @@ const CalendarTable = ({
   year,
   month,
   date,
-  dataShow,
+  dataAllRoomServe,
   isAdmin,
 }) => {
-
   const isMediumScreen = useMediaQuery("(min-width: 768px)");
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
   const isExtraLargeScreen = useMediaQuery("(min-width: 1280px)");
@@ -28,9 +27,8 @@ const CalendarTable = ({
   const [isEnable, setIsEnable] = useState(false); // Check exam period enable by admin
 
   const checkExamPeriodEnable = async () => {
-    await getExamPeriod((data) => {
-      setIsEnable(data[0].isEnable);
-    });
+    const data = await getExamPeriod();
+    setIsEnable(data[0]?.isEnable);
   };
   useEffect(() => {
     checkExamPeriodEnable();
@@ -39,16 +37,16 @@ const CalendarTable = ({
   if (!year && !month && !date) {
     return <div>Error: Data not available.</div>;
   }
-
+  console.log("dataAllRoomServe", dataAllRoomServe);
   const userData = isConference
-    ? dataShow.length != 0
-      ? dataShow.flatMap((data) => {
+    ? dataAllRoomServe.length != 0
+      ? dataAllRoomServe.flatMap((data) => {
           if (data.roomType === "Conference") {
             if (data.between2days) {
               // When between2days is true, return an array with two events
               return [
                 {
-                  id: data._id,
+                  id: data.id,
                   start: new Date(
                     data.year,
                     data.month - 1,
@@ -71,16 +69,17 @@ const CalendarTable = ({
                     roomName: data.roomName,
                     timeFrom: data.timeFrom,
                     timeTo: data.timeTo,
-                    email: data.email,
-                    title: Buffer.from(data.title, "base64").toString(),
-                    firstname: Buffer.from(data.firstname, "base64").toString(),
-                    surname: Buffer.from(data.surname, "base64").toString(),
-                    cn: Buffer.from(data.cn, "base64").toString(),
                     status: data.inLibrary,
+                    email: data.email,
+                    title: data.title,
+                    name: data.name,
+                    surname: data.surname,
+                    cn: data.cn,
+                    faculty: data.faculty,
                   },
                 },
                 {
-                  id: data._id,
+                  id: data.id,
                   start: addDays(
                     new Date(data.year, data.month - 1, data.day, 0),
                     1
@@ -97,12 +96,13 @@ const CalendarTable = ({
                     roomName: data.roomName,
                     timeFrom: data.timeFrom,
                     timeTo: data.timeTo,
-                    email: data.email,
-                    title: Buffer.from(data.title, "base64").toString(),
-                    firstname: Buffer.from(data.firstname, "base64").toString(),
-                    surname: Buffer.from(data.surname, "base64").toString(),
-                    cn: Buffer.from(data.cn, "base64").toString(),
                     status: data.inLibrary,
+                    email: data.email,
+                    title: data.title,
+                    name: data.name,
+                    surname: data.surname,
+                    cn: data.cn,
+                    faculty: data.faculty,
                   },
                 },
               ];
@@ -110,7 +110,7 @@ const CalendarTable = ({
             // When between2days is false, return a single event
             return [
               {
-                id: data._id,
+                id: data.id,
                 start: new Date(
                   data.year,
                   data.month - 1,
@@ -126,12 +126,13 @@ const CalendarTable = ({
                   roomName: data.roomName,
                   timeFrom: data.timeFrom,
                   timeTo: data.timeTo,
-                  email: data.email,
-                  title: Buffer.from(data.title, "base64").toString(),
-                  firstname: Buffer.from(data.firstname, "base64").toString(),
-                  surname: Buffer.from(data.surname, "base64").toString(),
-                  cn: Buffer.from(data.cn, "base64").toString(),
                   status: data.inLibrary,
+                  email: data.email,
+                  title: data.title,
+                  name: data.name,
+                  surname: data.surname,
+                  cn: data.cn,
+                  faculty: data.faculty,
                 },
               },
             ];
@@ -139,14 +140,14 @@ const CalendarTable = ({
         })
       : []
     : // .filter(Boolean)
-    dataShow.length != 0
-    ? dataShow.flatMap((data) => {
+    dataAllRoomServe.length != 0
+    ? dataAllRoomServe.flatMap((data) => {
         if (data.roomType === "Meeting") {
           if (data.between2days) {
             // When between2days is true, return an array with two events
             return [
               {
-                id: data._id,
+                id: data.id,
                 start: new Date(
                   data.year,
                   data.month - 1,
@@ -162,16 +163,17 @@ const CalendarTable = ({
                   roomName: data.roomName,
                   timeFrom: data.timeFrom,
                   timeTo: data.timeTo,
-                  email: data.email,
-                  title: Buffer.from(data.title, "base64").toString(),
-                  firstname: Buffer.from(data.firstname, "base64").toString(),
-                  surname: Buffer.from(data.surname, "base64").toString(),
-                  cn: Buffer.from(data.cn, "base64").toString(),
                   status: data.inLibrary,
+                  email: data.email,
+                  title: data.title,
+                  name: data.name,
+                  surname: data.surname,
+                  cn: data.cn,
+                  faculty: data.faculty,
                 },
               },
               {
-                id: data._id,
+                id: data.id,
                 start: addDays(
                   new Date(data.year, data.month - 1, data.day, 0),
                   1
@@ -188,12 +190,13 @@ const CalendarTable = ({
                   roomName: data.roomName,
                   timeFrom: data.timeFrom,
                   timeTo: data.timeTo,
-                  email: data.email,
-                  title: Buffer.from(data.title, "base64").toString(),
-                  firstname: Buffer.from(data.firstname, "base64").toString(),
-                  surname: Buffer.from(data.surname, "base64").toString(),
-                  cn: Buffer.from(data.cn, "base64").toString(),
                   status: data.inLibrary,
+                  email: data.email,
+                  title: data.title,
+                  name: data.name,
+                  surname: data.surname,
+                  cn: data.cn,
+                  faculty: data.faculty,
                 },
               },
             ];
@@ -201,7 +204,7 @@ const CalendarTable = ({
           // When between2days is false, return a single event
           return [
             {
-              id: data._id,
+              id: data.id,
               start: new Date(
                 data.year,
                 data.month - 1,
@@ -217,12 +220,13 @@ const CalendarTable = ({
                 roomName: data.roomName,
                 timeFrom: data.timeFrom,
                 timeTo: data.timeTo,
-                email: data.email,
-                title: Buffer.from(data.title, "base64").toString(),
-                firstname: Buffer.from(data.firstname, "base64").toString(),
-                surname: Buffer.from(data.surname, "base64").toString(),
-                cn: Buffer.from(data.cn, "base64").toString(),
                 status: data.inLibrary,
+                email: data.email,
+                title: data.title,
+                name: data.name,
+                surname: data.surname,
+                cn: data.cn,
+                faculty: data.faculty,
               },
             },
           ];
@@ -267,27 +271,14 @@ const CalendarTable = ({
   };
 
   // ========== Delete booking ==========
-  const handleDeleteBooking = async (
-    id,
-    date,
-    email,
-    roomType,
-    roomNumber,
-    timeFrom,
-    timeTo
-  ) => {
+  const handleDeleteBooking = async (id) => {
     Swal.fire({
       title: "Do you want to delete this reserve?",
       showCancelButton: true,
       confirmButtonText: "Yes",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await Axios.delete(`/api/add?id=${id}`);
-        await Axios.delete(
-          `/api/addAllCustomer?date=${date}&email=${email}&roomType=${roomType}&roomNumber=${roomNumber}&timeFrom=${timeFrom}&timeTo=${timeTo}`
-        ).then(() => {
-          window.location.reload();
-        });
+        deleteUserRoom(id);
       }
     });
   };
@@ -382,7 +373,7 @@ const CalendarTable = ({
             <div>
               <span className="font-bold">Booked by : </span>
               {data.data.title}
-              {data.data.firstname} {data.data.surname}
+              {data.data.name} {data.data.surname}
             </div>
             <div>
               <span className="font-bold">ID : </span>
@@ -390,20 +381,10 @@ const CalendarTable = ({
             </div>
             <div>
               <span className="font-bold">Email : </span>
-              {Buffer.from(data.data.email, "base64").toString("utf-8")}
+              {data.data.email}
             </div>
             <button
-              onClick={() =>
-                handleDeleteBooking(
-                  data.id,
-                  data.data.date,
-                  data.data.email,
-                  data.data.roomType,
-                  data.data.roomNumber,
-                  data.data.timeFrom,
-                  data.data.timeTo
-                )
-              }
+              onClick={() => handleDeleteBooking(data.id)}
               className="bg-red-500"
             >
               Delete

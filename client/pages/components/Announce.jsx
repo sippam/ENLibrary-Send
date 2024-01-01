@@ -7,9 +7,8 @@ const Announce = () => {
   useEffect(() => {
     const getDataExam = async () => {
       try {
-        await getExamPeriod((data) => {
-          setExamPeriod(data[0].isEnable);
-        });
+        const data = await getExamPeriod();
+        setExamPeriod(data[0]?.isEnable);
       } catch (error) {
         console.error("Error fetching exam period:", error);
       }
@@ -29,14 +28,14 @@ const Announce = () => {
     <div className="flex flex-col items-center mt-16 sm:-mt-20 lg:mt-5 overflow-hidden">
       <ul className="flex flex-col justify-center items-center">
         {/* <div className="flex flex-col justify-start"> */}
-          {text.map((item, index) => (
-            <p
-              key={index}
-              className="text-blue-800 font-semibold font-sans text-sm sm:text-base md:text-lg"
-            >
-              {item}
-            </p>
-          ))}
+        {text.map((item, index) => (
+          <p
+            key={index}
+            className="text-blue-800 font-semibold font-sans text-sm sm:text-base md:text-lg"
+          >
+            {item}
+          </p>
+        ))}
         {/* </div> */}
       </ul>
     </div>

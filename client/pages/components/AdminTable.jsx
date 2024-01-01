@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import AdminSetting from "./AdminSetting";
-import { getData, getExamPeriod } from "../../data/dataUserAndAdmin";
+import {
+  getData,
+  getExamPeriod,
+  getRoomReserve,
+} from "../../data/dataUserAndAdmin";
 import { getTime } from "../../data/localTimezone";
 import { addDays } from "date-fns";
 import Login from "./Login";
@@ -9,10 +13,7 @@ import ConOrMeeting from "./ConOrMeeting";
 import YMDSetting from "./YMDSetting";
 import CalendarTable from "./CalendarTable";
 
-const AdminTable = (admin) => {
-  // ========== Check admin login ==========
-  const isAdmin = admin.admin;
-
+const AdminTable = () => {
   // ========== Calculate how many day to select in dropdown ==========
   const calOneDay = 1000 * 3600 * 24;
   const [startBooking, setStartBooking] = useState(getTime());
@@ -27,23 +28,21 @@ const AdminTable = (admin) => {
   const [dataShow, setDataShow] = useState([]);
 
   const getUserData = async () => {
-    await getData((data) => {
-      setDataShow(data);
-    });
+    const allRoomReserve = await getRoomReserve();
+    setDataShow(allRoomReserve);
   };
   // =================================================
 
   // ========== Get exam period from database ==========
   async function getExamDay() {
-    await getExamPeriod((data) => {
-      if (data[0].isEnable == true) {
-        setStartBooking(new Date(data[0].examStart));
-        setEndBooking(new Date(data[0].examEnd));
-      } else {
-        setStartBooking(getTime());
-        setEndBooking(addDays(getTime(), 2));
-      }
-    })
+    const data = await getExamPeriod();
+    if (data[0]?.isEnable == true) {
+      setStartBooking(new Date(data[0].examStart));
+      setEndBooking(new Date(data[0].examEnd));
+    } else {
+      setStartBooking(getTime());
+      setEndBooking(addDays(getTime(), 2));
+    }
   }
   // ===================================================
 
@@ -67,19 +66,21 @@ const AdminTable = (admin) => {
   // ========== Select type room ==========
   const [alignment, setAlignment] = useState("Conference");
 
-  const changeTypeRoom = (event, newAlignment) => {
+  const changeTypeRoom = (newAlignment) => {
     setAlignment(newAlignment);
   };
-  // ======================================
+  // =================================================================================
 
   // ========== Filter data to show when select day in dropdown and select type room ==========
-  const match = alignment == "Conference" ? true : false;
+  const match = alignment == "Conference" ? true : false; // Check user toggle to Conference or Meeting
   // ========================================================================================
+  const isAdmin = true; // Check admin
+
   if (isAdmin) {
     return (
       <div className="relative max-w-screen-[100%] mx-auto dark:bg-[#282a36]">
         <div className="flex px-0 justify-end items-center dark:bg-[#282a36]">
-          <AdminSetting admin={admin.admin} />
+          <AdminSetting admin={isAdmin} />
         </div>
 
         <div className="flex px-0 justify-center md:justify-end items-center p-3 dark:bg-[#282a36] ">
@@ -97,7 +98,7 @@ const AdminTable = (admin) => {
             year={year}
             month={month}
             date={date}
-            dataShow={dataShow}
+            dataAllRoomServe={dataShow}
             isAdmin={isAdmin}
           />
         </div>

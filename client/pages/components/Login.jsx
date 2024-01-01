@@ -10,12 +10,12 @@ import Booking from "./Booking";
 import Footer from "./Footer";
 import Request from "./request";
 import UserTable from "./UserTable";
-import { getData } from "../../data/dataUserAndAdmin";
 import { getTime } from "../../data/localTimezone";
 import Announce from "./Announce";
-
+import Cookies from "js-cookie";
+import { getUserDataRoom } from "../../data/dataUserAndAdmin";
+import useInterval from "../hooks/useInterval";
 const Login = () => {
-
   const [session, setSession] = useState(null);
 
   // ========== Get user position ==========
@@ -39,17 +39,15 @@ const Login = () => {
   const [user, setUser] = useState([]);
 
   // ========== Get user data in database ==========
-  const getUserData = async (storedData) => {
-    await getData((data) => {
-      let users = data.filter(
-        (data) =>
-          Number(data.day) === today &&
-          data.timeFrom === thisHour &&
-          Buffer.from(data.email, "base64").toString("utf-8") ===
-            Buffer.from(storedData.email, "base64").toString("utf-8")
-      );
-      setUser(users);
-    });
+  const getUserDataFunc = async (token) => {
+    const haveRoom = await getUserDataRoom(token);
+    const users =
+      haveRoom != undefined && haveRoom.length != 0
+        ? haveRoom.filter(
+            (data) => Number(data.day) === today && data.timeFrom === thisHour
+          )
+        : [];
+    setUser(users);
   };
 
   function checkLocationLibrary(data, x, y) {
@@ -73,15 +71,26 @@ const Login = () => {
         y <= 102.82387015776939 &&
         startHours <= getTime() <= endHours
       ) {
-        updateStutsInLibrary(data[0]._id, true);
+        updateStutsInLibrary(data[0].id, true);
       }
     }
   }
 
   function updateStutsInLibrary(id, stuts) {
-    Axios.put(`/api/add?id=${id}`, {
-      inLibrary: stuts,
-    });
+    Axios.put(
+      `/api/updateStatus`,
+      {
+        id: id,
+        inLibrary: stuts,
+      },
+      {
+        params: { token: session },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: process.env.NEXT_PUBLIC_TOKEN,
+        },
+      }
+    );
   }
   // ===============================================================================================
 
@@ -91,8 +100,14 @@ const Login = () => {
     if (data.length > 0) {
       checkLocationLibrary(data, latitude, longitude);
     }
-    setTimeout(callAllFunc, 60 * 1000, data);
   };
+
+  useInterval(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      callAllFunc(user);
+    }
+  }, 5 * 1000);
 
   useEffect(() => {
     callAllFunc(user);
@@ -102,29 +117,44 @@ const Login = () => {
   // ========== Send trigger when user had ben booking it will update in request and table ==========
   const [sendTriggerBooking, setSendTriggerBooking] = useState(false);
 
-  const ActiveTriggerBook = (trigger) => {
-    setSendTriggerBooking(trigger);
+  const ActiveTriggerBook = () => {
+    setSendTriggerBooking(!sendTriggerBooking);
+  };
+
+  const [sendTriggerDelete, setSendTriggerDelete] = useState(false);
+  const ActiveTriggerDelete = () => {
+    setSendTriggerDelete(!sendTriggerDelete);
   };
   // ===============================================================================================
 
   useEffect(() => {
-    const storedData = localStorage.getItem("dataForm");
-    if (storedData) {
-      setSession(JSON.parse(storedData));
-      getUserData(JSON.parse(storedData));
-    }
+    const token = Cookies.get("token");
+    setSession(token);
+    getUserDataFunc(token);
+  }, []);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    setSession(token);
+    getUserDataFunc(token);
   }, [sendTriggerBooking]);
 
   return (
     <>
       {session ? (
         <>
-          <Navbar lat={latitude} lng={longitude} showLatLng={true}/>
+          <Navbar lat={latitude} lng={longitude} showLatLng={true} />
           <Main />
           <Announce />
           <UserTable triggerbook={sendTriggerBooking} />
-          <Booking sendDataBook={ActiveTriggerBook} />
-          <Request triggerbook={sendTriggerBooking} />
+          <Booking
+            sendDataBook={ActiveTriggerBook}
+            tiggerDelete={sendTriggerDelete}
+          />
+          <Request
+            triggerbook={sendTriggerBooking}
+            deleteRoom={ActiveTriggerDelete}
+          />
           <Footer />
         </>
       ) : (

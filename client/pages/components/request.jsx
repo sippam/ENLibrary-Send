@@ -1,57 +1,50 @@
-import Axios from "axios";
 import React, { useEffect, useState } from "react";
-import { getData } from "../../data/dataUserAndAdmin";
+import { getUserDataRoom,deleteUserRoom } from "../../data/dataUserAndAdmin";
+import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 
-const request = (triggerbook) => {
-  // ========== Get user data in database ==========
-  const [email, setEmail] = useState("");
-  const [dataShow, setDataShow] = useState([]);
+const request = ({ triggerbook, deleteRoom }) => {
   const router = useRouter();
+  // ========== Get user data in database ==========
+  const [dataShow, setDataShow] = useState([]);
 
-  const getUserData = async () => {
-    await getData((data) => {
-      setDataShow(data);
-    });
+  const getUserDataFunc = async (token) => {
+    const userData = await getUserDataRoom(token);
+    setDataShow(userData);
   };
 
   useEffect(() => {
-    getUserData();
-    setEmail(
-      Buffer.from(
-        JSON.parse(localStorage.getItem("dataForm")).email,
-        "base64"
-      ).toString("utf-8")
-    );
+    const token = Cookies.get("token");
+    if (token) {
+      getUserDataFunc(token);
+    } else {
+      router.push("/");
+    }
   }, [triggerbook]);
 
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      getUserDataFunc(token);
+    } else {
+      router.push("/");
+    }
+  }, []);
   // ===============================================
+  
   // ========== Delete booking ==========
-  const deleteBooking = async (
-    id,
-    date,
-    email,
-    roomType,
-    roomNumber,
-    timeFrom,
-    timeTo
-  ) => {
-    await Axios.delete(`/api/add?id=${id}`).then(() => {
-      setDataShow(
-        dataShow.filter((val) => {
-          return val._id != id;
-        })
-      );
-    });
-    await Axios.delete(
-      `/api/addAllCustomer?date=${date}&email=${email}&roomType=${roomType}&roomNumber=${roomNumber}&timeFrom=${timeFrom}&timeTo=${timeTo}`
-    );
-    router.reload();
+  const deleteBooking = async (id) => {
+    deleteRoom();
+    setDataShow([]);
+    deleteUserRoom(id);
   };
   // ====================================
 
   return (
-    <div id="list" className="pt-[0px] sm:pt-[0px] py-72 lg:py-52 xl:py-20 dark:bg-[#282a36]">
+    <div
+      id="list"
+      className="pt-[0px] sm:pt-[0px] py-72 lg:py-52 xl:py-20 dark:bg-[#282a36]"
+    >
       <div className="w-full lg:h-[90px]  text-center">
         <div className="max-w-[100%] w-[95%] h-full mx-auto p-2 justify-center items-center">
           <h2 className="md-auto tracking-wide py-6 text-center dark:text-[white]">
@@ -73,44 +66,33 @@ const request = (triggerbook) => {
               <tbody>
                 {dataShow.length != 0 &&
                   dataShow.map((val, key) => {
-                    if (
-                      Buffer.from(val.email, "base64").toString("utf-8") ==
-                      email
-                    ) {
-                      return (
-                        <tr
-                          className="bg-white border dark:bg-gray-800 dark:border-gray-700"
-                          key={key}
-                        >
-                          <th className="px-6 py-4">{val.date}</th>
-                          <th className="px-6 py-4">{val.roomName}</th>
-                          <th className="px-6 py-4">{val.roomType}</th>
-                          <th className="px-6 py-4">{val.roomNumber}</th>
-                          <th className="px-6 py-4">
-                            {val.timeFrom}:00 - {val.timeTo}:00
-                          </th>
-                          <th className="px-6 py-4">{val.inLibrary ? "Check" : "Uncheck"}</th>
-                          <th className="px-6 py-4">
-                            <button
-                              className="px-2 py-1 rounded-full uppercase cursor-pointer hover:scale-[95%] ease-in duration-100 text-base tracking-widest font-semibold text-white shadow-gray-400 dark:shadow-[black] shadow-xl bg-gradient-to-r from-[#FF0000] to-[#263238]"
-                              onClick={() => {
-                                deleteBooking(
-                                  val._id,
-                                  val.date,
-                                  val.email,
-                                  val.roomType,
-                                  val.roomNumber,
-                                  val.timeFrom,
-                                  val.timeTo
-                                );
-                              }}
-                            >
-                              Cancel
-                            </button>
-                          </th>
-                        </tr>
-                      );
-                    }
+                    return (
+                      <tr
+                        className="bg-white border dark:bg-gray-800 dark:border-gray-700"
+                        key={key}
+                      >
+                        <th className="px-6 py-4">{val.date}</th>
+                        <th className="px-6 py-4">{val.roomName}</th>
+                        <th className="px-6 py-4">{val.roomType}</th>
+                        <th className="px-6 py-4">{val.roomNumber}</th>
+                        <th className="px-6 py-4">
+                          {val.timeFrom}:00 - {val.timeTo}:00
+                        </th>
+                        <th className="px-6 py-4">
+                          {val.inLibrary ? "Check" : "Uncheck"}
+                        </th>
+                        <th className="px-6 py-4">
+                          <button
+                            className="px-2 py-1 rounded-full uppercase cursor-pointer hover:scale-[95%] ease-in duration-100 text-base tracking-widest font-semibold text-white shadow-gray-400 dark:shadow-[black] shadow-xl bg-gradient-to-r from-[#FF0000] to-[#263238]"
+                            onClick={() => {
+                              deleteBooking(val.id);
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </th>
+                      </tr>
+                    );
                   })}
               </tbody>
             </table>

@@ -9,7 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { getAllCustomer } from "../../data/dataUserAndAdmin";
+import { getRoomReserve } from "../../data/dataUserAndAdmin";
 import Login from "./Login";
 
 ChartJS.register(
@@ -27,9 +27,8 @@ const DataChart = (admin) => {
   const [dataShow, setDataShow] = useState([]);
 
   const getUserData = async () => {
-    await getAllCustomer((data) => {
-      setDataShow(data);
-    });
+    const data = await getRoomReserve();
+    setDataShow(data);
   };
 
   useEffect(() => {
@@ -69,6 +68,8 @@ const DataChart = (admin) => {
       (val) => val.roomType == "Meeting" && val.roomNumber == 4
     ).length;
   }
+
+  // console.log(dataCon1, dataCon2, dataCon3, dataMeet1, dataMeet2, dataMeet3, dataMeet4);
   // ========================================================
 
   // ========== model datachart ==========

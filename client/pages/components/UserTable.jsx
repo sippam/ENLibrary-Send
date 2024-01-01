@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { getData } from "../../data/dataUserAndAdmin";
+import { getRoomReserve } from "../../data/dataUserAndAdmin";
 import { getTime } from "../../data/localTimezone";
 import { addDays } from "date-fns";
 import CalendarTable from "./CalendarTable";
 import YMDSetting from "./YMDSetting";
 import ConOrMeeting from "./ConOrMeeting";
 import { getExamPeriod } from "../../data/dataUserAndAdmin";
+import Cookies from "js-cookie";
 
-const UserTable = (triggerbook) => {
+const UserTable = ({triggerbook}) => {
   // ========== Get user data in database ==========
-  const [dataShow, setDataShow] = useState([]);
+  const [dataAllRoomServe, setDataAllRoomReserve] = useState([]);
 
-  const getUserData = async () => {
-    await getData((data) => {
-      setDataShow(data);
-    });
+  const getUserData = async (token) => {
+    const allRoomReserve = await getRoomReserve(token);
+    setDataAllRoomReserve(allRoomReserve);
   };
 
   useEffect(() => {
-    getUserData();
+    const token = Cookies.get("token");
+    if (token) {
+    getUserData(token);
+  }
   }, [triggerbook]);
   // ===============================================
 
@@ -36,15 +39,14 @@ const UserTable = (triggerbook) => {
 
   // =========== Get exam period from database =============
   async function getExamDay() {
-    await getExamPeriod((data) => {
-      if (data[0].isEnable == true) {
-        setStartBooking(new Date(data[0].examStart));
-        setEndBooking(new Date(data[0].examEnd));
-      } else {
-        setStartBooking(getTime());
-        setEndBooking(addDays(getTime(), 2));
-      }
-    })
+    const data = await getExamPeriod();
+    if (data[0]?.isEnable == true) {
+      setStartBooking(new Date(data[0].examStart));
+      setEndBooking(new Date(data[0].examEnd));
+    } else {
+      setStartBooking(getTime());
+      setEndBooking(addDays(getTime(), 2));
+    }
   }
 
   useEffect(() => {
@@ -56,7 +58,7 @@ const UserTable = (triggerbook) => {
   const [date, setDate] = useState(getTime().getDate());
   const [month, setMonth] = useState(getTime().getMonth() + 1);
   const [year, setYear] = useState(getTime().getFullYear());
-  
+
   const handleDateChange = (year, month, date) => {
     setYear(year);
     setMonth(month);
@@ -94,7 +96,7 @@ const UserTable = (triggerbook) => {
           year={year}
           month={month}
           date={date}
-          dataShow={dataShow}
+          dataAllRoomServe={dataAllRoomServe}
           isAdmin={isAdmin}
         />
       </div>

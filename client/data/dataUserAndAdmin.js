@@ -1,50 +1,144 @@
 import Axios from "axios";
 
-// ========== Get data to show in datachart ==========
-const getData = async (callback) => {
+const getUserData = async (token) => {
   try {
-    await Axios.get("/api/add").then((res) => {
-      const data = res.data;
-      callback(data);
+    const userData = await Axios.get("/api/getUserData", {
+      params: { token: token },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: process.env.NEXT_PUBLIC_TOKEN,
+      },
     });
+
+    return userData.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const getRoomReserve = async (token) => {
+  try {
+    const userData = await Axios.get("/api/getAllReserveRoom", {
+      params: { token: token },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: process.env.NEXT_PUBLIC_TOKEN,
+      },
+    });
+    return userData.data;
+  } catch (error) {
+    console.log("getData", error);
+  }
+};
+
+const reserveRoom = async (token, reserveData) => {
+  try {
+    await Axios.post(
+      "/api/reserveRoom",
+      { reserveData },
+      {
+        params: { token: token },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: process.env.NEXT_PUBLIC_TOKEN,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("reserveRoom", error);
+  }
+};
+
+const getUserDataRoom = async (token) => {
+  try {
+    const userData = await Axios.get("/api/getUserDataRoom", {
+      params: { token: token },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: process.env.NEXT_PUBLIC_TOKEN,
+      },
+    });
+
+    return userData.data;
   } catch (error) {
     console.log(error);
   }
 };
 // ===================================================
 
-// ========== Get all customer to show in datachart ==========
-const getAllCustomer = async (callback) => {
+// Send email
+const sendEmail = async (token, dataRoom) => {
   try {
-    await Axios.get("/api/addAllCustomer").then((res) => {
-      const data = res.data;
-      callback(data);
+    const userData = await getUserData(token);
+
+    await Axios.post(
+      "/api/email",
+      { userData: userData, dataRoom: dataRoom },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: process.env.NEXT_PUBLIC_TOKEN,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("sendEmail", error);
+  }
+};
+
+const deleteUserRoom = async (id) => {
+  await Axios.delete(`/api/deleteRoom`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: process.env.NEXT_PUBLIC_TOKEN,
+    },
+    data: {
+      id: id,
+    },
+  });
+};
+
+// ========== Get all customer to show in datachart ==========
+const getExamPeriod = async () => {
+  try {
+    const exam = await Axios.get("/api/examPeriod", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: process.env.NEXT_PUBLIC_TOKEN,
+      },
     });
+
+    return exam.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getRole = async (token) => {
+  try {
+    const role = await Axios.get("/api/getRole", {
+      params: {
+        token: token,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: process.env.NEXT_PUBLIC_TOKEN,
+      },
+    });
+
+    return role.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-// ========== Get all customer to show in datachart ==========
-const getExamPeriod = async (callback) => {
-  try {
-    await Axios.get("/api/examPeriod").then((res) => {
-      const data = res.data;
-      callback(data);
-    });
-  } catch (error) {
-    console.log(error);
-  }
+export {
+  getRoomReserve,
+  getUserDataRoom,
+  reserveRoom,
+  getExamPeriod,
+  sendEmail,
+  deleteUserRoom,
+  getRole,
+  getUserData,
 };
-// const getExamPeriod = async (callback) => {
-//   try {
-//     const response = await Axios.get("/api/examPeriod");
-//     const data = response.data;
-//     callback(data);
-//   } catch (error) {
-//     console.error("Error fetching exam period:", error);
-//   }
-// };
-// ==========================================================
-
-export { getData, getAllCustomer, getExamPeriod };

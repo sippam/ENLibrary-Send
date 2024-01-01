@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Login from "../components/Login";
 import { useRouter } from "next/router";
+import Axios from "axios";
+import Cookies from "js-cookie";
 
 const sso = () => {
   const router = useRouter();
@@ -13,36 +15,38 @@ const sso = () => {
       searchParams.has("title") &&
       searchParams.has("name") &&
       searchParams.has("surname") &&
-      searchParams.has("type") &&
-      searchParams.has("address") &&
       searchParams.has("faculty") &&
-      searchParams.has("position") &&
-      //   searchParams.has("pic") &&
       searchParams.has("cn")
     ) {
       const email = searchParams.get("email");
       const title = searchParams.get("title");
       const name = searchParams.get("name");
       const surname = searchParams.get("surname");
-      const type = searchParams.get("type");
-      const address = searchParams.get("address");
       const faculty = searchParams.get("faculty");
-      const position = searchParams.get("position");
       const cn = searchParams.get("cn");
-      
+
       const dataForm = {
         email: email,
         title: title,
         name: name,
         surname: surname,
-        type: type,
-        address: address,
         faculty: faculty,
-        position: position,
         cn: cn,
       };
-      localStorage.setItem("dataForm", JSON.stringify(dataForm));
-      router.push("/");
+
+      async function setToken() {
+        Axios.get("/api/jwt", {
+          params: dataForm,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": process.env.NEXT_PUBLIC_TOKEN,
+          }
+        }).then((res) => {
+          Cookies.set("token", res.data.token);
+        });
+        router.push("/");
+      }
+      setToken();
     }
   });
   return (

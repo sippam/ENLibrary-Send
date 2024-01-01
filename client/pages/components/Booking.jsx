@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import uuid from "react-uuid";
-import Axios from "axios";
 import { addDays } from "date-fns";
 import { toast } from "react-toastify";
 import {
@@ -12,17 +11,24 @@ import {
   numberInRoomConferece,
   numberInRoomMeeting,
 } from "../../data/dataRoom";
-import { getData, getExamPeriod } from "../../data/dataUserAndAdmin";
+import {
+  getExamPeriod,
+  getUserDataRoom,
+  sendEmail,
+  reserveRoom,
+  getUserData,
+} from "../../data/dataUserAndAdmin";
 import { getTime } from "../../data/localTimezone";
 import Switch from "@mui/material/Switch";
 import differenceInHours from "date-fns/differenceInHours";
 import isEqual from "date-fns/isEqual";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
-const Booking = ({ sendDataBook }) => {
+const Booking = ({ sendDataBook, tiggerDelete }) => {
+  const router = useRouter();
   const label = { inputProps: { "aria-label": "Switch demo" } };
-
-  const [email, setEmail] = useState("");
-  const [session, setSession] = useState(null);
+  const [token, setToken] = useState("");
   const [roomName, setRoomName] = useState(""); // set state of room name
   const [roomType, setRoomType] = useState("default"); // set state of type room name, default state is default because will use it in value
   const [roomNumber, setRoomNumber] = useState("default"); // set state of room name, default state is default because will use it in value
@@ -38,7 +44,8 @@ const Booking = ({ sendDataBook }) => {
   const checkTime = getTimeTo - getTimeFrom; // Check time hours between 1-3 hours
   const [checkValid, setCheckValid] = useState(false); // Check all value that filled
   const [canSelectDateTime, setCanSelectDateTime] = useState(false); // If useer select room of number then user can select date and time to booking
-  const [canSelectDateTimeBetweenDay, setCanSelectDateTimeBetweenDay] = useState(false); // If user select room of number then user can select date and time to booking between 2 days
+  const [canSelectDateTimeBetweenDay, setCanSelectDateTimeBetweenDay] =
+    useState(false); // If user select room of number then user can select date and time to booking between 2 days
   // Collect day from user submit form
   const [day, setDay] = useState(null);
   const [getDay, setGetDay] = useState(null);
@@ -120,7 +127,7 @@ const Booking = ({ sendDataBook }) => {
 
   // Collect data user select day
   const selectDay = (valueDay) => {
-    setCanSelectDateTimeBetweenDay(true)
+    setCanSelectDateTimeBetweenDay(true);
     setCheckSelectDay(true);
     setCollectDay(
       `${valueDay.getFullYear()}/${
@@ -135,7 +142,6 @@ const Booking = ({ sendDataBook }) => {
     setTimeFrom(null);
     setGetTimeTo(null);
     setTimeTo(null);
-    setCheckValid(false);
 
     if (adminBTN) {
       // When admin toggle exam period the form of to day is been YYYY/MM/DD 0,0,0
@@ -265,9 +271,9 @@ const Booking = ({ sendDataBook }) => {
   // Save data from form
   const saveData = (event) => {
     event.preventDefault();
-    sendEmail();
+    sendEmailToUser();
     setClickButton(true);
-    sendDataBook(true);
+    sendDataBook();
     setCollectDay(getTime());
     setDay(null);
     setGetDay(null);
@@ -288,13 +294,17 @@ const Booking = ({ sendDataBook }) => {
 
   // ========== Get user data in database ==========
   const [dataShow, setDataShow] = useState([]);
+  const [userData, setUserData] = useState([]);
 
   // Get data to show
-  const getUserData = async () => {
-    await getData((data) => {
-      // setDataShow(data.fetchedUsers);
-      setDataShow(data);
-    });
+  const getUserDataRoomFunc = async (token) => {
+    const data = await getUserDataRoom(token);
+    setDataShow(data || []);
+  };
+
+  const getUserDataFunc = async (token) => {
+    const data = await getUserData(token);
+    setUserData(data || []);
   };
   // ===============================================
 
@@ -306,22 +316,26 @@ const Booking = ({ sendDataBook }) => {
         dataShow.filter(
           (data) =>
             new Date(getTime().setHours(0, 0, 0)) <=
-              new Date(data.date) <=
-              new Date(addDays(getTime(), period).setHours(0, 0, 0)) &&
-            Buffer.from(data.email, "base64").toString("utf-8") ==
-              Buffer.from(
-                JSON.parse(localStorage.getItem("dataForm")).email,
-                "base64"
-              ).toString("utf-8")
+            new Date(data.date) <=
+            new Date(addDays(getTime(), period).setHours(0, 0, 0))
         )
       );
+    } else {
+      setCanBookingAgain([]);
     }
   }
   // ===============================================================================================
 
   useEffect(() => {
-    getUserData();
-  }, []);
+    const token = Cookies.get("token");
+    if (token) {
+      setToken(token);
+      getUserDataFunc(token);
+      getUserDataRoomFunc(token);
+    } else {
+      router.push("/");
+    }
+  }, [token]);
 
   // ========== Check room booking if have booking can't submit form ==========
   const mapItem =
@@ -353,19 +367,11 @@ const Booking = ({ sendDataBook }) => {
   // ========================= Send data in form to database =========================
   // Post data into database
   const addData = async () => {
-    const title = JSON.parse(localStorage.getItem("dataForm")).title;
-    const firstname = JSON.parse(localStorage.getItem("dataForm")).name;
-    const surname = JSON.parse(localStorage.getItem("dataForm")).surname;
-    await Axios.post("/api/add", {
+    const reserveData = {
       date: collectday,
       year: getYear,
       month: getMonth,
       day: getDay,
-      title: title,
-      firstname: firstname,
-      surname: surname,
-      email: email,
-      cn: JSON.parse(localStorage.getItem("dataForm")).cn,
       roomName: roomName,
       roomType: roomType,
       roomNumber: roomNumber,
@@ -373,87 +379,54 @@ const Booking = ({ sendDataBook }) => {
       timeTo: getTimeTo,
       between2days: between2days,
       inLibrary: inLibrary,
-    }).then(async () => {
-      toast.success("📖 Successfully!", {
-        position: "bottom-right",
-        autoClose: 6000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      setDataShow([
-        ...dataShow,
-        {
-          date: collectday,
-          year: getYear,
-          month: getMonth,
-          day: getDay,
-          title: title,
-          firstname: firstname,
-          surname: surname,
-          email: email,
-          cn: JSON.parse(localStorage.getItem("dataForm")).cn,
-          roomName: roomName,
-          roomType: roomType,
-          roomNumber: roomNumber,
-          timeFrom: getTimeFrom,
-          timeTo: getTimeTo,
-          between2days: between2days,
-          inLibrary: inLibrary,
-        },
-      ]);
-      await Axios.post("/api/addAllCustomer", {
-        date: collectday,
-        title: title,
-        firstname: firstname,
-        surname: surname,
-        email: email,
-        cn: JSON.parse(localStorage.getItem("dataForm")).cn,
-        roomType: roomType,
-        roomNumber: roomNumber,
-        timeFrom: getTimeFrom,
-        timeTo: getTimeTo,
-      });
+    };
+
+    reserveRoom(token, reserveData);
+    toast.success("📖 Successfully!", {
+      position: "bottom-right",
+      autoClose: 6000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
     });
   };
   // ==================================================================================
 
   // ========== Get data exam period in data base and set new day booking ==========
   async function getExamAdmin() {
-    await getExamPeriod((data) => {
-      const start = new Date(data[0].examStart);
-      const end = new Date(data[0].examEnd);
-      const boolean = data[0].isEnable;
-      setAdminBTN(boolean);
-      if (boolean == true) {
-        setStartBookingDay(new Date(start));
-        setEndBookingDay(new Date(end));
-        setMinTime(new Date("1/1/1111 12:00 AM"));
-        setMaxTime(new Date("1/1/1111 11:00 PM"));
-        if (
-          new Date(addDays(getTime(), 1).setHours(0, 0, 0)) ===
-          new Date(addDays(end, 1).setHours(0, 0, 0))
-        ) {
-          setStartBookingDay(getTime());
-          setEndBookingDay(addDays(getTime(), 2));
-          setMinTime(new Date("1/1/1111 10:00 AM"));
-          setMaxTime(new Date("1/1/1111 4:00 PM"));
-        }
-      } else {
-        /* 
-      If today is last day in exam period
-          day will allow booking between 3 days
-          time will allow booking between 10.00 - 16.00
-      */
+    const data = await getExamPeriod();
+    const start = new Date(data[0]?.examStart);
+    const end = new Date(data[0]?.examEnd);
+    const boolean = data[0]?.isEnable;
+    setAdminBTN(boolean);
+    if (boolean == true) {
+      setStartBookingDay(new Date(start));
+      setEndBookingDay(new Date(end));
+      setMinTime(new Date("1/1/1111 12:00 AM"));
+      setMaxTime(new Date("1/1/1111 11:00 PM"));
+      if (
+        new Date(addDays(getTime(), 1).setHours(0, 0, 0)) ===
+        new Date(addDays(end, 1).setHours(0, 0, 0))
+      ) {
         setStartBookingDay(getTime());
         setEndBookingDay(addDays(getTime(), 2));
         setMinTime(new Date("1/1/1111 10:00 AM"));
         setMaxTime(new Date("1/1/1111 4:00 PM"));
       }
-    });
+    } else {
+      /* 
+      If today is last day in exam period
+          day will allow booking between 3 days
+          time will allow booking between 10.00 - 16.00
+      */
+      setStartBookingDay(getTime());
+      setEndBookingDay(addDays(getTime(), 2));
+      setMinTime(new Date("1/1/1111 10:00 AM"));
+      setMaxTime(new Date("1/1/1111 4:00 PM"));
+    }
   }
   // ==========================================================================
 
@@ -484,6 +457,7 @@ const Booking = ({ sendDataBook }) => {
   // ==========================================
 
   useEffect(() => {
+    checkCanBookingAgain();
     // Check user fill all form
     if (!userSwitchBookTwoDay) {
       const check =
@@ -549,15 +523,12 @@ const Booking = ({ sendDataBook }) => {
         setBTNCanBook(false);
       }
     }
-    // Set session and email
-    setSession(JSON.parse(localStorage.getItem("dataForm")));
-    setEmail(JSON.parse(localStorage.getItem("dataForm")).email);
     /*
     If admin allow exam peroid
         day will allow booking by admin
         time will allow booking between 00.00 - 23.59
     */
-    checkCanBookingAgain();
+    notification();
   }, [
     roomName,
     roomType,
@@ -572,89 +543,67 @@ const Booking = ({ sendDataBook }) => {
     checkSelectDay,
     userSwitchBookTwoDay,
   ]);
-
   useEffect(() => {
     getExamAdmin();
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      // checkCanBookingAgain();
+      setClickButton(false);
+    }, 800);
+  }, [tiggerDelete]);
+
   // ========== Send Email ==========
-  const sendEmail = async () => {
-    const fullname =
-      Buffer.from(
-        JSON.parse(localStorage.getItem("dataForm")).title,
-        "base64"
-      ).toString("utf-8") +
-      Buffer.from(
-        JSON.parse(localStorage.getItem("dataForm")).name,
-        "base64"
-      ).toString("utf-8") +
-      " " +
-      Buffer.from(
-        JSON.parse(localStorage.getItem("dataForm")).surname,
-        "base64"
-      ).toString("utf-8");
-    await Axios.post("/api/email", {
-      email: Buffer.from(
-        JSON.parse(localStorage.getItem("dataForm")).email,
-        "base64"
-      ).toString("utf-8"),
-      name: fullname,
+  const sendEmailToUser = async () => {
+    const dataRoom = {
       roomName: roomName,
       roomType: roomType,
       roomNumber: roomNumber,
       date: collectday,
       getTimeFrom: `${getTimeFrom}:00`,
       getTimeTo: `${getTimeTo}:00`,
-    });
+    };
+    sendEmail(token, dataRoom);
   };
-
   // =================================
-
   // ========== Toastify noti when user had been booking or someone already booking that room ==========
-  const [showHaveBooking, setShowHaveBooking] = useState({
-    someone: true,
-    you: true,
-  });
 
-  if (
-    canBookingAgain.length === 0 &&
-    mapItem?.indexOf(false) !== -1 &&
-    showHaveBooking.someone
-  ) {
-    setShowHaveBooking({ you: true });
-    toast.error("❌ Sorry, this room was already booked", {
-      position: "bottom-right",
-      autoClose: 10000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-    setShowHaveBooking({ someone: false });
-  } else if (canBookingAgain.length !== 0 && showHaveBooking.you) {
-    setShowHaveBooking({ someone: true });
-    toast.error("❌ You already booked", {
-      position: "bottom-right",
-      autoClose: 10000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-    setShowHaveBooking({ you: false });
+  function notification() {
+    if (canBookingAgain.length === 0 && mapItem?.indexOf(false) !== -1) {
+      toast.error("❌ Sorry, this room was already booked", {
+        position: "bottom-right",
+        autoClose: 10000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else if (canBookingAgain.length !== 0) {
+      toast.error("❌ You already booked", {
+        position: "bottom-right",
+        autoClose: 10000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      // setShowHaveBooking({ you: false });
+    }
   }
-  // ====================================================================================================
 
-  // const checkEN =
-  //   session &&
-  //   Buffer.from(session.faculty, "base64").toString("utf-8") ==
-  //     "คณะวิศวกรรมศาสตร์"
-  //     ? false
-  //     : true;
+  // ====================================================================================================
+  const checkEN =
+    token &&
+    userData.faculty &&
+    Buffer.from(userData.faculty, "base64").toString("utf-8") ==
+      "คณะวิศวกรรมศาสตร์"
+      ? false
+      : true;
 
   return (
     <div className="w-full h-full lg:h-screen dark:bg-[#282a36] uppercase">
@@ -690,11 +639,18 @@ const Booking = ({ sendDataBook }) => {
                     placeholder="Your Reservation's Name (Max length 15)"
                     onChange={setNameOfRoom}
                     value={roomName}
-                    // disabled={checkEN}
+                    disabled={checkEN}
                   />
-                  {roomName && roomName.trim().length > 15 && (
+                  {!checkEN ? (
+                    roomName &&
+                    roomName.trim().length > 15 && (
+                      <div className=" mx-1 block mb-2 text-red-400 -mt-3 text-sm">
+                        Reservation Name must less than 15 Characters
+                      </div>
+                    )
+                  ) : (
                     <div className=" mx-1 block mb-2 text-red-400 -mt-3 text-sm">
-                      Reservation Name must less than 15 Characters
+                      Sorry!! only engineer faculty can booking
                     </div>
                   )}
                   <div className="text-lg dark:text-[white]">

@@ -1,7 +1,7 @@
 const express = require("express");
 const differenceInMinutes = require("date-fns/differenceInMinutes");
 const mysql = require("mysql2/promise");
-require('dotenv').config();
+require("dotenv").config();
 
 const app = express();
 
@@ -39,8 +39,11 @@ async function loop() {
 
   const connection = await pool.getConnection();
 
-  const [data] = await connection.execute("SELECT * FROM customers");
-  const deleteUsers = data.filter(
+  const roomReserve = "roomReserve";
+  const statsRoomReserve = "statsRoomReserve";
+
+  const [data] = await connection.execute(`SELECT * FROM ${roomReserve}`);
+  const deleteUsers = data?.filter(
     (data) =>
       data.date === fullYear &&
       differenceInMinutes(
@@ -64,29 +67,27 @@ async function loop() {
   const deleteResults = [];
 
   for (const deleteUser of deleteUsers) {
-    const [deleteData] = await connection.execute(
-      "DELETE FROM customers WHERE _id = ?",
-      [deleteUser._id]
-    );
+    if (deleteUser.id != undefined) {
+      const [deleteData] = await connection.execute(
+        `DELETE FROM ${roomReserve} WHERE id = ?`,
+        [deleteUser.id]
+      );
 
-    const deleteInAllCustomer = await connection.execute(
-      "DELETE FROM allcustomers WHERE date = ? AND roomType = ? AND roomNumber = ? AND timeFrom = ? AND timeTo = ?",
-      [
-        deleteUser.date,
-        deleteUser.roomType,
-        deleteUser.roomNumber,
-        deleteUser.timeFrom,
-        deleteUser.timeTo,
-      ]
-    );
+      const deleteInAllCustomer = await connection.execute(
+        `DELETE FROM ${statsRoomReserve} WHERE id = ?`,
+        [deleteUser.id]
+      );
 
-    deleteResults.push(deleteData);
-    deleteResults.push(deleteInAllCustomer);
+      deleteResults.push(deleteData);
+      deleteResults.push(deleteInAllCustomer);
+    } else {
+      console.log("notthing to delete");
+    }
   }
 
   const deleteWhenTimePass = [];
-  
-  data.map((data) => {
+
+  data?.map((data) => {
     if (!data.between2days) {
       if (
         formatTime(data.year, data.month - 1, data.day, data.timeTo, 0, 0) <=
@@ -111,17 +112,21 @@ async function loop() {
   console.log("deleteWhenTimePass", deleteWhenTimePass);
 
   for (const deleteUserWhenTimePass of deleteWhenTimePass) {
-    const [deleteData] = await connection.execute(
-      "DELETE FROM customers WHERE _id = ?",
-      [deleteUserWhenTimePass._id]
-    );
+    if (deleteUserWhenTimePass._id != undefined) {
+      const [deleteData] = await connection.execute(
+        `DELETE FROM ${roomReserve} WHERE id = ?`,
+        [deleteUserWhenTimePass._id]
+      );
 
-    deleteResults.push(deleteData);
+      deleteResults.push(deleteData);
+    } else {
+      console.log("notthing to delete");
+    }
   }
 
   pool.end();
 
-  setTimeout(loop, 15 * 60 * 1000);
+  setTimeout(loop, 5 * 60 * 1000);
 }
 
 loop();
