@@ -1,5 +1,6 @@
 import excuteQuery from "@/utils/connect";
 import nextConnect from "next-connect";
+import jwt from "jsonwebtoken";
 
 const table = "roomReserve";
 
@@ -19,7 +20,6 @@ export default nextConnect({
     if (authorizationHeader == process.env.NEXT_PUBLIC_TOKEN) {
       try {
         const token = req.query.token;
-
         jwt.verify(token, process.env.JWT_SECRET);
         next();
       } catch (error) {

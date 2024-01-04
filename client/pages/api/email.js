@@ -16,6 +16,7 @@ export default nextConnect({
     const authorizationHeader = req.headers.authorization;
 
     if (authorizationHeader == process.env.NEXT_PUBLIC_TOKEN) {
+      console.log("send Email");
       next();
     } else {
       // No authorization header, return an empty response
@@ -25,10 +26,10 @@ export default nextConnect({
   .post(async (req, res) => {
     const { userData, dataRoom } = req.body;
 
-    const email = Buffer.from(userData.data.email, "base64").toString("utf-8");
-    const title = Buffer.from(userData.data.title, "base64").toString("utf-8");
-    const name = Buffer.from(userData.data.name, "base64").toString("utf-8");
-    const surname = Buffer.from(userData.data.surname, "base64").toString(
+    const email = Buffer.from(userData.email, "base64").toString("utf-8");
+    const title = Buffer.from(userData.title, "base64").toString("utf-8");
+    const name = Buffer.from(userData.name, "base64").toString("utf-8");
+    const surname = Buffer.from(userData.surname, "base64").toString(
       "utf-8"
     );
     const roomName = dataRoom.roomName;
@@ -39,7 +40,7 @@ export default nextConnect({
     const getTimeTo = dataRoom.getTimeTo;
 
     const fullname = `${title}${name} ${surname}`;
-
+      console.log("asddfsdfsdfsd");
     nodemailer.createTestAccount(async (err, account) => {
       // create reusable transporter object using the default SMTP transport
       try {
@@ -54,7 +55,7 @@ export default nextConnect({
             rejectUnauthorized: false, // add this line to accept self-signed certificates
           },
         });
-
+        console.log("ysy");
         const info = await transporter.sendMail({
           from: '"EN-Library" <no-reply@exalple.com>', // sender address
           to: `${email}, ${email}`, // list of receivers

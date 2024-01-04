@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getUserDataRoom,deleteUserRoom } from "../../data/dataUserAndAdmin";
+import { getUserDataRoom, deleteUserRoom } from "../../data/dataUserAndAdmin";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 
@@ -7,6 +7,7 @@ const request = ({ triggerbook, deleteRoom }) => {
   const router = useRouter();
   // ========== Get user data in database ==========
   const [dataShow, setDataShow] = useState([]);
+  const [token, setToken] = useState("");
 
   const getUserDataFunc = async (token) => {
     const userData = await getUserDataRoom(token);
@@ -25,18 +26,23 @@ const request = ({ triggerbook, deleteRoom }) => {
   useEffect(() => {
     const token = Cookies.get("token");
     if (token) {
+      setToken(token);
       getUserDataFunc(token);
     } else {
       router.push("/");
     }
   }, []);
   // ===============================================
-  
+
   // ========== Delete booking ==========
   const deleteBooking = async (id) => {
     deleteRoom();
     setDataShow([]);
-    deleteUserRoom(id);
+    deleteUserRoom(token, id);
+
+    setTimeout(() => {
+      router.reload();
+    }, 700);
   };
   // ====================================
 

@@ -14,7 +14,7 @@ const getUserData = async (token) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 const getRoomReserve = async (token) => {
   try {
@@ -86,8 +86,9 @@ const sendEmail = async (token, dataRoom) => {
   }
 };
 
-const deleteUserRoom = async (id) => {
+const deleteUserRoom = async (token, id) => {
   await Axios.delete(`/api/deleteRoom`, {
+    params: { token: token },
     headers: {
       "Content-Type": "application/json",
       Authorization: process.env.NEXT_PUBLIC_TOKEN,
