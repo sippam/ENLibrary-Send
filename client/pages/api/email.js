@@ -40,7 +40,6 @@ export default nextConnect({
     const getTimeTo = dataRoom.getTimeTo;
 
     const fullname = `${title}${name} ${surname}`;
-      console.log("asddfsdfsdfsd");
     nodemailer.createTestAccount(async (err, account) => {
       // create reusable transporter object using the default SMTP transport
       try {

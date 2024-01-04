@@ -10,7 +10,6 @@ const Main = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("rumming");
       const token = Cookies.get("token");
 
       if (!token) {

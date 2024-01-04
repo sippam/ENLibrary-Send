@@ -22,15 +22,18 @@ export default nextConnect({
         jwt.verify(token, process.env.JWT_SECRET);
         next();
       } catch (error) {
+        console.log("getRole", error);
         // Token is expired or invalid
-        res.setHeader(
-          "Set-Cookie",
-          "token=; Max-Age=0; Secure; SameSite=None; Path=/"
-        );
+        if (error.name === "TokenExpiredError") {
+          res.setHeader(
+            "Set-Cookie",
+            "token=; Max-Age=0; Secure; SameSite=None; Path=/"
+          );
 
-        // Redirect to the home page
-        // res.writeHead(302, { Location: '/' });
-        res.end();
+          // Redirect to the home page
+          // res.writeHead(302, { Location: '/' });
+          res.end();
+        }
       }
     } else {
       // No authorization header, return an empty response

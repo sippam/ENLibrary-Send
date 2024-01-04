@@ -12,6 +12,7 @@ import Login from "./Login";
 import ConOrMeeting from "./ConOrMeeting";
 import YMDSetting from "./YMDSetting";
 import CalendarTable from "./CalendarTable";
+import Cookies from "js-cookie";
 
 const AdminTable = () => {
   // ========== Calculate how many day to select in dropdown ==========
@@ -27,8 +28,8 @@ const AdminTable = () => {
   // ========== Get user data from database ==========
   const [dataShow, setDataShow] = useState([]);
 
-  const getUserData = async () => {
-    const allRoomReserve = await getRoomReserve();
+  const getUserData = async (token) => {
+    const allRoomReserve = await getRoomReserve(token);
     setDataShow(allRoomReserve);
   };
   // =================================================
@@ -48,7 +49,10 @@ const AdminTable = () => {
 
   useEffect(() => {
     getExamDay();
-    getUserData();
+    const token = Cookies.get("token");
+    if (token) {
+      getUserData(token);
+    }
   }, []);
 
   // ========== Show date in dropdown ==========

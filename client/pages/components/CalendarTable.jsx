@@ -37,7 +37,6 @@ const CalendarTable = ({
   if (!year && !month && !date) {
     return <div>Error: Data not available.</div>;
   }
-  console.log("dataAllRoomServe", dataAllRoomServe);
   const userData = isConference
     ? dataAllRoomServe.length != 0
       ? dataAllRoomServe.flatMap((data) => {

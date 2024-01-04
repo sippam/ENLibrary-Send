@@ -17,6 +17,7 @@ import {
   sendEmail,
   reserveRoom,
   getUserData,
+  getRoomReserve,
 } from "../../data/dataUserAndAdmin";
 import { getTime } from "../../data/localTimezone";
 import Switch from "@mui/material/Switch";
@@ -295,10 +296,11 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
   // ========== Get user data in database ==========
   const [dataShow, setDataShow] = useState([]);
   const [userData, setUserData] = useState([]);
+  const [userRoom, setUserRoom] = useState([]); // User already booking
 
   // Get data to show
-  const getUserDataRoomFunc = async (token) => {
-    const data = await getUserDataRoom(token);
+  const getRoomReserveFunc = async (token) => {
+    const data = await getRoomReserve(token);
     setDataShow(data || []);
   };
 
@@ -306,14 +308,19 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
     const data = await getUserData(token);
     setUserData(data || []);
   };
+
+  const getUserRoom = async (token) => {
+    const data = await getUserDataRoom(token);
+    setUserRoom(data || []);
+  };
   // ===============================================
 
   // ========== Check user already booking? If had booking will not allow to booking again ==========
   const [canBookingAgain, setCanBookingAgain] = useState([]);
   function checkCanBookingAgain() {
-    if (dataShow.length != 0) {
+    if (userRoom.length != 0) {
       setCanBookingAgain(
-        dataShow.filter(
+        userRoom.filter(
           (data) =>
             new Date(getTime().setHours(0, 0, 0)) <=
             new Date(data.date) <=
@@ -324,6 +331,7 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
       setCanBookingAgain([]);
     }
   }
+
   // ===============================================================================================
 
   useEffect(() => {
@@ -331,7 +339,8 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
     if (token) {
       setToken(token);
       getUserDataFunc(token);
-      getUserDataRoomFunc(token);
+      getRoomReserveFunc(token);
+      getUserRoom(token);
     } else {
       router.push("/");
     }

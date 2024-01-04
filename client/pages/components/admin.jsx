@@ -21,14 +21,11 @@ const admin = () => {
     const token = Cookies.get("token");
     if (token) {
       allowAdmin(token);
-
-      if (!isAdmin) {
-        router.push("/");
-      }
     } else {
       router.push("/");
     }
   }, [isAdmin, router]);
+
   // =================================
   if (isAdmin) {
     return (

@@ -23,11 +23,17 @@ const Login = () => {
   const [longitude, setLongitude] = useState(0);
 
   const getLocation = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setLatitude(position.coords.latitude);
-      setLongitude(position.coords.longitude);
-    });
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+      }
+    );
   };
+  
   // =======================================
 
   // ========== Get user time if user not around at library in 30 minutes room will delete ==========

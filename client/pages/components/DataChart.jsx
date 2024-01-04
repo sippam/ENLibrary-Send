@@ -11,6 +11,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import { getRoomReserve } from "../../data/dataUserAndAdmin";
 import Login from "./Login";
+import Cookies from "js-cookie";
 
 ChartJS.register(
   CategoryScale,
@@ -26,13 +27,16 @@ const DataChart = (admin) => {
   // ========== Get all customer data ==========
   const [dataShow, setDataShow] = useState([]);
 
-  const getUserData = async () => {
-    const data = await getRoomReserve();
+  const getUserData = async (token) => {
+    const data = await getRoomReserve(token);
     setDataShow(data);
   };
 
   useEffect(() => {
-    getUserData();
+    const token = Cookies.get("token");
+    if (token) {
+      getUserData(token);
+    }
   }, []);
   // ===========================================
 
@@ -45,7 +49,7 @@ const DataChart = (admin) => {
     dataMeet3,
     dataMeet4 = [];
 
-  if (dataShow !== undefined) {
+  if (dataShow.length != 0) {
     dataCon1 = dataShow.filter(
       (val) => val.roomType == "Conference" && val.roomNumber == 1
     ).length;
@@ -69,7 +73,6 @@ const DataChart = (admin) => {
     ).length;
   }
 
-  // console.log(dataCon1, dataCon2, dataCon3, dataMeet1, dataMeet2, dataMeet3, dataMeet4);
   // ========================================================
 
   // ========== model datachart ==========

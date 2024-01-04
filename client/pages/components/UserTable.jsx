@@ -9,7 +9,7 @@ import ConOrMeeting from "./ConOrMeeting";
 import { getExamPeriod } from "../../data/dataUserAndAdmin";
 import Cookies from "js-cookie";
 
-const UserTable = ({triggerbook}) => {
+const UserTable = ({ triggerbook }) => {
   // ========== Get user data in database ==========
   const [dataAllRoomServe, setDataAllRoomReserve] = useState([]);
 
@@ -21,8 +21,8 @@ const UserTable = ({triggerbook}) => {
   useEffect(() => {
     const token = Cookies.get("token");
     if (token) {
-    getUserData(token);
-  }
+      getUserData(token);
+    }
   }, [triggerbook]);
   // ===============================================
 
