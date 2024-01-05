@@ -23,7 +23,8 @@ import { getTime } from "../../data/localTimezone";
 import Switch from "@mui/material/Switch";
 import differenceInHours from "date-fns/differenceInHours";
 import isEqual from "date-fns/isEqual";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
+import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 
 const Booking = ({ sendDataBook, tiggerDelete }) => {
@@ -335,7 +336,8 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
   // ===============================================================================================
 
   useEffect(() => {
-    const token = Cookies.get("token");
+    // const token = Cookies.get("token");
+    const token = getCookie("token");
     if (token) {
       setToken(token);
       getUserDataFunc(token);

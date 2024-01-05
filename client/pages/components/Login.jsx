@@ -12,7 +12,8 @@ import Request from "./request";
 import UserTable from "./UserTable";
 import { getTime } from "../../data/localTimezone";
 import Announce from "./Announce";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
+import { getCookie } from "cookies-next";
 import { getUserDataRoom } from "../../data/dataUserAndAdmin";
 import useInterval from "../hooks/useInterval";
 const Login = () => {
@@ -109,7 +110,8 @@ const Login = () => {
   };
 
   useInterval(() => {
-    const token = Cookies.get("token");
+    const token = getCookie("token");
+    // const token = Cookies.get("token");
     if (token) {
       callAllFunc(user);
     }
@@ -134,13 +136,15 @@ const Login = () => {
   // ===============================================================================================
 
   useEffect(() => {
-    const token = Cookies.get("token");
+    // const token = Cookies.get("token");
+    const token = getCookie("token");
     setSession(token);
     getUserDataFunc(token);
   }, []);
 
   useEffect(() => {
-    const token = Cookies.get("token");
+    // const token = Cookies.get("token");
+    const token = getCookie("token");
     setSession(token);
     getUserDataFunc(token);
   }, [sendTriggerBooking]);

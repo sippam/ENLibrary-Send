@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
+import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 
 const Main = () => {
-
   const router = useRouter();
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const token = Cookies.get("token");
+      // const token = Cookies.get("token");
+      const token = getCookie("token");
 
       if (!token) {
         router.reload(); // Reload the page if no token

@@ -11,7 +11,8 @@ import {
 import { Bar } from "react-chartjs-2";
 import { getRoomReserve } from "../../data/dataUserAndAdmin";
 import Login from "./Login";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
+import { getCookie } from "cookies-next";
 
 ChartJS.register(
   CategoryScale,
@@ -33,7 +34,8 @@ const DataChart = (admin) => {
   };
 
   useEffect(() => {
-    const token = Cookies.get("token");
+    // const token = Cookies.get("token");
+    const token = getCookie("token");
     if (token) {
       getUserData(token);
     }

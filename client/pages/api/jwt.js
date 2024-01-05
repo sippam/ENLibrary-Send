@@ -2,6 +2,8 @@ import nextConnect from "next-connect";
 import uuid from "react-uuid";
 import excuteQuery from "@/utils/connect";
 import jwt from "jsonwebtoken";
+// import { setCookie } from "cookies-next";
+// import { cookies } from 'next/headers'
 
 export default nextConnect({
   onError(error, req, res) {
@@ -72,6 +74,8 @@ export default nextConnect({
         if (err) {
           console.log(err);
         } else {
+          // cookies().set("token-next", token);
+          // setCookie("token", token)
           res.json({ token });
         }
       }
