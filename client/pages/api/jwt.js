@@ -34,11 +34,12 @@ export default nextConnect({
     const surname = dataForm.surname;
     const faculty = dataForm.faculty;
     const cn = dataForm.cn;
-
+  
     const duplicate = await excuteQuery({
       query: `SELECT * FROM userID WHERE email = ?`,
       values: [email],
     });
+    console.log("duplicate", duplicate);
 
     if (duplicate.length == 0) {
       await excuteQuery({

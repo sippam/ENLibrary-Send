@@ -54,7 +54,6 @@ export default nextConnect({
             rejectUnauthorized: false, // add this line to accept self-signed certificates
           },
         });
-        console.log("ysy");
         const info = await transporter.sendMail({
           from: '"EN-Library" <no-reply@exalple.com>', // sender address
           to: `${email}, ${email}`, // list of receivers

@@ -46,7 +46,7 @@ const Login = () => {
 
   // ========== Get user data in database ==========
   const getUserDataFunc = async (token) => {
-    const haveRoom = await getUserDataRoom(token);
+    const haveRoom = await getUserDataRoom(token).then((res) => res.data);
     const users =
       haveRoom != undefined && haveRoom.length != 0
         ? haveRoom.filter(
