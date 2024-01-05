@@ -42,6 +42,7 @@ async function loop() {
   const roomReserve = "roomReserve";
   const statsRoomReserve = "statsRoomReserve";
 
+  // Delete room that user not come
   const [data] = await connection.execute(`SELECT * FROM ${roomReserve}`);
   const deleteUsers = data?.filter(
     (data) =>
@@ -61,8 +62,6 @@ async function loop() {
       ) > 15 &&
       data.inLibrary === 0
   );
-
-  console.log("deleteUsers", deleteUsers);
 
   const deleteResults = [];
 
@@ -85,6 +84,9 @@ async function loop() {
     }
   }
 
+  console.log("deleteResults", deleteResults);
+
+  // Delete room that time pass
   const deleteWhenTimePass = [];
 
   data?.map((data) => {
@@ -112,10 +114,10 @@ async function loop() {
   console.log("deleteWhenTimePass", deleteWhenTimePass);
 
   for (const deleteUserWhenTimePass of deleteWhenTimePass) {
-    if (deleteUserWhenTimePass._id != undefined) {
+    if (deleteUserWhenTimePass.id != undefined) {
       const [deleteData] = await connection.execute(
         `DELETE FROM ${roomReserve} WHERE id = ?`,
-        [deleteUserWhenTimePass._id]
+        [deleteUserWhenTimePass.id]
       );
 
       deleteResults.push(deleteData);

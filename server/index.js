@@ -6,7 +6,7 @@ app.use(express.json());
 
 app.use(Router);
 
-app.listen("3001", () => {
+app.listen("3020", () => {
   console.log("Server running at 3001");
 });
 
