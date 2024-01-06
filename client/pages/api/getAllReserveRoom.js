@@ -28,14 +28,15 @@ export default nextConnect({
         console.log("getAllReserveRoom", error);
         // Token is expired or invalid
         if (error.name === "TokenExpiredError") {
-          res.setHeader(
-            "Set-Cookie",
-            "token=; Max-Age=0; Secure; SameSite=None; Path=/"
-          );
+          // res.setHeader(
+          //   "Set-Cookie",
+          //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
+          // );
 
           // Redirect to the home page
           // res.writeHead(302, { Location: '/' });
-          res.end();
+          // res.end();
+          res.json("TokenExpried")
         }
       }
     } else {

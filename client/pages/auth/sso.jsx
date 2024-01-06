@@ -46,9 +46,12 @@ const sso = () => {
           // router.push("/");
           // cookies.set("token-next", res.data.token);
           // Cookies.set("token", res.data.token);
-          setCookie("token", res.data.token);
+          localStorage.setItem("token", res.data.token);
+          // setCookie("token", res.data.token);
+          setTimeout(() => {
+            router.push("/");
+          }, 300);
         });
-        router.push("/");
       }
       setToken();
     }

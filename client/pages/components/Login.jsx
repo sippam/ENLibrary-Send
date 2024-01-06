@@ -13,7 +13,7 @@ import UserTable from "./UserTable";
 import { getTime } from "../../data/localTimezone";
 import Announce from "./Announce";
 // import Cookies from "js-cookie";
-import { getCookie } from "cookies-next";
+// import { getCookie } from "cookies-next";
 import { getUserDataRoom } from "../../data/dataUserAndAdmin";
 import useInterval from "../hooks/useInterval";
 const Login = () => {
@@ -34,7 +34,7 @@ const Login = () => {
       }
     );
   };
-  
+
   // =======================================
 
   // ========== Get user time if user not around at library in 30 minutes room will delete ==========
@@ -47,7 +47,7 @@ const Login = () => {
 
   // ========== Get user data in database ==========
   const getUserDataFunc = async (token) => {
-    const haveRoom = await getUserDataRoom(token).then((res) => res.data);
+    const haveRoom = await getUserDataRoom(token);
     const users =
       haveRoom != undefined && haveRoom.length != 0
         ? haveRoom.filter(
@@ -110,15 +110,18 @@ const Login = () => {
   };
 
   useInterval(() => {
-    const token = getCookie("token");
+    const token = localStorage.getItem("token");
+    // const token = getCookie("token");
     // const token = Cookies.get("token");
-    if (token) {
+    if (token && user.length > 0) {
       callAllFunc(user);
     }
   }, 5 * 1000);
 
   useEffect(() => {
-    callAllFunc(user);
+    if (user.length > 0) {
+      callAllFunc(user);
+    }
   }, [user]);
   // ===============================================================================================
 
@@ -137,16 +140,22 @@ const Login = () => {
 
   useEffect(() => {
     // const token = Cookies.get("token");
-    const token = getCookie("token");
-    setSession(token);
-    getUserDataFunc(token);
+    // const token = getCookie("token");
+    const token = localStorage.getItem("token");
+    if (token) {
+      setSession(token);
+      getUserDataFunc(token);
+    }
   }, []);
 
   useEffect(() => {
     // const token = Cookies.get("token");
-    const token = getCookie("token");
-    setSession(token);
-    getUserDataFunc(token);
+    // const token = getCookie("token");
+    const token = localStorage.getItem("token");
+    if (token) {
+      setSession(token);
+      getUserDataFunc(token);
+    }
   }, [sendTriggerBooking]);
 
   return (

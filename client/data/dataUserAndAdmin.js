@@ -9,7 +9,10 @@ const getUserData = async (token) => {
         Authorization: process.env.NEXT_PUBLIC_TOKEN,
       },
     });
-
+    if (userData.data == "TokenExpried") {
+      localStorage.removeItem("token");
+      return null;
+    }
     return userData.data;
   } catch (error) {
     console.log(error);
@@ -25,6 +28,10 @@ const getRoomReserve = async (token) => {
         Authorization: process.env.NEXT_PUBLIC_TOKEN,
       },
     });
+    if (userData.data == "TokenExpried") {
+      localStorage.removeItem("token");
+      return null;
+    }
     return userData.data;
   } catch (error) {
     console.log("getData", error);
@@ -33,7 +40,7 @@ const getRoomReserve = async (token) => {
 
 const reserveRoom = async (token, reserveData) => {
   try {
-    await Axios.post(
+    const data = await Axios.post(
       "/api/reserveRoom",
       { reserveData },
       {
@@ -44,6 +51,11 @@ const reserveRoom = async (token, reserveData) => {
         },
       }
     );
+
+    if (data.data == "TokenExpried") {
+      localStorage.removeItem("token");
+      return null;
+    }
   } catch (error) {
     console.log("reserveRoom", error);
   }
@@ -58,7 +70,10 @@ const getUserDataRoom = async (token) => {
         Authorization: process.env.NEXT_PUBLIC_TOKEN,
       },
     });
-
+    if (userData.data == "TokenExpried") {
+      localStorage.removeItem("token");
+      return null;
+    }
     return userData.data;
   } catch (error) {
     console.log(error);
@@ -87,7 +102,7 @@ const sendEmail = async (token, dataRoom) => {
 };
 
 const deleteUserRoom = async (token, id) => {
-  await Axios.delete(`/api/deleteRoom`, {
+  const deleteRoom = await Axios.delete(`/api/deleteRoom`, {
     params: { token: token },
     headers: {
       "Content-Type": "application/json",
@@ -97,6 +112,11 @@ const deleteUserRoom = async (token, id) => {
       id: id,
     },
   });
+
+  if (deleteRoom.data == "TokenExpried") {
+    localStorage.removeItem("token");
+    return null;
+  }
 };
 
 // ========== Get all customer to show in datachart ==========
@@ -126,6 +146,10 @@ const getRole = async (token) => {
         Authorization: process.env.NEXT_PUBLIC_TOKEN,
       },
     });
+    if (role.data == "TokenExpried") {
+      localStorage.removeItem("token");
+      return null;
+    }
 
     return role.data;
   } catch (error) {

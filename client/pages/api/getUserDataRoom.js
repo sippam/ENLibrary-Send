@@ -27,15 +27,16 @@ export default nextConnect({
         console.log("getUserDataRoom", error);
         // Token is expired or invalid
         if (error.name === "TokenExpiredError") {
-          res.setHeader(
-            "Set-Cookie",
-            "token=; Max-Age=0; Secure; SameSite=None; Path=/"
-          );
+
+          // res.setHeader(
+          //   "Set-Cookie",
+          //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
+          // );
 
           // // Redirect to the home page
           // // res.writeHead(302, { Location: '/' });
           // res.end();
-          res.json({ error: "TokenExpried" })
+          res.json("TokenExpried")
         }
       }
     } else {

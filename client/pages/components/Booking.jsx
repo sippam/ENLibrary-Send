@@ -24,8 +24,9 @@ import Switch from "@mui/material/Switch";
 import differenceInHours from "date-fns/differenceInHours";
 import isEqual from "date-fns/isEqual";
 // import Cookies from "js-cookie";
-import { getCookie } from "cookies-next";
+// import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import useInterval from "../hooks/useInterval";
 
 const Booking = ({ sendDataBook, tiggerDelete }) => {
   const router = useRouter();
@@ -337,7 +338,9 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
 
   useEffect(() => {
     // const token = Cookies.get("token");
-    const token = getCookie("token");
+    // const token = getCookie("token");
+    const token = localStorage.getItem("token");
+
     if (token) {
       setToken(token);
       getUserDataFunc(token);
@@ -347,6 +350,13 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
       router.push("/");
     }
   }, [token]);
+
+  useInterval(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      getRoomReserveFunc(token);
+    }
+  }, 2 * 1000);
 
   // ========== Check room booking if have booking can't submit form ==========
   const mapItem =

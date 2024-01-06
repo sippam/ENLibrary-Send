@@ -14,8 +14,8 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { getRole, getUserData } from "@/data/dataUserAndAdmin";
 // import Cookies from "js-cookie";
-import { getCookie } from "cookies-next";
-import { deleteCookie } from "cookies-next";
+// import { getCookie } from "cookies-next";
+// import { deleteCookie } from "cookies-next";
 
 const Navbar = ({ lat, lng, showLatLng }) => {
   const router = useRouter();
@@ -39,7 +39,8 @@ const Navbar = ({ lat, lng, showLatLng }) => {
 
   useEffect(() => {
     // const token = Cookies.get("token");
-    const token = getCookie("token");
+    // const token = getCookie("token");
+    const token = localStorage.getItem("token");
     if (token) {
       allowAdmin(token);
       getData(token);
@@ -49,7 +50,8 @@ const Navbar = ({ lat, lng, showLatLng }) => {
 
   const logout = async () => {
     // Cookies.remove("token");
-    deleteCookie("token");
+    // deleteCookie("token");
+    localStorage.removeItem("token");
     toast.success("Successfully Logout!", {
       position: "bottom-right",
       autoClose: 6000,

@@ -6,7 +6,7 @@ import DataChart from "./DataChart";
 import { useRouter } from "next/router";
 import { getRole } from "@/data/dataUserAndAdmin";
 // import Cookies from "js-cookie";
-import { getCookie } from "cookies-next";
+// import { getCookie } from "cookies-next";
 
 const admin = () => {
   const router = useRouter();
@@ -20,7 +20,8 @@ const admin = () => {
 
   useEffect(() => {
     // const token = Cookies.get("token");
-    const token = getCookie("token");
+    // const token = getCookie("token");
+    const token = localStorage.getItem("token");
     if (token) {
       allowAdmin(token);
     } else {
