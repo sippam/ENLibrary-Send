@@ -12,8 +12,6 @@ import Login from "./Login";
 import ConOrMeeting from "./ConOrMeeting";
 import YMDSetting from "./YMDSetting";
 import CalendarTable from "./CalendarTable";
-// import Cookies from "js-cookie";
-// import { getCookie } from "cookies-next";
 
 const AdminTable = () => {
   // ========== Calculate how many day to select in dropdown ==========
@@ -50,8 +48,6 @@ const AdminTable = () => {
 
   useEffect(() => {
     getExamDay();
-    // const token = Cookies.get("token");
-    // const token = getCookie("token");
     const token = localStorage.getItem("token");
     if (token) {
       getUserData(token);

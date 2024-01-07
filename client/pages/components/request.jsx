@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { getUserDataRoom, deleteUserRoom } from "../../data/dataUserAndAdmin";
-// import Cookies from "js-cookie";
-// import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 
 const request = ({ triggerbook, deleteRoom }) => {
@@ -16,8 +14,6 @@ const request = ({ triggerbook, deleteRoom }) => {
   };
 
   useEffect(() => {
-    // const token = Cookies.get("token");
-    // const token = getCookie("token");
     const token = localStorage.getItem("token");
     if (token) {
       getUserDataFunc(token);
@@ -27,8 +23,6 @@ const request = ({ triggerbook, deleteRoom }) => {
   }, [triggerbook]);
 
   useEffect(() => {
-    // const token = Cookies.get("token");
-    // const token = getCookie("token");
     const token = localStorage.getItem("token");
     if (token) {
       setToken(token);

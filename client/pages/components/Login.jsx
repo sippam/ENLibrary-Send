@@ -12,8 +12,6 @@ import Request from "./request";
 import UserTable from "./UserTable";
 import { getTime } from "../../data/localTimezone";
 import Announce from "./Announce";
-// import Cookies from "js-cookie";
-// import { getCookie } from "cookies-next";
 import { getUserDataRoom } from "../../data/dataUserAndAdmin";
 import useInterval from "../hooks/useInterval";
 const Login = () => {
@@ -111,9 +109,7 @@ const Login = () => {
 
   useInterval(() => {
     const token = localStorage.getItem("token");
-    // const token = getCookie("token");
-    // const token = Cookies.get("token");
-    if (token && user.length > 0) {
+    if (token) {
       callAllFunc(user);
     }
   }, 5 * 1000);
@@ -139,8 +135,6 @@ const Login = () => {
   // ===============================================================================================
 
   useEffect(() => {
-    // const token = Cookies.get("token");
-    // const token = getCookie("token");
     const token = localStorage.getItem("token");
     if (token) {
       setSession(token);
@@ -149,8 +143,6 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    // const token = Cookies.get("token");
-    // const token = getCookie("token");
     const token = localStorage.getItem("token");
     if (token) {
       setSession(token);

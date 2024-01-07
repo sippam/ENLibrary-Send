@@ -8,8 +8,6 @@ import YMDSetting from "./YMDSetting";
 import ConOrMeeting from "./ConOrMeeting";
 import { getExamPeriod } from "../../data/dataUserAndAdmin";
 import useInterval from "../hooks/useInterval";
-// import Cookies from "js-cookie";
-// import { getCookie } from "cookies-next";
 
 const UserTable = ({ triggerbook }) => {
   // ========== Get user data in database ==========
@@ -21,8 +19,6 @@ const UserTable = ({ triggerbook }) => {
   };
 
   useEffect(() => {
-    // const token = Cookies.get("token");
-    // const token = getCookie("token");
     const token = localStorage.getItem("token");
     if (token) {
       getUserData(token);

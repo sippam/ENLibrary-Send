@@ -27,7 +27,6 @@ const Announce = () => {
   return (
     <div className="flex flex-col items-center mt-16 sm:-mt-20 lg:mt-5 overflow-hidden">
       <ul className="flex flex-col justify-center items-center">
-        {/* <div className="flex flex-col justify-start"> */}
         {text.map((item, index) => (
           <p
             key={index}
@@ -36,7 +35,6 @@ const Announce = () => {
             {item}
           </p>
         ))}
-        {/* </div> */}
       </ul>
     </div>
   );

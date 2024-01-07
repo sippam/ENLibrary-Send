@@ -23,8 +23,6 @@ import { getTime } from "../../data/localTimezone";
 import Switch from "@mui/material/Switch";
 import differenceInHours from "date-fns/differenceInHours";
 import isEqual from "date-fns/isEqual";
-// import Cookies from "js-cookie";
-// import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import useInterval from "../hooks/useInterval";
 
@@ -337,8 +335,6 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
   // ===============================================================================================
 
   useEffect(() => {
-    // const token = Cookies.get("token");
-    // const token = getCookie("token");
     const token = localStorage.getItem("token");
 
     if (token) {
@@ -875,7 +871,7 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
                         showTimeSelect
                         showTimeSelectOnly
                         minTime={minTimeInThisDate}
-                        maxTime={maxTime}
+                        maxTime={userSwitchBookTwoDay ? "24:00" :maxTime}
                         timeIntervals={60}
                         timeCaption="Time"
                         dateFormat="h:mm aa"

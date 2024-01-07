@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-// import Cookies from "js-cookie";
-// import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 
 const Main = () => {
@@ -10,8 +8,6 @@ const Main = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // const token = Cookies.get("token");
-      // const token = getCookie("token");
       const token = localStorage.getItem("token");
 
       if (!token) {

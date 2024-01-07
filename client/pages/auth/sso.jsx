@@ -3,8 +3,6 @@ import { useSearchParams } from "next/navigation";
 import Login from "../components/Login";
 import { useRouter } from "next/router";
 import Axios from "axios";
-// import Cookies from "js-cookie";
-import { setCookie } from 'cookies-next';
 
 const sso = () => {
   const router = useRouter();
