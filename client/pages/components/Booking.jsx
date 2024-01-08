@@ -628,27 +628,29 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
   }
 
   // ====================================================================================================
-  const [userIsAdmin, setUserIsAdmin] = useState(false);
+  const [checkEN, setCheckEN] = useState(true);
 
   useEffect(() => {
     const getUserRole = async () => {
       const token = localStorage.getItem("token");
       if (token) {
         const role = await getRole(token);
-        setUserIsAdmin(role);
+        if (role) {
+          setCheckEN(false);
+        } else {
+          const check =
+            token &&
+            userData.faculty &&
+            Buffer.from(userData.faculty, "base64").toString("utf-8") ==
+              "คณะวิศวกรรมศาสตร์"
+              ? false
+              : true;
+          setCheckEN(check);
+        }
       }
     };
     getUserRole();
-  }, []);
-
-  const checkEN =
-    token &&
-    ((userData.faculty &&
-      Buffer.from(userData.faculty, "base64").toString("utf-8") ==
-        "คณะวิศวกรรมศาสตร์") ||
-      userIsAdmin)
-      ? false
-      : true;
+  }, [token]);
 
   return (
     <div className="w-full h-full lg:h-screen dark:bg-[#282a36] uppercase">
