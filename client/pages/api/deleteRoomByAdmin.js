@@ -1,6 +1,5 @@
 import excuteQuery from "@/utils/connect";
 import nextConnect from "next-connect";
-import jwt from "jsonwebtoken";
 
 const table = "roomReserve";
 
@@ -18,26 +17,7 @@ export default nextConnect({
     const authorizationHeader = req.headers.authorization;
 
     if (authorizationHeader == process.env.NEXT_PUBLIC_TOKEN) {
-      try {
-        const token = req.query.token;
-        console.log(token);
-        jwt.verify(token, process.env.JWT_SECRET);
-        next();
-      } catch (error) {
-        console.log("deleteRoom", error);
-        // Token is expired or invalid
-        if (error.name === "TokenExpiredError") {
-          // res.setHeader(
-          //   "Set-Cookie",
-          //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
-          // );
-
-          // Redirect to the home page
-          // res.writeHead(302, { Location: '/' });
-          // res.end();
-          res.json("TokenExpried")
-        }
-      }
+      next();
     } else {
       // No authorization header, return an empty response
       res.status(401).json({ error: "Unauthorized" });

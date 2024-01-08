@@ -18,6 +18,7 @@ import {
   reserveRoom,
   getUserData,
   getRoomReserve,
+  getRole,
 } from "../../data/dataUserAndAdmin";
 import { getTime } from "../../data/localTimezone";
 import Switch from "@mui/material/Switch";
@@ -105,7 +106,7 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
     console.log("event", event);
     if (adminBTN == true && dayTwo != null) {
       console.log("kuy");
-      return (event >= today.setHours(0, 0, 0) && !isEqual(event, dayTwo))  ;
+      return event >= today.setHours(0, 0, 0) && !isEqual(event, dayTwo);
     } else if (adminBTN == true) {
       console.log("hee");
       return event >= today.setHours(0, 0, 0);
@@ -627,11 +628,25 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
   }
 
   // ====================================================================================================
+  const [userIsAdmin, setUserIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const getUserRole = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const role = await getRole(token);
+        setUserIsAdmin(role);
+      }
+    };
+    getUserRole();
+  }, []);
+
   const checkEN =
     token &&
-    userData.faculty &&
-    Buffer.from(userData.faculty, "base64").toString("utf-8") ==
-      "คณะวิศวกรรมศาสตร์"
+    ((userData.faculty &&
+      Buffer.from(userData.faculty, "base64").toString("utf-8") ==
+        "คณะวิศวกรรมศาสตร์") ||
+      userIsAdmin)
       ? false
       : true;
 

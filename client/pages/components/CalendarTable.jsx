@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from "react";
-import Axios from "axios";
 import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Toolbar from "react-big-calendar/lib/Toolbar";
@@ -8,7 +7,8 @@ import { useMediaQuery } from "@mui/material";
 import CustomTextInCalendar from "./CustomTextInCalendar";
 import { addDays } from "date-fns";
 import Swal from "sweetalert2";
-import { getExamPeriod, deleteUserRoom } from "@/data/dataUserAndAdmin";
+import { useRouter } from "next/router";
+import { getExamPeriod, deleteRoomByAdmin } from "@/data/dataUserAndAdmin";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -20,6 +20,7 @@ const CalendarTable = ({
   dataAllRoomServe,
   isAdmin,
 }) => {
+  const router = useRouter();
   const isMediumScreen = useMediaQuery("(min-width: 768px)");
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
   const isExtraLargeScreen = useMediaQuery("(min-width: 1280px)");
@@ -277,7 +278,9 @@ const CalendarTable = ({
       confirmButtonText: "Yes",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        deleteUserRoom(id);
+        deleteRoomByAdmin(id).then(() => {
+          router.reload();
+        });
       }
     });
   };

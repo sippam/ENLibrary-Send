@@ -119,6 +119,17 @@ const deleteUserRoom = async (token, id) => {
   }
 };
 
+const deleteRoomByAdmin = async (id) => {
+   await Axios.delete(`/api/deleteRoomByAdmin`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: process.env.NEXT_PUBLIC_TOKEN,
+    },
+    data: {
+      id: id,
+    },
+  });
+};
 // ========== Get all customer to show in datachart ==========
 const getExamPeriod = async () => {
   try {
@@ -166,4 +177,5 @@ export {
   deleteUserRoom,
   getRole,
   getUserData,
+  deleteRoomByAdmin,
 };
