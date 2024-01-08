@@ -100,6 +100,19 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
       return !(event.getDay() == 6 || event.getDay() == 0);
     }
   };
+
+  const weekendAndBetween2days = (event) => {
+    console.log("event", event);
+    if (adminBTN == true && dayTwo != null) {
+      console.log("kuy");
+      return (event >= today.setHours(0, 0, 0) && !isEqual(event, dayTwo))  ;
+    } else if (adminBTN == true) {
+      console.log("hee");
+      return event >= today.setHours(0, 0, 0);
+    } else {
+      return !(event.getDay() == 6 || event.getDay() == 0);
+    }
+  };
   // ====================================================================================
 
   // ========== user fill and submit the form ==========
@@ -760,7 +773,7 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
                                 onChange={selectDay}
                                 minDate={startBookingDay}
                                 maxDate={addDays(startBookingDay, period)}
-                                filterDate={weekend}
+                                filterDate={weekendAndBetween2days}
                                 disabled={!canSelectDateTime}
                                 datepicker
                               />
@@ -871,7 +884,7 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
                         showTimeSelect
                         showTimeSelectOnly
                         minTime={minTimeInThisDate}
-                        maxTime={userSwitchBookTwoDay ? "24:00" :maxTime}
+                        maxTime={userSwitchBookTwoDay ? "24:00" : maxTime}
                         timeIntervals={60}
                         timeCaption="Time"
                         dateFormat="h:mm aa"
