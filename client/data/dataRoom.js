@@ -1,7 +1,7 @@
 // Set type room for select
 const typeRoom = [
-  { value: "Conference", text: "Conference Room" },
-  { value: "Meeting", text: "Meeting Room" },
+  { value: "Conference", text: "Conference" },
+  { value: "Meeting", text: "Meeting" },
 ];
 
 // Set number of room in Conference room

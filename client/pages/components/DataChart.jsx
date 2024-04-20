@@ -9,7 +9,9 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { getRoomReserve } from "../../data/dataUserAndAdmin";
+import {
+  getStatsRoomReserve,
+} from "../../data/dataUserAndAdmin";
 import Login from "./Login";
 
 ChartJS.register(
@@ -26,16 +28,21 @@ const DataChart = (admin) => {
   // ========== Get all customer data ==========
   const [dataShow, setDataShow] = useState([]);
 
-  const getUserData = async (token) => {
-    const data = await getRoomReserve(token);
-    setDataShow(data);
+  const getUserData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const data = await getStatsRoomReserve(token);
+        setDataShow(data);
+      }
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.push("/"); // Redirect user to the homepage
+    }
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      getUserData(token);
-    }
+    getUserData();
   }, []);
   // ===========================================
 

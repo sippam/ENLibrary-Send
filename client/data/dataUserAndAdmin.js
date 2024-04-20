@@ -3,38 +3,57 @@ import Axios from "axios";
 const getUserData = async (token) => {
   try {
     const userData = await Axios.get("/api/getUserData", {
-      params: { token: token },
+      // params: { token: token },
       headers: {
         "Content-Type": "application/json",
-        Authorization: process.env.NEXT_PUBLIC_TOKEN,
+        Authorization: "Bearer " + token,
       },
     });
-    if (userData.data == "TokenExpried") {
-      localStorage.removeItem("token");
-      return null;
-    }
+    // if (userData.status != 200) {
+    //   console.log("delete token in getUserData");
+    //   localStorage.removeItem("token");
+    //   router.push("/");
+    //   return null;
+    // }
     return userData.data;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
 const getRoomReserve = async (token) => {
   try {
     const userData = await Axios.get("/api/getAllReserveRoom", {
-      params: { token: token },
+      // params: { token: token },
       headers: {
         "Content-Type": "application/json",
-        Authorization: process.env.NEXT_PUBLIC_TOKEN,
+        Authorization: "Bearer " + token,
       },
     });
     if (userData.data == "TokenExpried") {
       localStorage.removeItem("token");
-      return null;
+      return [];
     }
     return userData.data;
   } catch (error) {
     console.log("getData", error);
+    throw error;
+  }
+};
+
+const getStatsRoomReserve = async (token) => {
+  try {
+    const userData = await Axios.get("/api/getStatsRoomReserve", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    });
+    return userData.data;
+  } catch (error) {
+    console.log("getData", error);
+    throw error;
   }
 };
 
@@ -44,39 +63,41 @@ const reserveRoom = async (token, reserveData) => {
       "/api/reserveRoom",
       { reserveData },
       {
-        params: { token: token },
+        // params: { token: token },
         headers: {
           "Content-Type": "application/json",
-          Authorization: process.env.NEXT_PUBLIC_TOKEN,
+          Authorization: "Bearer " + token,
         },
       }
     );
 
     if (data.data == "TokenExpried") {
       localStorage.removeItem("token");
-      return null;
+      return [];
     }
   } catch (error) {
     console.log("reserveRoom", error);
+    throw error;
   }
 };
 
 const getUserDataRoom = async (token) => {
   try {
     const userData = await Axios.get("/api/getUserDataRoom", {
-      params: { token: token },
+      // params: { token: token },
       headers: {
         "Content-Type": "application/json",
-        Authorization: process.env.NEXT_PUBLIC_TOKEN,
+        Authorization: "Bearer " + token,
       },
     });
-    if (userData.data == "TokenExpried") {
-      localStorage.removeItem("token");
-      return null;
-    }
+    // if (userData.data == "TokenExpried") {
+    //   localStorage.removeItem("token");
+    //   return [];
+    // }
     return userData.data;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 // ===================================================
@@ -92,79 +113,116 @@ const sendEmail = async (token, dataRoom) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: process.env.NEXT_PUBLIC_TOKEN,
+          Authorization: "Bearer " + token,
         },
       }
     );
   } catch (error) {
     console.log("sendEmail", error);
+    throw error;
   }
 };
 
-const deleteUserRoom = async (token, id) => {
-  const deleteRoom = await Axios.delete(`/api/deleteRoom`, {
-    params: { token: token },
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: process.env.NEXT_PUBLIC_TOKEN,
-    },
-    data: {
-      id: id,
-    },
-  });
-
-  if (deleteRoom.data == "TokenExpried") {
-    localStorage.removeItem("token");
-    return null;
+const sendEmailDelete = async (token, userData) => {
+  try {
+    await Axios.post(
+      "/api/emailDelete",
+      { userData: userData },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("sendEmail", error);
+    throw error;
   }
 };
 
-const deleteRoomByAdmin = async (id) => {
-   await Axios.delete(`/api/deleteRoomByAdmin`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: process.env.NEXT_PUBLIC_TOKEN,
-    },
-    data: {
-      id: id,
-    },
-  });
+const deleteUserRoom = async (token, roomId) => {
+  try {
+    // const deleteRoom = 
+    await Axios.delete(`/api/deleteRoom`, {
+      // params: { token: token },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      data: {
+        roomId: roomId,
+      },
+    });
+
+  } catch (error) {
+    console.log("deleteUserRoom", error);
+    throw error;
+  }
+
+  // if (deleteRoom.data == "TokenExpried") {
+  //   localStorage.removeItem("token");
+  //   return null;
+  // }
 };
+
+const deleteRoomByAdmin = async (token, roomId) => {
+  try {
+    await Axios.delete(`/api/deleteRoomByAdmin`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      data: {
+        roomId: roomId,
+      },
+    });
+  } catch (error) {
+    console.log("deleteRoomByAdmin", error);
+    throw error;
+  }
+};
+
 // ========== Get all customer to show in datachart ==========
-const getExamPeriod = async () => {
+const getExamPeriod = async (token) => {
   try {
     const exam = await Axios.get("/api/examPeriod", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: process.env.NEXT_PUBLIC_TOKEN,
+        Authorization: "Bearer " + token,
       },
     });
 
     return exam.data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
 const getRole = async (token) => {
   try {
     const role = await Axios.get("/api/getRole", {
-      params: {
-        token: token,
-      },
+      // params: {
+      //   token: token,
+      // },
       headers: {
         "Content-Type": "application/json",
-        Authorization: process.env.NEXT_PUBLIC_TOKEN,
+        Authorization: "Bearer " + token,
       },
     });
-    if (role.data == "TokenExpried") {
-      localStorage.removeItem("token");
-      return null;
-    }
+    // if (role.data == "TokenExpried") {
+    //   localStorage.removeItem("token");
+    //   console.log("testtttt");
+    //   redirect("/");
+    //   // return null;
+    // }
 
     return role.data;
   } catch (error) {
     console.log(error);
+    // localStorage.removeItem("token");
+    throw error;
   }
 };
 
@@ -174,8 +232,10 @@ export {
   reserveRoom,
   getExamPeriod,
   sendEmail,
+  sendEmailDelete,
   deleteUserRoom,
   getRole,
   getUserData,
   deleteRoomByAdmin,
+  getStatsRoomReserve,
 };

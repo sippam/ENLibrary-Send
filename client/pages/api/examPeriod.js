@@ -1,7 +1,33 @@
 import excuteQuery from "@/utils/connect";
 import nextConnect from "next-connect";
+import jwt from "jsonwebtoken";
+import handle from "@/utils/handle";
+import { allMiddleware } from "@/utils/handle";
 
 const table = "examperiods";
+
+// export default allMiddleware
+// export default nextConnect({
+//   onError(error, req, res) {
+//     res
+//       .status(501)
+//       .json({ error: `Sorry something Happened! ${error.message}` });
+//   },
+//   onNoMatch(req, res) {
+//     res.status(405).json({ error: `Method '${req.method}' Not Allowed` });
+//   },
+// })
+//   .use(async (req, res, next) => {
+//     // const authorizationHeader = req.headers.authorization;
+//     next();
+//     // if (authorizationHeader == process.env.NEXT_PUBLIC_TOKEN) {
+//     //   console.log("send Email");
+//     //   next();
+//     // } else {
+//     //   // No authorization header, return an empty response
+//     //   res.status(401).json({ error: "Unauthorized" });
+//     // }
+//   })
 
 export default nextConnect({
   onError(error, req, res) {
@@ -15,13 +41,35 @@ export default nextConnect({
 })
   .use(async (req, res, next) => {
     const authorizationHeader = req.headers.authorization;
+  const token = authorizationHeader.split(" ")[1];
 
-    if (authorizationHeader == process.env.NEXT_PUBLIC_TOKEN) {
-      console.log("Authorization passed");
-      next();
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (decoded) {
+          next();
+        } else {
+          // res.setHeader(
+          //   "Set-Cookie",
+          //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
+          // );
+          res.status(403).json({ error: "Forbidden" });
+        }
+      } catch (error) {
+        console.log("error", error);
+
+        // res.setHeader(
+        //   "Set-Cookie",
+        //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
+        // );
+        res.status(401).json({ error: "Unauthorized" });
+      }
     } else {
-      // No authorization header, return an empty response
-      console.log("No authorization header");
+      // res.setHeader(
+      //   "Set-Cookie",
+      //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
+      // );
       res.status(401).json({ error: "Unauthorized" });
     }
   })

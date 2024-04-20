@@ -6,11 +6,15 @@ const Announce = () => {
 
   useEffect(() => {
     const getDataExam = async () => {
-      try {
-        const data = await getExamPeriod();
-        setExamPeriod(data[0]?.isEnable);
-      } catch (error) {
-        console.error("Error fetching exam period:", error);
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const data = await getExamPeriod(token);
+          setExamPeriod(data[0]?.isEnable);
+        } catch (error) {
+          localStorage.removeItem("token");
+          router.reload(); // Redirect user to the homepage
+        }
       }
     };
 

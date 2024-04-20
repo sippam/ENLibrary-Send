@@ -27,7 +27,8 @@ import isEqual from "date-fns/isEqual";
 import { useRouter } from "next/router";
 import useInterval from "../hooks/useInterval";
 
-const Booking = ({ sendDataBook, tiggerDelete }) => {
+const Booking = ({ sendDataBook, tiggerDelete, admin }) => {
+  // console.log("admin", admin);
   const router = useRouter();
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [token, setToken] = useState("");
@@ -77,20 +78,31 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
 
   // When exam period user want to booking 11:00 pm to 01:00 am
   const [dayTwo, setDayTwo] = useState(null);
+  const [getDayTwo, setGetDayTwo] = useState(null);
+  const [getMonthEnd, setGetMonthEnd] = useState(null);
+  const [getYearEnd, setGetYearEnd] = useState(null);
   const [between2days, setBetween2days] = useState(false);
 
   const [minTimeInThisDate, setMinTimeInThisDate] = useState(minTime);
 
   const hladleDayTwo = (event) => {
     setDayTwo(event);
+    setGetDayTwo(event.getDate());
+    setGetMonthEnd(event.getMonth() + 1);
+    setGetYearEnd(event.getFullYear());
     setCheckSelectDay(true);
     setBetween2days(true);
   };
 
   const [userSwitchBookTwoDay, setUserSwitchBookTwoDay] = useState(false);
+  const [adminReserve, setAdminReserve] = useState(false);
   const handleToggle = (event) => {
     setUserSwitchBookTwoDay(event.target.checked);
     setDayTwo(null);
+  };
+
+  const handleAdminToggle = (event) => {
+    setAdminReserve(event.target.checked);
   };
 
   // ========== Set weekend can't booking and set exam period that can booking ==========
@@ -103,12 +115,9 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
   };
 
   const weekendAndBetween2days = (event) => {
-    console.log("event", event);
     if (adminBTN == true && dayTwo != null) {
-      console.log("kuy");
       return event >= today.setHours(0, 0, 0) && !isEqual(event, dayTwo);
     } else if (adminBTN == true) {
-      console.log("hee");
       return event >= today.setHours(0, 0, 0);
     } else {
       return !(event.getDay() == 6 || event.getDay() == 0);
@@ -151,8 +160,11 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
     );
     setDay(valueDay);
     setGetDay(valueDay.getDate());
+    setGetDayTwo(valueDay.getDate());
     setGetMonth(valueDay.getMonth() + 1);
+    setGetMonthEnd(valueDay.getMonth() + 1);
     setGetYear(valueDay.getFullYear());
+    setGetYearEnd(valueDay.getFullYear());
     setGetTimeTo(null);
     setTimeFrom(null);
     setGetTimeTo(null);
@@ -287,13 +299,17 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
   const saveData = (event) => {
     event.preventDefault();
     sendEmailToUser();
-    setClickButton(true);
+    // setClickButton(true);
+    setClickButton(false);
     sendDataBook();
     setCollectDay(getTime());
     setDay(null);
     setGetDay(null);
+    setGetDayTwo(null);
     setGetMonth(null);
+    setGetMonthEnd(null);
     setGetYear(null);
+    setGetYearEnd(null);
     setRoomName("");
     setRoomType("default");
     setRoomNumber("default");
@@ -314,25 +330,40 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
 
   // Get data to show
   const getRoomReserveFunc = async (token) => {
-    const data = await getRoomReserve(token);
-    setDataShow(data || []);
+    try {
+      const data = await getRoomReserve(token);
+      setDataShow(data || []);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.push("/"); // Redirect user to the homepage
+    }
   };
 
   const getUserDataFunc = async (token) => {
-    const data = await getUserData(token);
-    setUserData(data || []);
+    try {
+      const data = await getUserData(token);
+      setUserData(data || []);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
+    }
   };
 
   const getUserRoom = async (token) => {
-    const data = await getUserDataRoom(token);
-    setUserRoom(data || []);
+    try {
+      const data = await getUserDataRoom(token);
+      setUserRoom(data || []);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
+    }
   };
   // ===============================================
 
   // ========== Check user already booking? If had booking will not allow to booking again ==========
   const [canBookingAgain, setCanBookingAgain] = useState([]);
   function checkCanBookingAgain() {
-    if (userRoom.length != 0) {
+    if (userRoom.length != 0 && !adminReserve) {
       setCanBookingAgain(
         userRoom.filter(
           (data) =>
@@ -367,27 +398,193 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
       getRoomReserveFunc(token);
     }
   }, 2 * 1000);
-
+  // console.log("getDay",getMonth);
   // ========== Check room booking if have booking can't submit form ==========
   const mapItem =
     dataShow.length != 0
       ? dataShow.map((data) => {
+          // console.log("data", data);
+          // console.log(
+          //   "data",
+          //   new Date(data.year, data.month - 1, data.day, data.timeFrom)
+          // );
+          // console.log("test",isAfter(new Date(getYear, getMonth, getDay, getTimeFrom), new Date(data.year, data.month - 1, data.day, data.timeFrom)) && isBefore(new Date(getYear, getMonth, getDay, getTimeFrom), new Date(data.year, data.month - 1, data.day, data.timeTo)));
           const calRoomNumberDay =
             String(data.roomType) == roomType &&
             String(data.roomNumber) == roomNumber &&
-            Number(data.day) == getDay;
+            (Number(data.day) == getDay ||
+              addDays(
+                new Date(getYear, getMonth - 1, Number(data.day)),
+                1
+              ).getDate() == getDayTwo);
+
+          // const isBetween2days =
+          //   String(data.roomType) == roomType &&
+          //   String(data.roomNumber) == roomNumber &&
+          //   Number(data.day) == getDay &&
+          //   data.between2days == true;
+          // console.log(data);
+          // console.log("isBetween2days", isBetween2days);
+          // const calTomeFrom =
+          //   getTimeFrom >= Number(data.timeFrom) &&
+          //   getTimeFrom < Number(data.timeTo);
+          // console.log(
+          //   "calTomeFrom",
+          //   new Date(getYear, getMonth - 1, getDay, getTimeFrom).getTime()
+          // );
+          // console.log("isBetween2days", isBetween2days);
           const calTomeFrom =
-            getTimeFrom >= Number(data.timeFrom) &&
-            getTimeFrom < Number(data.timeTo);
+            new Date(getYear, getMonth - 1, getDay, getTimeFrom).getTime() >=
+              new Date(
+                data.year,
+                data.month - 1,
+                data.day,
+                data.timeFrom
+              ).getTime() &&
+            // new Date(getYear, getMonth - 1, getDay, getTimeFrom).getTime() <
+            //   new Date(
+            //     data.year,
+            //     data.month - 1,
+            //     data.day,
+            //     data.timeTo
+            //   ).getTime();
+            new Date(getYear, getMonth - 1, getDay, getTimeFrom).getTime() <
+              new Date(
+                data.yearEnd,
+                data.monthEnd - 1,
+                data.dayEnd,
+                data.timeTo
+              ).getTime();
+
+          // const calTomeFrom =isAfter(new Date(getYear, getMonth - 1, getDay, getTimeFrom), new Date(data.year, data.month - 1, data.day, data.timeFrom)) && isBefore(new Date(getYear, getMonth - 1, getDay, getTimeFrom), new Date(data.year, data.month - 1, data.day, data.timeTo))
+          // const calTimeTo =
+          //   getTimeTo > Number(data.timeFrom) &&
+          //   getTimeTo <= Number(data.timeTo);
+          // const calTimeTo =isAfter(new Date(getYear, getMonth - 1, getDay, getTimeTo), new Date(data.year, data.month - 1, data.day, data.timeFrom)) && isBefore(new Date(getYear, getMonth - 1, getDay, getTimeTo), new Date(data.year, data.month - 1, data.day, data.timeTo))
+          // const calTimeTo =
+          //   new Date(getYear, getMonth - 1, getDay, getTimeTo).getTime() >
+          //     new Date(
+          //       data.year,
+          //       data.month - 1,
+          //       data.day,
+          //       data.timeFrom
+          //     ).getTime() &&
+          //   new Date(getYear, getMonth - 1, getDay, getTimeTo).getTime() <=
+          //     new Date(
+          //       data.year,
+          //       data.month - 1,
+          //       data.day,
+          //       data.timeTo
+          //     ).getTime();
+
           const calTimeTo =
-            getTimeTo > Number(data.timeFrom) &&
-            getTimeTo <= Number(data.timeTo);
+            new Date(
+              getYearEnd,
+              getMonthEnd - 1,
+              getDayTwo,
+              getTimeTo
+            ).getTime() >
+              new Date(
+                data.year,
+                data.month - 1,
+                data.day,
+                data.timeFrom
+              ).getTime() &&
+            new Date(
+              getYearEnd,
+              getMonthEnd - 1,
+              getDayTwo,
+              getTimeTo
+            ).getTime() <=
+              new Date(
+                data.yearEnd,
+                data.monthEnd - 1,
+                data.dayEnd,
+                data.timeTo
+              ).getTime();
+
+          //     const calTomeFrom2 =
+          //     new Date(getYear, getMonth - 1, getDay, getTimeFrom).getTime() >=
+          //       new Date(
+          //         data.year,
+          //         data.month - 1,
+          //         data.day,
+          //         data.timeFrom
+          //       ).getTime() &&
+          //     new Date(getYear, getMonth - 1, getDay, getTimeFrom).getTime() <
+          //       addDays(new Date(
+          //         data.year,
+          //         data.month - 1,
+          //         data.day,
+          //         data.timeTo
+          //       ),1).getTime();
+
+          // const calTimeTo2 =
+          //   addDays(
+          //     new Date(getYear, getMonth - 1, getDay, getTimeTo),
+          //     1
+          //   ).getTime() >
+          //     new Date(
+          //       data.year,
+          //       data.month - 1,
+          //       data.day,
+          //       data.timeFrom
+          //     ).getTime() &&
+          //   addDays(
+          //     new Date(getYear, getMonth - 1, getDay, getTimeTo),
+          //     1
+          //   ).getTime() <=
+          //     addDays(
+          //       new Date(data.year, data.month - 1, data.day, data.timeTo),
+          //       1
+          //     ).getTime();
+          // if (calRoomNumberDay) {
           if (calRoomNumberDay) {
             if (calTomeFrom || calTimeTo) {
               return false;
             } else {
               return true;
             }
+            // }
+            // else if (isBetween2days){
+            //   console.log("calTomeFrom2", new Date(getYear, getMonth - 1, getDay, getTimeFrom).getTime() >=
+            //   new Date(
+            //     data.year,
+            //     data.month - 1,
+            //     data.day,
+            //     data.timeFrom
+            //   ).getTime() &&
+            // new Date(getYear, getMonth - 1, getDay, getTimeFrom).getTime() <
+            //   addDays(new Date(
+            //     data.year,
+            //     data.month - 1,
+            //     data.day,
+            //     data.timeTo
+            //   ),1).getTime());
+
+            //   console.log("calTimeTo2", addDays(
+            //     new Date(getYear, getMonth - 1, getDay, getTimeTo),
+            //     1
+            //   ).getTime() >
+            //     new Date(
+            //       data.year,
+            //       data.month - 1,
+            //       data.day,
+            //       data.timeFrom
+            //     ).getTime() &&
+            //   addDays(
+            //     new Date(getYear, getMonth - 1, getDay, getTimeTo),
+            //     1
+            //   ).getTime() <=
+            //     addDays(
+            //       new Date(data.year, data.month - 1, data.day, data.timeTo),
+            //       1
+            //     ).getTime());
+            //   if (calTomeFrom2 || calTimeTo2) {
+            //     return false;
+            //   } else {
+            //     return true;
+            //   }
           } else {
             return true;
           }
@@ -399,10 +596,14 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
   // Post data into database
   const addData = async () => {
     const reserveData = {
+      roomId: uuid(),
       date: collectday,
       year: getYear,
+      yearEnd: getYearEnd,
       month: getMonth,
+      monthEnd: getMonthEnd,
       day: getDay,
+      dayEnd: getDayTwo,
       roomName: roomName,
       roomType: roomType,
       roomNumber: roomNumber,
@@ -412,7 +613,13 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
       inLibrary: inLibrary,
     };
 
-    reserveRoom(token, reserveData);
+    try {
+      reserveRoom(token, reserveData);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
+    }
+
     toast.success("📖 Successfully!", {
       position: "bottom-right",
       autoClose: 6000,
@@ -428,35 +635,43 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
 
   // ========== Get data exam period in data base and set new day booking ==========
   async function getExamAdmin() {
-    const data = await getExamPeriod();
-    const start = new Date(data[0]?.examStart);
-    const end = new Date(data[0]?.examEnd);
-    const boolean = data[0]?.isEnable;
-    setAdminBTN(boolean);
-    if (boolean == true) {
-      setStartBookingDay(new Date(start));
-      setEndBookingDay(new Date(end));
-      setMinTime(new Date("1/1/1111 12:00 AM"));
-      setMaxTime(new Date("1/1/1111 11:00 PM"));
-      if (
-        new Date(addDays(getTime(), 1).setHours(0, 0, 0)) ===
-        new Date(addDays(end, 1).setHours(0, 0, 0))
-      ) {
-        setStartBookingDay(getTime());
-        setEndBookingDay(addDays(getTime(), 2));
-        setMinTime(new Date("1/1/1111 10:00 AM"));
-        setMaxTime(new Date("1/1/1111 4:00 PM"));
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const data = await getExamPeriod(token);
+        const start = new Date(data[0]?.examStart);
+        const end = new Date(data[0]?.examEnd);
+        const boolean = data[0]?.isEnable;
+        setAdminBTN(boolean);
+        if (boolean == true) {
+          setStartBookingDay(new Date(start));
+          setEndBookingDay(new Date(end));
+          setMinTime(new Date("1/1/1111 12:00 AM"));
+          setMaxTime(new Date("1/1/1111 11:00 PM"));
+          if (
+            new Date(addDays(getTime(), 1).setHours(0, 0, 0)) ===
+            new Date(addDays(end, 1).setHours(0, 0, 0))
+          ) {
+            setStartBookingDay(getTime());
+            setEndBookingDay(addDays(getTime(), 2));
+            setMinTime(new Date("1/1/1111 10:00 AM"));
+            setMaxTime(new Date("1/1/1111 4:00 PM"));
+          }
+        } else {
+          /* 
+        If today is last day in exam period
+            day will allow booking between 3 days
+            time will allow booking between 10.00 - 16.00
+        */
+          setStartBookingDay(getTime());
+          setEndBookingDay(addDays(getTime(), 2));
+          setMinTime(new Date("1/1/1111 10:00 AM"));
+          setMaxTime(new Date("1/1/1111 4:00 PM"));
+        }
       }
-    } else {
-      /* 
-      If today is last day in exam period
-          day will allow booking between 3 days
-          time will allow booking between 10.00 - 16.00
-      */
-      setStartBookingDay(getTime());
-      setEndBookingDay(addDays(getTime(), 2));
-      setMinTime(new Date("1/1/1111 10:00 AM"));
-      setMaxTime(new Date("1/1/1111 4:00 PM"));
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
     }
   }
   // ==========================================================================
@@ -503,7 +718,7 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
         checkSelectDay === true &&
         mapItem?.indexOf(false) === -1 &&
         clickButton === false &&
-        canBookingAgain.length === 0;
+        (adminReserve || canBookingAgain.length === 0);
       setCheckValid(check);
       if (check) {
         setBTNCanBook(true);
@@ -546,7 +761,7 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
         checkSelectDay === true &&
         mapItem?.indexOf(false) === -1 &&
         clickButton === false &&
-        canBookingAgain.length === 0;
+        (adminReserve || canBookingAgain.length === 0);
       setCheckValid(check);
       if (check) {
         setBTNCanBook(true);
@@ -580,7 +795,7 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
 
   useEffect(() => {
     setTimeout(() => {
-      // checkCanBookingAgain();
+      checkCanBookingAgain();
       setClickButton(false);
     }, 800);
   }, [tiggerDelete]);
@@ -595,7 +810,13 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
       getTimeFrom: `${getTimeFrom}:00`,
       getTimeTo: `${getTimeTo}:00`,
     };
-    sendEmail(token, dataRoom);
+
+    try {
+      sendEmail(token, dataRoom);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
+    }
   };
   // =================================
   // ========== Toastify noti when user had been booking or someone already booking that room ==========
@@ -663,9 +884,14 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
   useEffect(() => {
     const getUserRole = async () => {
       if (token) {
-        const role = await getRole(token);
-        if (role) {
-          setIsAdmim(true);
+        try {
+          const role = await getRole(token);
+          if (role) {
+            setIsAdmim(true);
+          }
+        } catch (error) {
+          localStorage.removeItem("token");
+          router.reload(); // Redirect user to the homepage
         }
       }
     };
@@ -697,12 +923,24 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
             <form onSubmit={saveData}>
               <div className="grid md:grid-cols-1 gap-4 w-full py-3">
                 <div className="px-3 py-2 ">
-                  <label
-                    htmlFor="reservationName"
-                    className="mx-1 block mb-2 text-base font-medium text-gray-900 dark:text-white"
-                  >
-                    Reservation Name
-                  </label>
+                  <div className="flex justify-between">
+                    <label
+                      htmlFor="reservationName"
+                      className="mx-1 block mb-2 text-base font-medium text-gray-900 dark:text-white"
+                    >
+                      Reservation Name
+                    </label>
+                    {isAdmim && (
+                      <div className="flex -mt-3 md:mt-0 justify-center items-center ">
+                        <div>Admin Toggle</div>
+                        <Switch
+                          {...label}
+                          onClick={handleAdminToggle}
+                          checked={adminReserve}
+                        />
+                      </div>
+                    )}
+                  </div>
                   <input
                     name="Reservation_Name"
                     type="text"
@@ -734,6 +972,19 @@ const Booking = ({ sendDataBook, tiggerDelete }) => {
                     >
                       Type Of Room
                     </label>
+                    {/* <div className="w-full flex justify-between">
+                      {typeRoom.map((type) => (
+                        <button
+                          onClick={() => setTypeOfRoom(type.value)}
+                          key={uuid()}
+                          value={roomType}
+                          disabled={!inputRoom}
+                          className="w-full border-2 border-[#cfd3d9] rounded-md px-2 py-1 mx-4"
+                        >
+                          {type.text}
+                        </button>
+                      ))}
+                    </div> */}
                     <select
                       name="Type_Of_Room"
                       id="typeRoom"

@@ -1,9 +1,10 @@
 import excuteQuery from "@/utils/connect";
 import nextConnect from "next-connect";
 import jwt from "jsonwebtoken";
-import { allMiddleware } from "@/utils/handle";
+import adminList from "../../data/adminList.json";
+import { adminMiddleware } from "@/utils/handle";
 
-const table = "roomReserve";
+const table = "statsRoomReserve";
 
 // export default nextConnect({
 //   onError(error, req, res) {
@@ -16,30 +17,12 @@ const table = "roomReserve";
 //   },
 // })
 //   .use(async (req, res, next) => {
+//     next();
 //     // const authorizationHeader = req.headers.authorization;
 
 //     // if (authorizationHeader == process.env.NEXT_PUBLIC_TOKEN) {
-//       try {
-//         // const token = req.query.token;
-//         const token = req.headers.authorization;
-
-//         jwt.verify(token, process.env.JWT_SECRET);
-//         next();
-//       } catch (error) {
-//         console.log("updateStatus", error);
-//         // Token is expired or invalid
-//         if (error.name === "TokenExpiredError") {
-//           // res.setHeader(
-//           //   "Set-Cookie",
-//           //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
-//           // );
-
-//           // Redirect to the home page
-//           // res.writeHead(302, { Location: '/' });
-//           // res.end();
-//           res.json("TokenExpried")
-//         }
-//       }
+//     //   console.log("send Email");
+//     //   next();
 //     // } else {
 //     //   // No authorization header, return an empty response
 //     //   res.status(401).json({ error: "Unauthorized" });
@@ -57,15 +40,17 @@ export default nextConnect({
   },
 })
   .use(async (req, res, next) => {
+    // checkRole()
     const authorizationHeader = req.headers.authorization;
     const token = authorizationHeader.split(" ")[1];
-
     if (token) {
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // console.log("adminMiddleware", decoded);
+        const email = Buffer.from(decoded.email, "base64").toString("utf-8");
 
-        if (decoded) {
+        const userRole = adminList.email.includes(email);
+
+        if (userRole) {
           next();
         } else {
           // res.setHeader(
@@ -92,24 +77,38 @@ export default nextConnect({
     }
   })
   .get(async (req, res) => {
-    // const token = req.query.token;
-    const authorizationHeader = req.headers.authorization;
-    const token = authorizationHeader.split(" ")[1];
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    const haveRoom = await excuteQuery({
-      query: `SELECT * FROM ${table} WHERE id = ?`,
-      values: [decoded.id],
+    const allReserveRoom = await excuteQuery({
+      query: `
+      SELECT *
+      FROM ${table}
+    `,
     });
+    try {
+      const decodeData = allReserveRoom.map((row) => ({
+        roomType: row.roomType,
+        roomNumber: row.roomNumber,
+      }));
 
-    res.json(haveRoom);
-  })
-  .put(async (req, res) => {
-    const { id, inLibrary } = req.body;
+      // console.log(decodeData);
+      res.json(decodeData);
+    } catch (error) {
+      console.log(error);
+      res.json([]);
+    }
 
-    await excuteQuery({
-      query: `UPDATE ${table} SET inLibrary = ? WHERE id = ?`,
-      values: [inLibrary, id],
-    });
+    // const decodeData = allReserveRoom.map((row) => ({
+    //   ...row,
+    //   email: Buffer.from(row.email, "base64").toString("utf-8"),
+    //   title: Buffer.from(row.title, "base64").toString("utf-8"),
+    //   name: Buffer.from(row.name, "base64").toString("utf-8"),
+    //   surname: Buffer.from(row.surname, "base64").toString("utf-8"),
+    //   cn: Buffer.from(row.cn, "base64").toString("utf-8"),
+    //   faculty: Buffer.from(row.faculty, "base64").toString("utf-8"),
+    // }));
+
+    // if (decodeData) {
+    //   res.json(decodeData);
+    // } else {
+    //   res.json([]);
+    // }
   });

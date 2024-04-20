@@ -9,8 +9,13 @@ const request = ({ triggerbook, deleteRoom }) => {
   const [token, setToken] = useState("");
 
   const getUserDataFunc = async (token) => {
-    const userData = await getUserDataRoom(token);
-    setDataShow(userData);
+    try {
+      const userData = await getUserDataRoom(token);
+      setDataShow(userData);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
+    }
   };
 
   useEffect(() => {
@@ -22,6 +27,20 @@ const request = ({ triggerbook, deleteRoom }) => {
     }
   }, [triggerbook]);
 
+  // ========== Delete booking ==========
+  const deleteBooking = async (roomId) => {
+    deleteRoom();
+
+    try {
+      deleteUserRoom(token, roomId);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
+    }
+    setDataShow(dataShow.filter((val) => val.roomId != roomId));
+  };
+  // ====================================
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -32,18 +51,6 @@ const request = ({ triggerbook, deleteRoom }) => {
     }
   }, []);
   // ===============================================
-
-  // ========== Delete booking ==========
-  const deleteBooking = async (id) => {
-    deleteRoom();
-    setDataShow([]);
-    deleteUserRoom(token, id);
-
-    setTimeout(() => {
-      router.reload();
-    }, 700);
-  };
-  // ====================================
 
   return (
     <div
@@ -90,7 +97,7 @@ const request = ({ triggerbook, deleteRoom }) => {
                           <button
                             className="px-2 py-1 rounded-full uppercase cursor-pointer hover:scale-[95%] ease-in duration-100 text-base tracking-widest font-semibold text-white shadow-gray-400 dark:shadow-[black] shadow-xl bg-gradient-to-r from-[#FF0000] to-[#263238]"
                             onClick={() => {
-                              deleteBooking(val.id);
+                              deleteBooking(val.roomId);
                             }}
                           >
                             Cancel

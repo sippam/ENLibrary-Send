@@ -8,11 +8,16 @@ import CustomTextInCalendar from "./CustomTextInCalendar";
 import { addDays } from "date-fns";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
-import { getExamPeriod, deleteRoomByAdmin } from "@/data/dataUserAndAdmin";
+import {
+  getExamPeriod,
+  deleteRoomByAdmin,
+  sendEmailDelete,
+} from "@/data/dataUserAndAdmin";
 
 const localizer = dayjsLocalizer(dayjs);
 
 const CalendarTable = ({
+  triggerDelete,
   isConference,
   year,
   month,
@@ -28,9 +33,18 @@ const CalendarTable = ({
   const [isEnable, setIsEnable] = useState(false); // Check exam period enable by admin
 
   const checkExamPeriodEnable = async () => {
-    const data = await getExamPeriod();
-    setIsEnable(data[0]?.isEnable);
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const data = await getExamPeriod(token);
+        setIsEnable(data[0]?.isEnable);
+      }
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
+    }
   };
+  
   useEffect(() => {
     checkExamPeriodEnable();
   }, []);
@@ -46,7 +60,7 @@ const CalendarTable = ({
               // When between2days is true, return an array with two events
               return [
                 {
-                  id: data.id,
+                  roomId: data.roomId,
                   start: new Date(
                     data.year,
                     data.month - 1,
@@ -63,6 +77,7 @@ const CalendarTable = ({
                   ),
                   resourceId: data.roomNumber,
                   data: {
+                    id: data.id,
                     date: data.date,
                     roomType: data.roomType,
                     roomNumber: data.roomNumber,
@@ -79,7 +94,7 @@ const CalendarTable = ({
                   },
                 },
                 {
-                  id: data.id,
+                  roomId: data.roomId,
                   start: addDays(
                     new Date(data.year, data.month - 1, data.day, 0),
                     1
@@ -90,6 +105,7 @@ const CalendarTable = ({
                   ),
                   resourceId: data.roomNumber,
                   data: {
+                    id: data.id,
                     date: data.date,
                     roomType: data.roomType,
                     roomNumber: data.roomNumber,
@@ -110,7 +126,7 @@ const CalendarTable = ({
             // When between2days is false, return a single event
             return [
               {
-                id: data.id,
+                roomId: data.roomId,
                 start: new Date(
                   data.year,
                   data.month - 1,
@@ -120,6 +136,7 @@ const CalendarTable = ({
                 end: new Date(data.year, data.month - 1, data.day, data.timeTo),
                 resourceId: data.roomNumber,
                 data: {
+                  id: data.id,
                   date: data.date,
                   roomType: data.roomType,
                   roomNumber: data.roomNumber,
@@ -147,7 +164,7 @@ const CalendarTable = ({
             // When between2days is true, return an array with two events
             return [
               {
-                id: data.id,
+                roomId: data.roomId,
                 start: new Date(
                   data.year,
                   data.month - 1,
@@ -157,6 +174,7 @@ const CalendarTable = ({
                 end: new Date(data.year, data.month - 1, data.day, 23, 59, 59),
                 resourceId: data.roomNumber,
                 data: {
+                  id: data.id,
                   date: data.date,
                   roomType: data.roomType,
                   roomNumber: data.roomNumber,
@@ -173,7 +191,7 @@ const CalendarTable = ({
                 },
               },
               {
-                id: data.id,
+                roomId: data.roomId,
                 start: addDays(
                   new Date(data.year, data.month - 1, data.day, 0),
                   1
@@ -184,6 +202,7 @@ const CalendarTable = ({
                 ),
                 resourceId: data.roomNumber,
                 data: {
+                  id: data.id,
                   date: data.date,
                   roomType: data.roomType,
                   roomNumber: data.roomNumber,
@@ -204,7 +223,7 @@ const CalendarTable = ({
           // When between2days is false, return a single event
           return [
             {
-              id: data.id,
+              roomId: data.roomId,
               start: new Date(
                 data.year,
                 data.month - 1,
@@ -214,6 +233,7 @@ const CalendarTable = ({
               end: new Date(data.year, data.month - 1, data.day, data.timeTo),
               resourceId: data.roomNumber,
               data: {
+                id: data.id,
                 date: data.date,
                 roomType: data.roomType,
                 roomNumber: data.roomNumber,
@@ -271,16 +291,26 @@ const CalendarTable = ({
   };
 
   // ========== Delete booking ==========
-  const handleDeleteBooking = async (id) => {
+  const handleDeleteBooking = async (roomId, userData) => {
     Swal.fire({
       title: "Do you want to delete this reserve?",
       showCancelButton: true,
       confirmButtonText: "Yes",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        deleteRoomByAdmin(id).then(() => {
-          router.reload();
-        });
+        setHandleClick(!handleClick);
+        triggerDelete();
+
+        try {
+          const token = localStorage.getItem("token");
+          if (token) {
+            deleteRoomByAdmin(token, roomId);
+            sendEmailDelete(token, userData);
+          }
+        } catch (error) {
+          localStorage.removeItem("token");
+          router.reload(); // Redirect user to the homepage
+        }
       }
     });
   };
@@ -386,7 +416,7 @@ const CalendarTable = ({
               {data.data.email}
             </div>
             <button
-              onClick={() => handleDeleteBooking(data.id)}
+              onClick={() => handleDeleteBooking(data.roomId, data.data)}
               className="bg-red-500"
             >
               Delete

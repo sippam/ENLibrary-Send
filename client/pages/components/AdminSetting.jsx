@@ -31,48 +31,64 @@ const AdminSetting = (admin) => {
 
   // ========== Get exam period from database ==========
   async function getData() {
-    const data = await getExamPeriod();
-    if (data[0]?.isEnable == true) {
-      setStartDate(new Date(data[0].examStart));
-      setEndDate(new Date(data[0].examEnd));
-      setToggleSwitch(data[0].isEnable);
-      // if exam period btn is false will set day booking 2 days
-    } else {
-      setStartDate(getTime());
-      setEndDate(addDays(getTime(), 2));
-      setToggleSwitch(false);
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const data = await getExamPeriod(token);
+        if (data[0]?.isEnable == true) {
+          setStartDate(new Date(data[0].examStart));
+          setEndDate(new Date(data[0].examEnd));
+          setToggleSwitch(data[0].isEnable);
+          // if exam period btn is false will set day booking 2 days
+        } else {
+          setStartDate(getTime());
+          setEndDate(addDays(getTime(), 2));
+          setToggleSwitch(false);
+        }
+      }
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
     }
   }
   // ==================================================
 
   // ========== Save exam period to database ==========
   async function saveData(BTN) {
-    const data = await getExamPeriod();
-    const id = data[0]?._id;
-    const start = startDate;
-    const end = endDate;
-    if (BTN == true) {
-      // if not have exam period data in database it will create new one
-      if (data.length === 0) {
-        Axios.post(
-          "/api/examPeriod",
-          {
-            examStart: start,
-            examEnd: end,
-            isEnable: BTN,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: process.env.NEXT_PUBLIC_TOKEN,
-            },
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const data = await getExamPeriod(token);
+        const id = data[0]?._id;
+        const start = startDate;
+        const end = endDate;
+        if (BTN == true) {
+          // if not have exam period data in database it will create new one
+          if (data.length === 0) {
+            Axios.post(
+              "/api/examPeriod",
+              {
+                examStart: start,
+                examEnd: end,
+                isEnable: BTN,
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: process.env.NEXT_PUBLIC_TOKEN,
+                },
+              }
+            );
+          } else {
+            putData(id, BTN, start, end);
           }
-        );
-      } else {
-        putData(id, BTN, start, end);
+        } else {
+          putData(id, BTN, startDate, endDate);
+        }
       }
-    } else {
-      putData(id, BTN, startDate, endDate);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
     }
   }
   // =================================================
@@ -92,7 +108,7 @@ const AdminSetting = (admin) => {
           Authorization: process.env.NEXT_PUBLIC_TOKEN,
         },
       }
-    ).then((res) => console.log(res))
+    ).then((res) => console.log(res));
   }
   // =================================================
 

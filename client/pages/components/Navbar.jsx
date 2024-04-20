@@ -25,13 +25,23 @@ const Navbar = ({ lat, lng, showLatLng }) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   async function allowAdmin(token) {
-    const boolean = await getRole(token);
-    setIsAdmin(boolean);
+    try {
+      const boolean = await getRole(token);
+      setIsAdmin(boolean);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
+    }
   }
 
   async function getData(token) {
-    const userData = await getUserData(token);
-    setDataForm(userData);
+    try {
+      const userData = await getUserData(token);
+      setDataForm(userData);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
+    }
   }
 
   useEffect(() => {

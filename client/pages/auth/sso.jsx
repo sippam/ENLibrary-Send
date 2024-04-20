@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import Login from "../components/Login";
 import { useRouter } from "next/router";
 import Axios from "axios";
+import PulseLoader from "react-spinners/PulseLoader";
 
 const sso = () => {
   const router = useRouter();
@@ -36,10 +36,6 @@ const sso = () => {
       async function setToken() {
         Axios.get("/api/jwt", {
           params: dataForm,
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": process.env.NEXT_PUBLIC_TOKEN,
-          }
         }).then((res) => {
           // router.push("/");
           // cookies.set("token-next", res.data.token);
@@ -55,8 +51,8 @@ const sso = () => {
     }
   });
   return (
-    <div>
-      <Login />
+    <div className="flex justify-center items-center h-screen">
+      <PulseLoader color={"#B30000"} speedMultiplier={0.3} size={20} />
     </div>
   );
 };

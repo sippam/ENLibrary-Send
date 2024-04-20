@@ -1,6 +1,46 @@
 import nextConnect from "next-connect";
 import jwt from "jsonwebtoken";
 import adminList from "../../data/adminList.json";
+import { allMiddleware } from "@/utils/handle";
+
+// export default nextConnect({
+//   onError(error, req, res) {
+//     res
+//       .status(501)
+//       .json({ error: `Sorry something Happened! ${error.message}` });
+//   },
+//   onNoMatch(req, res) {
+//     res.status(405).json({ error: `Method '${req.method}' Not Allowed` });
+//   },
+// })
+//   .use(async (req, res, next) => {
+//     // const authorizationHeader = req.headers.authorization;
+
+//     // if (authorizationHeader == process.env.NEXT_PUBLIC_TOKEN) {
+//       try {
+//         // const token = req.query.token;
+//         const token = req.headers.authorization;
+
+//         jwt.verify(token, process.env.JWT_SECRET);
+//         next();
+//       } catch (error) {
+//         console.log("delete token in getRole");
+//         console.log("getRole", error);
+//         throw error;
+//         // Token is expired or invalid
+//         // if (error.name === "TokenExpiredError") {
+
+//           // Redirect to the home page
+//           // res.writeHead(302, { Location: '/' });
+//           // res.end();
+//           // res.json("TokenExpried")
+//         // }
+//       }
+//     // } else {
+//     //   // No authorization header, return an empty response
+//     //   res.status(401).json({ error: "Unauthorized" });
+//     // }
+//   })
 
 export default nextConnect({
   onError(error, req, res) {
@@ -14,35 +54,42 @@ export default nextConnect({
 })
   .use(async (req, res, next) => {
     const authorizationHeader = req.headers.authorization;
+    const token = authorizationHeader.split(" ")[1];
 
-    if (authorizationHeader == process.env.NEXT_PUBLIC_TOKEN) {
+    if (token) {
       try {
-        const token = req.query.token;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        jwt.verify(token, process.env.JWT_SECRET);
-        next();
-      } catch (error) {
-        console.log("getRole", error);
-        // Token is expired or invalid
-        if (error.name === "TokenExpiredError") {
+        if (decoded) {
+          next();
+        } else {
           // res.setHeader(
           //   "Set-Cookie",
           //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
           // );
-
-          // Redirect to the home page
-          // res.writeHead(302, { Location: '/' });
-          // res.end();
-          res.json("TokenExpried")
+          res.status(403).json({ error: "Forbidden" });
         }
+      } catch (error) {
+        console.log("error", error);
+
+        // res.setHeader(
+        //   "Set-Cookie",
+        //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
+        // );
+        res.status(401).json({ error: "Unauthorized" });
       }
     } else {
-      // No authorization header, return an empty response
+      // res.setHeader(
+      //   "Set-Cookie",
+      //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
+      // );
       res.status(401).json({ error: "Unauthorized" });
     }
   })
   .get(async (req, res) => {
-    const token = req.query.token;
+    // const token = req.query.token;
+    const authorizationHeader = req.headers.authorization;
+    const token = authorizationHeader.split(" ")[1];
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

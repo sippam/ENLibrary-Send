@@ -2,7 +2,8 @@
 const nodemailer = require("nodemailer");
 import nextConnect from "next-connect";
 import jwt from "jsonwebtoken";
-import { allMiddleware } from "@/utils/handle";
+import adminList from "../../data/adminList.json";
+import { adminMiddleware } from "@/utils/handle";
 
 // export default nextConnect({
 //   onError(error, req, res) {
@@ -25,7 +26,8 @@ import { allMiddleware } from "@/utils/handle";
 //     //   res.status(401).json({ error: "Unauthorized" });
 //     // }
 //   })
-export default nextConnect({
+
+nextConnect({
   onError(error, req, res) {
     res
       .status(501)
@@ -34,56 +36,47 @@ export default nextConnect({
   onNoMatch(req, res) {
     res.status(405).json({ error: `Method '${req.method}' Not Allowed` });
   },
-})
-  .use(async (req, res, next) => {
-    const authorizationHeader = req.headers.authorization;
+}).use(async (req, res, next) => {
+  // checkRole()
+  const authorizationHeader = req.headers.authorization;
   const token = authorizationHeader.split(" ")[1];
 
-    if (token) {
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const email = Buffer.from(decoded.email, "base64").toString("utf-8");
 
-        if (decoded) {
-          next();
-        } else {
-          // res.setHeader(
-          //   "Set-Cookie",
-          //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
-          // );
-          res.status(403).json({ error: "Forbidden" });
-        }
-      } catch (error) {
-        console.log("error", error);
+      const userRole = adminList.email.includes(email);
 
+      if (userRole) {
+        next();
+      } else {
         // res.setHeader(
         //   "Set-Cookie",
         //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
         // );
-        res.status(401).json({ error: "Unauthorized" });
+        res.status(403).json({ error: "Forbidden" });
       }
-    } else {
+    } catch (error) {
+      console.log("error", error);
+
       // res.setHeader(
       //   "Set-Cookie",
       //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
       // );
       res.status(401).json({ error: "Unauthorized" });
     }
-  })
+  } else {
+    // res.setHeader(
+    //   "Set-Cookie",
+    //   "token=; Max-Age=0; Secure; SameSite=None; Path=/"
+    // );
+    res.status(401).json({ error: "Unauthorized" });
+  }
+})
   .post(async (req, res) => {
-    const { userData, dataRoom } = req.body;
-
-    const email = Buffer.from(userData.email, "base64").toString("utf-8");
-    const title = Buffer.from(userData.title, "base64").toString("utf-8");
-    const name = Buffer.from(userData.name, "base64").toString("utf-8");
-    const surname = Buffer.from(userData.surname, "base64").toString(
-      "utf-8"
-    );
-    const roomName = dataRoom.roomName;
-    const roomType = dataRoom.roomType;
-    const roomNumber = dataRoom.roomNumber;
-    const date = dataRoom.date;
-    const getTimeFrom = dataRoom.getTimeFrom;
-    const getTimeTo = dataRoom.getTimeTo;
+    const { userData } = req.body;
+    const { email, title, name, surname, roomName, roomType, roomNumber, date, getTimeFrom, getTimeTo } = userData;
 
     const fullname = `${title}${name} ${surname}`;
     nodemailer.createTestAccount(async (err, account) => {
@@ -103,7 +96,7 @@ export default nextConnect({
         const info = await transporter.sendMail({
           from: '"EN-Library" <no-reply@exalple.com>', // sender address
           to: `${email}, ${email}`, // list of receivers
-          subject: "EN-Library booking", // Subject line
+          subject: "EN-Library booking, room was delete by admin", // Subject line
           // text: "Hello world?", // plain text body
           html: `<table style="max-width: 37.5em; height: 611.391px;" role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
           <tbody>
@@ -118,7 +111,7 @@ export default nextConnect({
           <tr style="width: 100%;">
           <td>
           <h1 style="font-size: 32px; font-weight: bold; text-align: center;">Hi ${fullname},</h1>
-          <h2 style="font-size: 26px; font-weight: bold; text-align: center;">This is an email to confirm your successful booking.</h2>
+          <h2 style="font-size: 26px; font-weight: bold; text-align: center;">Ypur room was delete by admin.</h2>
           <p style="font-size: 16px; line-height: 24px; margin: 16px 0;"><strong>Reservation name : </strong>${roomName}</p>
           <p style="font-size: 16px; line-height: 24px; margin: 16px 0; margin-top: -5px;"><strong>Room type and number : </strong>${roomType}, ${roomNumber}</p>
           <p style="font-size: 16px; line-height: 24px; margin: 16px 0; margin-top: -5px;"><strong>Time : </strong>${date}, ${getTimeFrom} - ${getTimeTo}</p>

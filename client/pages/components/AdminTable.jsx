@@ -28,20 +28,33 @@ const AdminTable = () => {
   const [dataShow, setDataShow] = useState([]);
 
   const getUserData = async (token) => {
-    const allRoomReserve = await getRoomReserve(token);
-    setDataShow(allRoomReserve);
+    try {
+      const allRoomReserve = await getRoomReserve(token);
+      setDataShow(allRoomReserve);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.push("/"); // Redirect user to the homepage
+    }
   };
   // =================================================
 
   // ========== Get exam period from database ==========
   async function getExamDay() {
-    const data = await getExamPeriod();
-    if (data[0]?.isEnable == true) {
-      setStartBooking(new Date(data[0].examStart));
-      setEndBooking(new Date(data[0].examEnd));
-    } else {
-      setStartBooking(getTime());
-      setEndBooking(addDays(getTime(), 2));
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const data = await getExamPeriod(token);
+        if (data[0]?.isEnable == true) {
+          setStartBooking(new Date(data[0].examStart));
+          setEndBooking(new Date(data[0].examEnd));
+        } else {
+          setStartBooking(getTime());
+          setEndBooking(addDays(getTime(), 2));
+        }
+      }
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
     }
   }
   // ===================================================
@@ -79,6 +92,15 @@ const AdminTable = () => {
   // ========================================================================================
   const isAdmin = true; // Check admin
 
+  const triggerDelete = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setTimeout(() => {
+        getUserData(token);
+      }, 500);
+    }
+  };
+
   if (isAdmin) {
     return (
       <div className="relative max-w-screen-[100%] mx-auto dark:bg-[#282a36]">
@@ -103,6 +125,7 @@ const AdminTable = () => {
             date={date}
             dataAllRoomServe={dataShow}
             isAdmin={isAdmin}
+            triggerDelete={triggerDelete}
           />
         </div>
       </div>

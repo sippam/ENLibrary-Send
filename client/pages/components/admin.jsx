@@ -12,8 +12,13 @@ const admin = () => {
 
   // ========== Check Admin ==========
   async function allowAdmin(token) {
-    const boolean = await getRole(token);
-    setIsAdmin(boolean);
+    try {
+      const boolean = await getRole(token);
+      setIsAdmin(boolean);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload();
+    }
   }
 
   useEffect(() => {

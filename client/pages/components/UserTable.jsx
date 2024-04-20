@@ -8,14 +8,21 @@ import YMDSetting from "./YMDSetting";
 import ConOrMeeting from "./ConOrMeeting";
 import { getExamPeriod } from "../../data/dataUserAndAdmin";
 import useInterval from "../hooks/useInterval";
+import { useRouter } from "next/router";
 
 const UserTable = ({ triggerbook }) => {
+  const router = useRouter();
   // ========== Get user data in database ==========
   const [dataAllRoomServe, setDataAllRoomReserve] = useState([]);
 
   const getUserData = async (token) => {
-    const allRoomReserve = await getRoomReserve(token);
-    setDataAllRoomReserve(allRoomReserve);
+    try {
+      const allRoomReserve = await getRoomReserve(token);
+      setDataAllRoomReserve(allRoomReserve);
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
+    }
   };
 
   useEffect(() => {
@@ -46,13 +53,21 @@ const UserTable = ({ triggerbook }) => {
 
   // =========== Get exam period from database =============
   async function getExamDay() {
-    const data = await getExamPeriod();
-    if (data[0]?.isEnable == true) {
-      setStartBooking(new Date(data[0].examStart));
-      setEndBooking(new Date(data[0].examEnd));
-    } else {
-      setStartBooking(getTime());
-      setEndBooking(addDays(getTime(), 2));
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const data = await getExamPeriod(token);
+        if (data[0]?.isEnable == true) {
+          setStartBooking(new Date(data[0].examStart));
+          setEndBooking(new Date(data[0].examEnd));
+        } else {
+          setStartBooking(getTime());
+          setEndBooking(addDays(getTime(), 2));
+        }
+      }
+    } catch (error) {
+      localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
     }
   }
 
@@ -86,6 +101,15 @@ const UserTable = ({ triggerbook }) => {
   const isAdmin = false; // Check admin
   // =================================================================================
 
+  const triggerDelete = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setTimeout(() => {
+        getUserData(token);
+      }, 500);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center  dark:bg-[#282a36] sm:mt-[50px] w-full">
       <div className="flex px-0 justify-center lg:justify-end items-center dark:bg-[#282a36] lg:max-w-[90%] sm:max-w-[100%] w-full">
@@ -105,6 +129,7 @@ const UserTable = ({ triggerbook }) => {
           date={date}
           dataAllRoomServe={dataAllRoomServe}
           isAdmin={isAdmin}
+          triggerDelete={triggerDelete}
         />
       </div>
     </div>
