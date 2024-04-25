@@ -20,7 +20,7 @@ const UserTable = ({ triggerbook }) => {
       const allRoomReserve = await getRoomReserve(token);
       setDataAllRoomReserve(allRoomReserve);
     } catch (error) {
-      localStorage.removeItem("token");
+      // localStorage.removeItem("token");
       router.reload(); // Redirect user to the homepage
     }
   };
@@ -66,8 +66,8 @@ const UserTable = ({ triggerbook }) => {
         }
       }
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
   }
 

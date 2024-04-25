@@ -12,8 +12,8 @@ const Announce = () => {
           const data = await getExamPeriod(token);
           setExamPeriod(data[0]?.isEnable);
         } catch (error) {
-          localStorage.removeItem("token");
-          router.reload(); // Redirect user to the homepage
+          // localStorage.removeItem("token");
+          // router.reload(); // Redirect user to the homepage
         }
       }
     };

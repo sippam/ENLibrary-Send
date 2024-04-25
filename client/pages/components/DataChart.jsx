@@ -36,8 +36,8 @@ const DataChart = (admin) => {
         setDataShow(data);
       }
     } catch (error) {
-      localStorage.removeItem("token");
-      router.push("/"); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.push("/"); // Redirect user to the homepage
     }
   };
 

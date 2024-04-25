@@ -334,8 +334,8 @@ const Booking = ({ sendDataBook, tiggerDelete, admin }) => {
       const data = await getRoomReserve(token);
       setDataShow(data || []);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.push("/"); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
     }
   };
 
@@ -344,8 +344,8 @@ const Booking = ({ sendDataBook, tiggerDelete, admin }) => {
       const data = await getUserData(token);
       setUserData(data || []);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
   };
 
@@ -354,8 +354,8 @@ const Booking = ({ sendDataBook, tiggerDelete, admin }) => {
       const data = await getUserDataRoom(token);
       setUserRoom(data || []);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
   };
   // ===============================================
@@ -388,7 +388,7 @@ const Booking = ({ sendDataBook, tiggerDelete, admin }) => {
       getRoomReserveFunc(token);
       getUserRoom(token);
     } else {
-      router.push("/");
+      router.reload();
     }
   }, [token]);
 
@@ -397,7 +397,7 @@ const Booking = ({ sendDataBook, tiggerDelete, admin }) => {
     if (token) {
       getRoomReserveFunc(token);
     }
-  }, 2 * 1000);
+  }, 5 * 1000);
   // console.log("getDay",getMonth);
   // ========== Check room booking if have booking can't submit form ==========
   const mapItem =
@@ -616,8 +616,8 @@ const Booking = ({ sendDataBook, tiggerDelete, admin }) => {
     try {
       reserveRoom(token, reserveData);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
 
     toast.success("📖 Successfully!", {
@@ -670,8 +670,8 @@ const Booking = ({ sendDataBook, tiggerDelete, admin }) => {
         }
       }
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
   }
   // ==========================================================================
@@ -814,8 +814,8 @@ const Booking = ({ sendDataBook, tiggerDelete, admin }) => {
     try {
       sendEmail(token, dataRoom);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
   };
   // =================================
@@ -890,8 +890,8 @@ const Booking = ({ sendDataBook, tiggerDelete, admin }) => {
             setIsAdmim(true);
           }
         } catch (error) {
-          localStorage.removeItem("token");
-          router.reload(); // Redirect user to the homepage
+          // localStorage.removeItem("token");
+          // router.reload(); // Redirect user to the homepage
         }
       }
     };

@@ -26,8 +26,8 @@ const Login = () => {
       const boolean = await getRole(token);
       setIsAdmin(boolean);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload();
+      // localStorage.removeItem("token");
+      // router.reload();
     }
   }
 

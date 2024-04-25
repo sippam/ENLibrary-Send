@@ -29,8 +29,8 @@ const Navbar = ({ lat, lng, showLatLng }) => {
       const boolean = await getRole(token);
       setIsAdmin(boolean);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
   }
 
@@ -39,8 +39,8 @@ const Navbar = ({ lat, lng, showLatLng }) => {
       const userData = await getUserData(token);
       setDataForm(userData);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
   }
 

@@ -13,8 +13,8 @@ const request = ({ triggerbook, deleteRoom }) => {
       const userData = await getUserDataRoom(token);
       setDataShow(userData);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
   };
 
@@ -34,8 +34,8 @@ const request = ({ triggerbook, deleteRoom }) => {
     try {
       deleteUserRoom(token, roomId);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
     setDataShow(dataShow.filter((val) => val.roomId != roomId));
   };

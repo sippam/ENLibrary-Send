@@ -1,22 +1,22 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 
 const Main = () => {
-  const router = useRouter();
+  // const router = useRouter();
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const token = localStorage.getItem("token");
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const token = localStorage.getItem("token");
 
-      if (!token) {
-        router.reload(); // Reload the page if no token
-      }
-    }, 1000); // Check every 5 seconds
+  //     if (!token) {
+  //       router.reload(); // Reload the page if no token
+  //     }
+  //   }, 1000); // Check every 5 seconds
 
-    return () => clearInterval(interval); // Cleanup the interval on component unmount
-  }, [router]);
+  //   return () => clearInterval(interval); // Cleanup the interval on component unmount
+  // }, [router]);
 
   return (
     <div id="/" className="dark:bg-[#282a36] ">

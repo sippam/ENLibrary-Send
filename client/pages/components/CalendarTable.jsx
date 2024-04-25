@@ -40,8 +40,8 @@ const CalendarTable = ({
         setIsEnable(data[0]?.isEnable);
       }
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
   };
   
@@ -308,8 +308,8 @@ const CalendarTable = ({
             sendEmailDelete(token, userData);
           }
         } catch (error) {
-          localStorage.removeItem("token");
-          router.reload(); // Redirect user to the homepage
+          // localStorage.removeItem("token");
+          // router.reload(); // Redirect user to the homepage
         }
       }
     });

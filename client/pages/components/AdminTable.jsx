@@ -32,8 +32,8 @@ const AdminTable = () => {
       const allRoomReserve = await getRoomReserve(token);
       setDataShow(allRoomReserve);
     } catch (error) {
-      localStorage.removeItem("token");
-      router.push("/"); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      router.reload(); // Redirect user to the homepage
     }
   };
   // =================================================
@@ -53,8 +53,8 @@ const AdminTable = () => {
         }
       }
     } catch (error) {
-      localStorage.removeItem("token");
-      router.reload(); // Redirect user to the homepage
+      // localStorage.removeItem("token");
+      // router.reload(); // Redirect user to the homepage
     }
   }
   // ===================================================
