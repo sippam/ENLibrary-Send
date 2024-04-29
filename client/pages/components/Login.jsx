@@ -40,7 +40,7 @@ const Login = () => {
     } else {
       router.push("/");
     }
-  }, [isAdmin, router]);
+  }, [isAdmin]);
 
   // ========== Get user position ==========
   const [latitude, setLatitude] = useState(0);
@@ -142,7 +142,7 @@ const Login = () => {
     if (token) {
       callAllFunc(token, user);
     }
-  }, 5 * 1000);
+  }, 10 * 1000);
 
   useEffect(() => {
     if (user.length > 0) {
