@@ -74,7 +74,7 @@ export default async function handler(req, res) {
       jwt.sign(
         rawDataToken,
         process.env.JWT_SECRET,
-        { expiresIn: "30s" },
+        { expiresIn: 3600 * 24 * 7},
         (err, token) => {
           if (err) {
             console.log(err);
