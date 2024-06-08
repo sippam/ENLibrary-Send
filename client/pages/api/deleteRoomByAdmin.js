@@ -28,7 +28,7 @@ const table = "roomReserve";
 //        // }
 //   })
 
-nextConnect({
+export default nextConnect({
   onError(error, req, res) {
     res
       .status(501)

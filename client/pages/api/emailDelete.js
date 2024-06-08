@@ -27,7 +27,7 @@ import { adminMiddleware } from "@/utils/handle";
 //     // }
 //   })
 
-nextConnect({
+export default nextConnect({
   onError(error, req, res) {
     res
       .status(501)
@@ -76,8 +76,8 @@ nextConnect({
 })
   .post(async (req, res) => {
     const { userData } = req.body;
-    const { email, title, name, surname, roomName, roomType, roomNumber, date, getTimeFrom, getTimeTo } = userData;
-
+    const { email, title, name, surname, roomName, roomType, roomNumber, date, timeFrom, timeTo } = userData;
+    console.log(userData);
     const fullname = `${title}${name} ${surname}`;
     nodemailer.createTestAccount(async (err, account) => {
       // create reusable transporter object using the default SMTP transport
@@ -111,10 +111,10 @@ nextConnect({
           <tr style="width: 100%;">
           <td>
           <h1 style="font-size: 32px; font-weight: bold; text-align: center;">Hi ${fullname},</h1>
-          <h2 style="font-size: 26px; font-weight: bold; text-align: center;">Ypur room was delete by admin.</h2>
+          <h2 style="font-size: 26px; font-weight: bold; text-align: center;">Your room was delete by admin.</h2>
           <p style="font-size: 16px; line-height: 24px; margin: 16px 0;"><strong>Reservation name : </strong>${roomName}</p>
           <p style="font-size: 16px; line-height: 24px; margin: 16px 0; margin-top: -5px;"><strong>Room type and number : </strong>${roomType}, ${roomNumber}</p>
-          <p style="font-size: 16px; line-height: 24px; margin: 16px 0; margin-top: -5px;"><strong>Time : </strong>${date}, ${getTimeFrom} - ${getTimeTo}</p>
+          <p style="font-size: 16px; line-height: 24px; margin: 16px 0; margin-top: -5px;"><strong>Time : </strong>${date}, ${timeFrom}:00 - ${timeTo}:00</p>
           </td>
           </tr>
           </tbody>

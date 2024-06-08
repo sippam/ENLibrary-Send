@@ -39,12 +39,11 @@ export default async function handler(req, res) {
       const surname = dataForm.surname;
       const faculty = dataForm.faculty;
       const cn = dataForm.cn;
-    
       const duplicate = await excuteQuery({
         query: `SELECT * FROM userID WHERE email = ?`,
         values: [email],
       });
-      // console.log("duplicate", duplicate);
+      console.log("duplicate", duplicate);
   
       if (duplicate.length == 0) {
         await excuteQuery({
@@ -70,6 +69,7 @@ export default async function handler(req, res) {
         id: id,
         email: email,
       };
+      console.log("rawDataToken", rawDataToken);
   
       jwt.sign(
         rawDataToken,
