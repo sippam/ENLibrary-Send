@@ -40,7 +40,7 @@ export default nextConnect({
   },
 })
   .use(async (req, res, next) => {
-    const authorizationHeader = req.headers.authorization;
+  const authorizationHeader = req.headers.authorization;
   const token = authorizationHeader.split(" ")[1];
 
     if (token) {

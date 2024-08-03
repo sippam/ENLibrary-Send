@@ -75,7 +75,7 @@ const AdminSetting = (admin) => {
               {
                 headers: {
                   "Content-Type": "application/json",
-                  Authorization: process.env.NEXT_PUBLIC_TOKEN,
+                  Authorization: "Bearer " + token,
                 },
               }
             );
@@ -95,20 +95,23 @@ const AdminSetting = (admin) => {
 
   // ========== Save exam period to database ==========
   async function putData(id, BTN, start, end) {
-    Axios.put(
-      `/api/examPeriod?id=${id}`,
-      {
-        examStart: start,
-        examEnd: end,
-        isEnable: BTN,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: process.env.NEXT_PUBLIC_TOKEN,
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.put(
+        `/api/examPeriod?id=${id}`,
+        {
+          examStart: start,
+          examEnd: end,
+          isEnable: BTN,
         },
-      }
-    ).then((res) => console.log(res));
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        }
+      ).then((res) => console.log(res));
+    }
   }
   // =================================================
 
